@@ -1,8 +1,11 @@
-# King's Gambit — Medieval 3D Chess
+# King's Gambit — the app
 
-A cinematic 3D chess game: six sculpted medieval figures fighting on a marble-and-basalt
-board in a torch-lit castle hall. Built with Vite + TypeScript + three.js, with chess.js
-for the rules and a Web Worker search engine for the computer opponent.
+This folder holds the game itself. For the project overview, features, architecture notes and
+contribution guide, read the [root README](../README.md) and [CONTRIBUTING.md](../CONTRIBUTING.md).
+
+A cinematic 3D chess game: sculpted medieval and Mesoamerican figures fighting on a
+marble-and-basalt board. Built with Vite + React + TypeScript + three.js, with chess.js for
+the rules and a Web Worker search engine for the computer opponent.
 
 ## Setup
 
