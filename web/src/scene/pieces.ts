@@ -1103,6 +1103,49 @@ function sharedShadowTexture(): THREE.Texture {
 /** One army's roster key — the ivory kingdom or the Sun Empire. */
 type TemplateKey = `${Faction}${PieceKind}`;
 
+type LoadedGltf = Awaited<ReturnType<GLTFLoader["loadAsync"]>>;
+
+/**
+ * Download budget for the sculpts. Twelve rigs with five clips each is over
+ * seventy GLBs; firing them all at once made the browser drop requests
+ * (`TypeError: Failed to fetch`), which silently cost figures their strike and
+ * death clips — a capture then skipped the attack entirely. Everything now
+ * queues through a small window and is retried before it is given up on.
+ */
+const MAX_PARALLEL_DOWNLOADS = 6;
+let activeDownloads = 0;
+const downloadQueue: (() => void)[] = [];
+
+async function withDownloadSlot<T>(job: () => Promise<T>): Promise<T> {
+  while (activeDownloads >= MAX_PARALLEL_DOWNLOADS) {
+    await new Promise<void>((resolve) => downloadQueue.push(resolve));
+  }
+  activeDownloads += 1;
+  try {
+    return await job();
+  } finally {
+    activeDownloads -= 1;
+    downloadQueue.shift()?.();
+  }
+}
+
+/** Queued GLB fetch with exponential back-off — transient drops are retried. */
+async function loadGltf(loader: GLTFLoader, url: string, attempts = 3): Promise<LoadedGltf> {
+  let last: unknown = new Error(`could not load ${url}`);
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    try {
+      return await withDownloadSlot(() => loader.loadAsync(url));
+    } catch (error) {
+      last = error;
+      if (attempt === attempts - 1) break;
+      // Jittered back-off so a whole army does not retry on the same frame.
+      const delay = 240 * 2 ** attempt + Math.random() * 200;
+      await new Promise<void>((resolve) => setTimeout(resolve, delay));
+    }
+  }
+  throw last;
+}
+
 /**
  * Loads every generated sculpt once, normalises each to its board height and
  * hands out cheap clones.
@@ -1171,7 +1214,7 @@ export class PieceFactory {
       }
     }
     if (!still) throw new Error(`no sculpt url for ${faction}${kind}`);
-    const gltf = await this.loader.loadAsync(still);
+    const gltf = await loadGltf(this.loader, still);
     return this.normalize(gltf.scene, kind, {}, true);
   }
 
@@ -1180,15 +1223,18 @@ export class PieceFactory {
    * they bind straight onto the rigged scene — no retargeting.
    */
   private async loadAnimated(kind: PieceKind, set: PieceAnimationSet): Promise<Template> {
-    const rigged = await this.loader.loadAsync(set.rigged);
+    const rigged = await loadGltf(this.loader, set.rigged, 4);
     const names: (keyof PieceClips)[] = ["idle", "attack", "death", "walk", "run"];
+    // The combat beat is built on these two: losing either turns a capture into
+    // a figure that dies without ever being struck, so they get extra attempts.
+    const critical: (keyof PieceClips)[] = ["attack", "death"];
     const clips: PieceClips = {};
     await Promise.all(
       names.map(async (name) => {
         const url = set[name];
         if (!url) return;
         try {
-          const gltf = await this.loader.loadAsync(url);
+          const gltf = await loadGltf(this.loader, url, critical.includes(name) ? 5 : 3);
           const source = gltf.animations[0];
           if (!source) return;
           const clip = source.clone();

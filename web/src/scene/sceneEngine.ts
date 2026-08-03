@@ -838,22 +838,18 @@ export class SceneEngine {
       victim.turnTowards(standoff, this.tweens, 0.3),
     ]);
     attacker.faceTowards(victimSpot);
+    // Arrival beat: the march has stopped and the figure is squared up on its
+    // target. A held breath here is what makes the blow read as its own action
+    // rather than the tail of the walk.
+    await wait(0.1);
 
-    // Strike: the skeletal attack clip when the sculpt is rigged, otherwise a
-    // short thrust of the runtime node so the board anchor stays put.
-    const strike = attacker.hasAnimations ? attacker.playAttack() : null;
-    if (strike && strike.duration > 0) {
-      await wait(strike.impact);
-    } else {
-      await this.tweens.to({
-        duration: 0.12,
-        easing: Ease.inCubic,
-        onUpdate: (t) => {
-          attacker.runtime.position.x = direction.x * t * 0.28;
-          attacker.runtime.position.z = direction.z * t * 0.28;
-        },
-      });
-    }
+    // Strike: the skeletal attack clip when the rig carries one, otherwise a
+    // wind-up and lunge driven off the runtime node so the board anchor stays
+    // put. Note this asks for the clip itself, not merely for a rig — a figure
+    // whose strike failed to download must still visibly attack.
+    const strike = attacker.hasClip("attack") ? attacker.playAttack() : null;
+    if (strike && strike.duration > 0) await wait(strike.impact);
+    else await this.lunge(attacker, direction);
 
     const impact = victimSpot.clone().setY(0.55);
     audio.play("capture", 0.85);
@@ -865,19 +861,10 @@ export class SceneEngine {
     });
     this.shake.add(0.55);
 
-    if (!strike || strike.duration === 0) {
-      void this.tweens.to({
-        duration: 0.28,
-        easing: Ease.outCubic,
-        onUpdate: (t) => {
-          attacker.runtime.position.x = direction.x * (1 - t) * 0.28;
-          attacker.runtime.position.z = direction.z * (1 - t) * 0.28;
-        },
-      });
-    }
+    if (!strike || strike.duration === 0) this.recover(attacker, direction);
 
     // The defender goes down while the attacker finishes following through.
-    const recovery = strike ? Math.min(0.45, Math.max(0, strike.duration - strike.impact)) : 0;
+    const recovery = strike ? Math.min(0.45, Math.max(0, strike.duration - strike.impact)) : 0.18;
     await Promise.all([this.slay(victim, blow), wait(recovery)]);
 
     void this.tweens.to({
@@ -896,6 +883,49 @@ export class SceneEngine {
       this.glide(attacker, standoff, to, false, 1.5),
     ]);
     audio.play("place", 0.5);
+  }
+
+  /**
+   * The strike for a figure with no attack clip — an unrigged sculpt, or one
+   * whose clip never arrived. It winds up away from its target, twisting the
+   * body, then drives forward into the blow; it resolves exactly as the blow
+   * lands, so the impact beat the caller plays is unchanged.
+   */
+  private async lunge(attacker: PieceView, direction: THREE.Vector3): Promise<void> {
+    const reach = TILE * 0.34;
+    const wind = -reach * 0.4;
+    const push = (offset: number, twist: number) => {
+      attacker.runtime.position.x = direction.x * offset;
+      attacker.runtime.position.z = direction.z * offset;
+      attacker.runtime.rotation.y = twist;
+    };
+
+    // Weight shifts back onto the rear foot, shoulders turning out of line.
+    await this.tweens.to({
+      duration: 0.19,
+      easing: Ease.outCubic,
+      onUpdate: (t) => push(wind * t, -0.42 * t),
+    });
+    // Then everything unloads forward at once.
+    await this.tweens.to({
+      duration: 0.11,
+      easing: Ease.inCubic,
+      onUpdate: (t) => push(THREE.MathUtils.lerp(wind, reach, t), THREE.MathUtils.lerp(-0.42, 0.3, t)),
+    });
+  }
+
+  /** Coming out of a lunge: the body unwinds back over its own square. */
+  private recover(attacker: PieceView, direction: THREE.Vector3): void {
+    const reach = TILE * 0.34;
+    void this.tweens.to({
+      duration: 0.32,
+      easing: Ease.outCubic,
+      onUpdate: (t) => {
+        attacker.runtime.position.x = direction.x * reach * (1 - t);
+        attacker.runtime.position.z = direction.z * reach * (1 - t);
+        attacker.runtime.rotation.y = 0.3 * (1 - t);
+      },
+    });
   }
 
   /**
