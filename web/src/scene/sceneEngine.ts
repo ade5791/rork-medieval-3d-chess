@@ -14,7 +14,7 @@ import { EffectsSystem, ShakeSystem } from "./effects";
 import { FACTION_ACCENT, PieceFactory, PieceView, type ClipName, type TemplateKey } from "./pieces";
 import { PostFX } from "./postfx";
 import { QUALITY_SETTINGS, type QualityPreset } from "./quality";
-import { SPELL_LOOK, SpellOrb } from "./spells";
+import { SPELL_LOOK, SpellLightPool, SpellOrb } from "./spells";
 import { disposeStrikeAssets, spawnGroundWave, spawnPillar, spawnSlash } from "./strikes";
 import { Ease, type Easing, TweenManager, wait } from "./tween";
 
@@ -323,6 +323,13 @@ export class SceneEngine {
   private jungle: JungleOverlay;
   private board = new BoardView();
   private effects = new EffectsSystem();
+  /**
+   * The only point lights sorcery is ever allowed to use. They are added to the
+   * scene once and reused, because every change to the scene's light count makes
+   * three.js recompile every material in the hall — the sorceress' three-bolt
+   * volley used to do that eight times in a second and hang the tab.
+   */
+  private spellLights: SpellLightPool;
   private shake = new ShakeSystem();
   private tweens = new TweenManager();
   private factory = new PieceFactory();
@@ -441,6 +448,10 @@ export class SceneEngine {
     this.scene.add(this.board.group);
     this.board.applyArena(look);
     this.scene.add(this.effects.group);
+    // Three slots: the gathering fire, the killing bolt and a judgement column
+    // can all be alight at once. Anything beyond that goes unlit rather than
+    // growing the set. Presets without post-processing stay entirely unlit.
+    this.spellLights = new SpellLightPool(this.scene, settings.postFx ? 3 : 0);
 
     // A soft lamp parented to the camera: whichever way the board is turned,
     // the faces and shields pointing at the player are never in shadow.
@@ -1207,7 +1218,7 @@ export class SceneEngine {
       height: 5.6,
       floor: BOARD_TOP,
       hold: 0.46,
-      withLight,
+      light: withLight ? this.spellLights.acquire(pillar.color, 5.2) : null,
     });
     // Light pulling the dust up off the floor around the condemned.
     this.effects.spawnBurst(at.clone().setY(BOARD_TOP + 0.1), 0xffe6b4, Math.round(settings.captureParticles * 0.4), {
@@ -1371,7 +1382,7 @@ export class SceneEngine {
   private async gatherSpell(attacker: PieceView, duration: number, size: number): Promise<void> {
     const settings = QUALITY_SETTINGS[this.preset];
     const look = SPELL_LOOK[attacker.color];
-    const orb = new SpellOrb(look, size, settings.postFx);
+    const orb = new SpellOrb(look, size, this.spellLights.acquire(look.light, 4.6));
     orb.group.position.copy(attacker.castOrigin());
     this.scene.add(orb.group);
 
@@ -1443,7 +1454,9 @@ export class SceneEngine {
     const motes = Math.max(3, Math.round(settings.captureParticles * 0.16 * (leader ? 0.6 : 1)));
     const smoking = settings.captureParticles >= 34 && !leader;
 
-    const orb = new SpellOrb(look, size, settings.postFx);
+    // Only the killing bolt lights the hall: the leaders it is sent ahead of
+    // would be fighting over the same three slots for a few frames each.
+    const orb = new SpellOrb(look, size, leader ? null : this.spellLights.acquire(look.light, 4.6));
     orb.group.position.copy(start);
     orb.setIntensity(1);
     this.scene.add(orb.group);
@@ -2813,6 +2826,7 @@ export class SceneEngine {
     this.pieces.clear();
     this.captured = [];
     this.effects.dispose();
+    this.spellLights.dispose();
     disposeStrikeAssets();
     this.board.dispose();
     this.hall.dispose();

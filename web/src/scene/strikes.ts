@@ -11,6 +11,7 @@
 
 import * as THREE from "three";
 
+import type { SpellLight } from "./spells";
 import { crescentTexture, pillarTexture, shockwaveTexture } from "./textures";
 import { Ease, type TweenManager } from "./tween";
 
@@ -207,8 +208,12 @@ export interface PillarOptions {
   floor: number;
   /** How long it holds over the condemned before it lets go. */
   hold: number;
-  /** A real light at the base — only where the budget allows. */
-  withLight: boolean;
+  /**
+   * A light borrowed from the scene's spell-light pool, or null to run the
+   * column unlit. Never create one here: changing the scene's light count
+   * recompiles every material in the hall.
+   */
+  light: SpellLight | null;
 }
 
 /**
@@ -237,16 +242,13 @@ export async function spawnPillar(
   column.scale.set(options.radius, options.height, options.radius);
   scene.add(column);
 
-  const light = options.withLight ? new THREE.PointLight(options.color, 0, 5.2, 2) : null;
-  if (light) {
-    light.position.set(at.x, options.floor + 0.9, at.z);
-    scene.add(light);
-  }
+  const light = options.light;
+  const lightAt = new THREE.Vector3(at.x, options.floor + 0.9, at.z);
 
   const setSpread = (radius: number, opacity: number): void => {
     column.scale.set(radius, options.height, radius);
     material.opacity = opacity;
-    if (light) light.intensity = opacity * 9;
+    light?.set(lightAt, opacity * 9);
   };
 
   try {
@@ -272,13 +274,12 @@ export async function spawnPillar(
       onUpdate: (t) => {
         column.scale.set(options.radius * (1 - t * 0.55), options.height, options.radius * (1 - t * 0.55));
         material.opacity = 0.83 * (1 - t);
-        if (light) light.intensity = 7.5 * (1 - t);
+        light?.set(lightAt, 7.5 * (1 - t));
       },
     });
   } finally {
     column.removeFromParent();
     material.dispose();
-    light?.removeFromParent();
-    light?.dispose();
+    light?.release();
   }
 }
