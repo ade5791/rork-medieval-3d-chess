@@ -11,7 +11,7 @@ import { JungleOverlay } from "./jungle";
 import { BOARD_TOP, BoardView, type HighlightKind, TILE, squareToWorld, worldToSquare } from "./board";
 import { CastleHall, buildEnvironmentMap } from "./environment";
 import { EffectsSystem, ShakeSystem } from "./effects";
-import { FACTION_ACCENT, PieceFactory, PieceView } from "./pieces";
+import { FACTION_ACCENT, PieceFactory, PieceView, type ClipName, type TemplateKey } from "./pieces";
 import { PostFX } from "./postfx";
 import { QUALITY_SETTINGS, type QualityPreset } from "./quality";
 import { SPELL_LOOK, SpellOrb } from "./spells";
@@ -460,6 +460,7 @@ export class SceneEngine {
     this.postfx.setPreset(preset);
 
     this.bindEvents();
+    this.factory.onClip((keys, name, clip) => this.adoptClip(keys, name, clip));
     this.controller.setAnimator((event) => this.animateMove(event));
     this.controller.on("state", (snapshot) => this.onState(snapshot));
     this.controller.on("reset", () => this.rebuildPieces());
@@ -475,6 +476,25 @@ export class SceneEngine {
     if (this.disposed) return;
     this.rebuildPieces();
     this.callbacks.onReady();
+    // The rigs and their stances are in; the strikes, deaths and strides come
+    // down behind the game so the first move never waits on seventy GLBs.
+    void this.factory.warmClips();
+  }
+
+  /**
+   * A clip finished downloading after the board was already standing: hand it to
+   * every figure of that roster on the board, in the tray and mid-move, so a
+   * piece built during the opening is not left without a strike for the game.
+   */
+  private adoptClip(keys: TemplateKey[], name: ClipName, clip: THREE.AnimationClip): void {
+    const wanted = new Set<TemplateKey>(keys);
+    const install = (piece: PieceView): void => {
+      if (wanted.has(`${piece.color}${piece.kind}`)) piece.installClip(name, clip);
+    };
+    for (const piece of this.pieces.values()) install(piece);
+    for (const piece of this.motion) install(piece);
+    for (const piece of this.captured) install(piece);
+    for (const piece of this.promotionViews) install(piece);
   }
 
   start(): void {
@@ -688,10 +708,23 @@ export class SceneEngine {
       const strikeSquare = event.capture ? event.capture.square : event.to;
       // The battle beat is a camera performance — it has no meaning on the map.
       if (this.captureCinematics && !this.tactical) {
-        // The casters kill at range; everyone else has to walk into the blow.
-        if (RANGED_KINDS.includes(piece.kind))
-          await this.playSpellCinematic(piece, victim, from, to, strikeSquare);
-        else await this.playCaptureCinematic(piece, victim, from, to, strikeSquare);
+        // The strike and the fall are the whole beat: make sure both figures
+        // actually hold those clips before the fight starts.
+        await this.armCombat(piece, victim);
+        try {
+          // The casters kill at range; everyone else has to walk into the blow.
+          if (RANGED_KINDS.includes(piece.kind))
+            await this.playSpellCinematic(piece, victim, from, to, strikeSquare);
+          else await this.playCaptureCinematic(piece, victim, from, to, strikeSquare);
+        } catch (error) {
+          // A broken effect must never strand a figure in the middle of a fight:
+          // finish the kill the plain way so the board stays consistent.
+          console.warn("[scene] battle beat failed", error);
+          this.camera.fov = DEFAULT_FOV;
+          this.camera.updateProjectionMatrix();
+          piece.setStrikeTilt(0);
+          if (!victim.isSlain) await this.crumble(victim, from);
+        }
       } else {
         const approach = squareToWorld(event.from);
         await this.glide(piece, from, to, event.kind === "n");
@@ -770,6 +803,25 @@ export class SceneEngine {
     ) {
       await this.swingCamera();
     }
+  }
+
+  /**
+   * Both fighters are handed the clips their beat is built on. They are fetched
+   * in the background at start-up, but a request dropped during the opening
+   * burst would otherwise leave a figure that kills without ever swinging — so
+   * a capture asks for them again here, behind a ceiling that keeps a bad
+   * network from stopping the game.
+   */
+  private async armCombat(attacker: PieceView, victim: PieceView): Promise<void> {
+    const ready = attacker.hasClip("attack") && (victim.hasClip("death") || !victim.hasAnimations);
+    if (ready) return;
+    await Promise.race([
+      Promise.all([
+        this.factory.ensureClip(attacker.color, attacker.kind, "attack"),
+        this.factory.ensureClip(victim.color, victim.kind, "death"),
+      ]),
+      wait(2.4),
+    ]);
   }
 
   /**
@@ -1044,7 +1096,7 @@ export class SceneEngine {
       });
     }
     if (strike && strike.duration > 0) await wait(strike.impact);
-    else await this.lunge(attacker, direction);
+    else await this.lunge(attacker, direction, profile.heft);
 
     const impact = victimSpot.clone().setY(0.55);
     const power = profile.power;
@@ -1109,7 +1161,7 @@ export class SceneEngine {
     // contact, which is what makes the hit feel like it connected with mass.
     if (profile.hold > 0) await wait(profile.hold);
 
-    if (!strike || strike.duration === 0) this.recover(attacker, direction);
+    if (!strike || strike.duration === 0) this.recover(attacker, direction, profile.heft);
 
     // The hall answers a beat later.
     if (profile.aftershock > 0) void this.aftershock(strikeSquare, profile.aftershock);
@@ -1235,7 +1287,13 @@ export class SceneEngine {
     // holds hers longer, and holds far more of it.
     const cast = attacker.hasClip("attack") ? attacker.playAttack() : null;
     const gather = (cast && cast.duration > 0 ? Math.max(0.34, cast.impact) : 0.55) + spell.gather;
+    // No cast clip on this rig: the body does the casting instead of the
+    // skeleton — it leans back over the fire it is gathering.
+    const byHand = !cast || cast.duration <= 0;
+    if (byHand) void this.castWind(attacker, gather);
     await this.gatherSpell(attacker, gather, spell.orb);
+    // ...and throws itself after the bolt as it leaves the staff.
+    if (byHand) this.castRelease(attacker, blow);
 
     const impact = victimSpot.clone().setY(0.62);
     if (spell.bolts > 1) {
@@ -1270,6 +1328,38 @@ export class SceneEngine {
     if (cast) attacker.playIdle(0.2);
     await this.glide(attacker, from, to, false, 1.15);
     audio.play("place", 0.5);
+  }
+
+  /** Caster with no clip: the shoulders go back over the gathering fire. */
+  private async castWind(attacker: PieceView, duration: number): Promise<void> {
+    await this.tweens.to({
+      duration: Math.max(0.14, duration * 0.85),
+      easing: Ease.outCubic,
+      onUpdate: (t) => attacker.setStrikeTilt(-0.22 * t),
+    });
+  }
+
+  /** The release: the staff comes down and the body follows the bolt out. */
+  private castRelease(attacker: PieceView, direction: THREE.Vector3): void {
+    const reach = TILE * 0.2;
+    const push = (offset: number, tilt: number) => {
+      attacker.runtime.position.x = direction.x * offset;
+      attacker.runtime.position.z = direction.z * offset;
+      attacker.setStrikeTilt(tilt);
+    };
+    void (async () => {
+      await this.tweens.to({
+        duration: 0.14,
+        easing: Ease.outQuint,
+        onUpdate: (t) => push(reach * t, THREE.MathUtils.lerp(-0.22, 0.26, t)),
+      });
+      await this.tweens.to({
+        duration: 0.38,
+        easing: Ease.outCubic,
+        onUpdate: (t) => push(reach * (1 - t), 0.26 * (1 - t)),
+      });
+      push(0, 0);
+    })();
   }
 
   /**
@@ -1488,43 +1578,58 @@ export class SceneEngine {
 
   /**
    * The strike for a figure with no attack clip — an unrigged sculpt, or one
-   * whose clip never arrived. It winds up away from its target, twisting the
-   * body, then drives forward into the blow; it resolves exactly as the blow
-   * lands, so the impact beat the caller plays is unchanged.
+   * whose clip never arrived. It winds up away from its target, leaning back and
+   * twisting out of line, then unloads everything forward and brings the blow
+   * over the top; it resolves exactly as the blow lands, so the impact beat the
+   * caller plays is unchanged. The tilt is held through {@link PieceView} so the
+   * skeleton, which owns the pose on a rigged sculpt, cannot wipe the swing.
+   *
+   * @param heft 0 = a light blade, 1 = a siege weapon hauled round
    */
-  private async lunge(attacker: PieceView, direction: THREE.Vector3): Promise<void> {
-    const reach = TILE * 0.34;
-    const wind = -reach * 0.4;
-    const push = (offset: number, twist: number) => {
+  private async lunge(attacker: PieceView, direction: THREE.Vector3, heft = 0): Promise<void> {
+    const reach = TILE * (0.36 + heft * 0.1);
+    const wind = -reach * 0.45;
+    const twist = 0.44 + heft * 0.22;
+    const chop = 0.3 + heft * 0.14;
+    const push = (offset: number, yaw: number, tilt: number) => {
       attacker.runtime.position.x = direction.x * offset;
       attacker.runtime.position.z = direction.z * offset;
-      attacker.runtime.rotation.y = twist;
+      attacker.runtime.rotation.y = yaw;
+      attacker.setStrikeTilt(tilt);
     };
 
-    // Weight shifts back onto the rear foot, shoulders turning out of line.
+    // Weight shifts back onto the rear foot, shoulders turning out of line and
+    // the weapon taken back behind the body.
     await this.tweens.to({
-      duration: 0.19,
+      duration: 0.2 + heft * 0.14,
       easing: Ease.outCubic,
-      onUpdate: (t) => push(wind * t, -0.42 * t),
+      onUpdate: (t) => push(wind * t, -twist * t, -0.18 * t),
     });
-    // Then everything unloads forward at once.
+    // Then everything unloads forward at once and the blow comes over the top.
     await this.tweens.to({
       duration: 0.11,
       easing: Ease.inCubic,
-      onUpdate: (t) => push(THREE.MathUtils.lerp(wind, reach, t), THREE.MathUtils.lerp(-0.42, 0.3, t)),
+      onUpdate: (t) =>
+        push(
+          THREE.MathUtils.lerp(wind, reach, t),
+          THREE.MathUtils.lerp(-twist, 0.3, t),
+          THREE.MathUtils.lerp(-0.18, chop, t),
+        ),
     });
   }
 
   /** Coming out of a lunge: the body unwinds back over its own square. */
-  private recover(attacker: PieceView, direction: THREE.Vector3): void {
-    const reach = TILE * 0.34;
+  private recover(attacker: PieceView, direction: THREE.Vector3, heft = 0): void {
+    const reach = TILE * (0.36 + heft * 0.1);
+    const chop = 0.3 + heft * 0.14;
     void this.tweens.to({
-      duration: 0.32,
+      duration: 0.32 + heft * 0.1,
       easing: Ease.outCubic,
       onUpdate: (t) => {
         attacker.runtime.position.x = direction.x * reach * (1 - t);
         attacker.runtime.position.z = direction.z * reach * (1 - t);
         attacker.runtime.rotation.y = 0.3 * (1 - t);
+        attacker.setStrikeTilt(chop * (1 - t));
       },
     });
   }

@@ -250,6 +250,16 @@ How it is wired (`src/scene/pieces.ts`):
   translation would double the distance.
 - The **Low** preset freezes the stance on its first frame (no per-frame mixer cost) — strikes
   and deaths still play, and the figure slides instead of marching (footsteps still sound).
+- **Clips load in waves, not in one burst.** Twelve rigs × five clips is over seventy GLBs;
+  firing them at once made the browser drop requests (`TypeError: Failed to fetch`) and figures
+  silently lost their strike, so a capture looked like a piece dying untouched. The rig plus its
+  `idle` load first, then `PieceFactory.warmClips()` pulls `attack` → `death` → `walk` → `run`
+  two downloads wide, and every clip that lands is bound onto the figures already on the board
+  (`PieceView.installClip`). A capture additionally calls `ensureClip` for the attacker's strike
+  and the victim's death, so the beat waits (max 2.4 s) for its animation instead of skipping it.
+- If a strike clip is genuinely unavailable, `SceneEngine.lunge()` performs the swing by hand —
+  wind-up, twist, lean back, then the blow over the top. The tilt is held through
+  `PieceView.setStrikeTilt()` and re-applied after the mixer, which otherwise owns the pose.
 
 ### Marching and footsteps
 
@@ -345,7 +355,8 @@ If a rigged model fails to download the loader falls back to the static sculpt, 
 fails too, to a procedural primitive figure — **the game always stays playable**.
 
 To animate your own characters, add a `PIECE_ANIMATED_MODELS` entry with a rigged GLB plus one
-GLB per clip; any missing clip is simply skipped (no `walk` clip just means that rank slides).
+GLB per clip; any missing clip is simply skipped (no `walk` clip just means that rank slides),
+and a clip that fails to download is retried on demand the next time the game needs it.
 
 For shipping, compress the GLBs instead of streaming them from a remote host:
 

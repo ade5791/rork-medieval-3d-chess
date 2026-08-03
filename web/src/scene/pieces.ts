@@ -196,7 +196,17 @@ export interface PieceClips {
   run?: THREE.AnimationClip;
 }
 
-type ClipName = keyof PieceClips;
+export type ClipName = keyof PieceClips;
+
+/** Every clip a rig can carry, in the order the game needs them. */
+export const CLIP_ORDER: ClipName[] = ["idle", "attack", "death", "walk", "run"];
+
+/**
+ * Fetched together with the rig itself. Everything else is pulled in afterwards
+ * (see {@link PieceFactory.warmClips}) so the opening does not fire seventy
+ * requests at once — that burst is what used to cost figures their strike.
+ */
+const OPENING_CLIPS: ClipName[] = ["idle"];
 
 /** The two locomotion loops, as opposed to the stance and the one-shots. */
 export type MarchClip = "walk" | "run";
@@ -313,6 +323,14 @@ export class PieceView {
   private rootBone: THREE.Bone | null = null;
   private rootRest = new THREE.Vector3();
   private lockRootMotion = true;
+  /** Whether this figure is allowed to loop its stance (quality setting). */
+  private idleWanted = true;
+  /**
+   * Body tilt held by a hand-driven strike. The mixer rewrites the runtime
+   * rotation every frame, so a procedural swing has to be re-applied after it —
+   * without this a figure whose attack clip is missing only slid forward.
+   */
+  private strikeTilt = 0;
 
   constructor(
     kind: PieceKind,
@@ -546,18 +564,29 @@ export class PieceView {
 
   private setupAnimations(model: THREE.Object3D, clips: PieceClips, idleEnabled: boolean): void {
     const entries = (Object.keys(clips) as ClipName[]).filter((name) => clips[name]);
-    if (entries.length === 0) return;
+    this.idleWanted = idleEnabled;
 
+    let rigged = false;
     model.traverse((node) => {
       const bone = node as THREE.Bone;
-      if (bone.isBone && !this.rootBone) {
-        this.rootBone = bone;
-        this.rootRest.copy(bone.position);
+      if (bone.isBone) {
+        rigged = true;
+        if (!this.rootBone) {
+          this.rootBone = bone;
+          this.rootRest.copy(bone.position);
+        }
       }
       const skinned = node as THREE.SkinnedMesh;
       // Skinned bounds change every frame; culling them by the bind pose pops.
-      if (skinned.isSkinnedMesh) skinned.frustumCulled = false;
+      if (skinned.isSkinnedMesh) {
+        rigged = true;
+        skinned.frustumCulled = false;
+      }
     });
+
+    // A rig with no clips yet still gets its mixer: the combat clips arrive in
+    // the background and are bound onto this figure as they land.
+    if (!rigged && entries.length === 0) return;
 
     this.mixer = new THREE.AnimationMixer(model);
     for (const name of entries) {
@@ -578,6 +607,31 @@ export class PieceView {
 
     if (idleEnabled) this.playIdle(0);
     else this.poseFromIdle();
+  }
+
+  /**
+   * Binds a clip that arrived after the figure was built. Combat clips download
+   * in the background, so a piece created during the opening must be able to
+   * take its strike, death or stride later on without being rebuilt.
+   */
+  installClip(name: ClipName, clip: THREE.AnimationClip): void {
+    if (!this.mixer || this.actions.has(name)) return;
+    const action = this.mixer.clipAction(clip);
+    action.enabled = true;
+    this.actions.set(name, action);
+    // The stance is the only clip that matters right now — the rest are asked
+    // for by name the next time the figure fights or moves.
+    if (name !== "idle" || this.slain || this.activeOneShot || this.marchLoop) return;
+    if (this.idleWanted) this.playIdle(0.35);
+    else this.poseFromIdle();
+  }
+
+  /**
+   * Body tilt for a strike driven by hand rather than by a skeleton: negative
+   * leans back off the target, positive drives the shoulders over the blow.
+   */
+  setStrikeTilt(tilt: number): void {
+    this.strikeTilt = tilt;
   }
 
   get hasAnimations(): boolean {
@@ -742,6 +796,7 @@ export class PieceView {
   resetPose(): void {
     this.slain = false;
     this.setDissolve(0);
+    this.strikeTilt = 0;
     this.hit = 0;
     this.aura = 0;
     this.collider.visible = true;
@@ -953,14 +1008,15 @@ export class PieceView {
       }
       this.runtime.position.y += (lift - this.runtime.position.y) * Math.min(1, delta * 9);
       this.runtime.rotation.z = 0;
-      this.runtime.rotation.x = 0;
+      // Re-applied after the mixer, which owns the pose for the rest of the frame.
+      this.runtime.rotation.x = this.strikeTilt;
     } else {
       // Fallback figures keep the procedural breath and weight shift.
       const amplitude = this.majestic ? 0.45 : 1;
       this.runtime.position.y +=
         (lift + breath * 0.006 * amplitude - this.runtime.position.y) * Math.min(1, delta * 9);
       this.runtime.rotation.z = sway * 0.012 * amplitude;
-      this.runtime.rotation.x = breath * 0.008 * amplitude;
+      this.runtime.rotation.x = breath * 0.008 * amplitude + this.strikeTilt;
     }
 
     const target = this.selected ? 0.5 : this.hovered ? 0.32 : 0.06;
@@ -1122,7 +1178,14 @@ function sharedShadowTexture(): THREE.Texture {
 }
 
 /** One army's roster key — the ivory kingdom or the Sun Empire. */
-type TemplateKey = `${Faction}${PieceKind}`;
+export type TemplateKey = `${Faction}${PieceKind}`;
+
+/**
+ * Told about a clip that finished downloading after the board was already
+ * standing, so live figures can be handed their strike/death/stride. `keys` is
+ * every roster rendering that sculpt (a faction may borrow the other's).
+ */
+export type ClipListener = (keys: TemplateKey[], name: ClipName, clip: THREE.AnimationClip) => void;
 
 type LoadedGltf = Awaited<ReturnType<GLTFLoader["loadAsync"]>>;
 
@@ -1133,7 +1196,7 @@ type LoadedGltf = Awaited<ReturnType<GLTFLoader["loadAsync"]>>;
  * death clips — a capture then skipped the attack entirely. Everything now
  * queues through a small window and is retried before it is given up on.
  */
-const MAX_PARALLEL_DOWNLOADS = 6;
+const MAX_PARALLEL_DOWNLOADS = 4;
 let activeDownloads = 0;
 const downloadQueue: (() => void)[] = [];
 
@@ -1151,7 +1214,7 @@ async function withDownloadSlot<T>(job: () => Promise<T>): Promise<T> {
 }
 
 /** Queued GLB fetch with exponential back-off — transient drops are retried. */
-async function loadGltf(loader: GLTFLoader, url: string, attempts = 3): Promise<LoadedGltf> {
+async function loadGltf(loader: GLTFLoader, url: string, attempts = 4): Promise<LoadedGltf> {
   let last: unknown = new Error(`could not load ${url}`);
   for (let attempt = 0; attempt < attempts; attempt += 1) {
     try {
@@ -1180,9 +1243,20 @@ export class PieceFactory {
   private templates = new Map<TemplateKey, Template>();
   private loader = new GLTFLoader();
   private loaded = false;
+  /** Clip URLs per roster, so a clip can still be fetched long after start-up. */
+  private clipSources = new Map<TemplateKey, PieceAnimationSet>();
+  /** In-flight clip downloads, keyed by URL, so nothing is fetched twice. */
+  private clipJobs = new Map<string, Promise<THREE.AnimationClip | null>>();
+  private clipListener: ClipListener | null = null;
+  private warming: Promise<void> | null = null;
 
   get isReady(): boolean {
     return this.loaded;
+  }
+
+  /** Registers the sink for clips that land after the board is already up. */
+  onClip(listener: ClipListener | null): void {
+    this.clipListener = listener;
   }
 
   async load(onProgress?: (loaded: number, total: number) => void): Promise<void> {
@@ -1229,7 +1303,10 @@ export class PieceFactory {
     const still = PIECE_MODEL_URLS[faction][kind];
     if (animated) {
       try {
-        return await this.loadAnimated(kind, animated);
+        const template = await this.loadAnimated(kind, animated);
+        // Remembered so the clips left for later can still be found by name.
+        this.clipSources.set(`${faction}${kind}`, animated);
+        return template;
       } catch (error) {
         console.warn(`[pieces] rig failed for "${faction}${kind}", using the still sculpt`, error);
       }
@@ -1240,33 +1317,120 @@ export class PieceFactory {
   }
 
   /**
-   * Rigged sculpt + one GLB per clip. The clips share the auto-rig skeleton, so
-   * they bind straight onto the rigged scene — no retargeting.
+   * Rigged sculpt + the clips the opening needs. The clips share the auto-rig
+   * skeleton, so they bind straight onto the rigged scene — no retargeting.
    */
   private async loadAnimated(kind: PieceKind, set: PieceAnimationSet): Promise<Template> {
-    const rigged = await loadGltf(this.loader, set.rigged, 4);
-    const names: (keyof PieceClips)[] = ["idle", "attack", "death", "walk", "run"];
-    // The combat beat is built on these two: losing either turns a capture into
-    // a figure that dies without ever being struck, so they get extra attempts.
-    const critical: (keyof PieceClips)[] = ["attack", "death"];
+    const rigged = await loadGltf(this.loader, set.rigged, 5);
     const clips: PieceClips = {};
     await Promise.all(
-      names.map(async (name) => {
+      OPENING_CLIPS.map(async (name) => {
         const url = set[name];
         if (!url) return;
-        try {
-          const gltf = await loadGltf(this.loader, url, critical.includes(name) ? 5 : 3);
-          const source = gltf.animations[0];
-          if (!source) return;
-          const clip = source.clone();
-          clip.name = name;
-          clips[name] = clip;
-        } catch (error) {
-          console.warn(`[pieces] clip "${name}" missing for "${kind}"`, error);
-        }
+        const clip = await this.fetchClip(url, name);
+        if (clip) clips[name] = clip;
       }),
     );
     return this.normalize(rigged.scene, kind, clips, true);
+  }
+
+  /** One clip GLB — queued, retried, and never allowed to throw at the caller. */
+  private async fetchClip(url: string, name: ClipName): Promise<THREE.AnimationClip | null> {
+    try {
+      const gltf = await loadGltf(this.loader, url, 5);
+      const source = gltf.animations[0];
+      if (!source) return null;
+      const clip = source.clone();
+      clip.name = name;
+      return clip;
+    } catch (error) {
+      console.warn(`[pieces] clip "${name}" unavailable (${url})`, error);
+      return null;
+    }
+  }
+
+  /**
+   * Pulls in the clips the opening did not need, a wave at a time and only two
+   * downloads wide: strikes first (a capture is the one beat that cannot be
+   * faked), then deaths, then the strides. Every clip that lands is pushed
+   * straight onto the figures already standing on the board.
+   */
+  warmClips(): Promise<void> {
+    if (!this.warming) this.warming = this.runWarm();
+    return this.warming;
+  }
+
+  private async runWarm(): Promise<void> {
+    const keys = [...this.clipSources.keys()];
+    for (const name of CLIP_ORDER) {
+      if (OPENING_CLIPS.includes(name)) continue;
+      let next = 0;
+      const lane = async (): Promise<void> => {
+        while (next < keys.length) {
+          const key = keys[next];
+          next += 1;
+          await this.requestClip(key, name);
+        }
+      };
+      await Promise.all(Array.from({ length: Math.min(2, keys.length) }, lane));
+    }
+  }
+
+  /**
+   * Guarantees a roster has a clip before the game needs it. A capture asks for
+   * the strike and the death here, so a request dropped during the opening burst
+   * costs the fight a moment rather than its animation.
+   *
+   * @returns whether the clip is now bound to that roster
+   */
+  async ensureClip(faction: Faction, kind: PieceKind, name: ClipName): Promise<boolean> {
+    return (await this.requestClip(`${faction}${kind}`, name)) !== null;
+  }
+
+  private requestClip(key: TemplateKey, name: ClipName): Promise<THREE.AnimationClip | null> {
+    const template = this.templates.get(key);
+    const existing = template?.clips[name];
+    if (existing) return Promise.resolve(existing);
+    const url = template ? this.clipUrl(template, key, name) : undefined;
+    if (!template || !url) return Promise.resolve(null);
+
+    const running = this.clipJobs.get(url);
+    if (running) return running;
+    const job = this.fetchClip(url, name).then((clip) => {
+      if (!clip) {
+        // Not cached as a failure: the next capture gets another attempt.
+        this.clipJobs.delete(url);
+        return null;
+      }
+      template.clips[name] = clip;
+      this.clipListener?.(this.sharingKeys(template), name, clip);
+      return clip;
+    });
+    this.clipJobs.set(url, job);
+    return job;
+  }
+
+  /**
+   * Clip URL for a roster. A faction with no sculpt of its own renders the other
+   * army's template, so the URL is looked up under whichever roster owns it.
+   */
+  private clipUrl(template: Template, key: TemplateKey, name: ClipName): string | undefined {
+    const own = this.clipSources.get(key)?.[name];
+    if (own) return own;
+    for (const shared of this.sharingKeys(template)) {
+      const url = this.clipSources.get(shared)?.[name];
+      if (url) return url;
+    }
+    return undefined;
+  }
+
+  /** Every roster key rendering this template. */
+  private sharingKeys(template: Template): TemplateKey[] {
+    const keys: TemplateKey[] = [];
+    for (const [key, entry] of this.templates) {
+      if (entry.clips === template.clips) keys.push(key);
+    }
+    return keys;
   }
 
   private normalize(
@@ -1317,6 +1481,9 @@ export class PieceFactory {
   }
 
   dispose(): void {
+    this.clipListener = null;
+    this.clipJobs.clear();
+    this.clipSources.clear();
     for (const template of this.templates.values()) {
       template.scene.traverse((node) => {
         const mesh = node as THREE.Mesh;
