@@ -14,6 +14,7 @@ import { EffectsSystem, ShakeSystem } from "./effects";
 import { FACTION_ACCENT, PieceFactory, PieceView } from "./pieces";
 import { PostFX } from "./postfx";
 import { QUALITY_SETTINGS, type QualityPreset } from "./quality";
+import { SPELL_LOOK, SpellOrb } from "./spells";
 import { Ease, type Easing, TweenManager, wait } from "./tween";
 
 export type CameraPreset = "white" | "black" | "top" | "cinematic";
@@ -114,6 +115,14 @@ const GAITS: Record<PieceKind, Gait> = {
   n: { stepsPerTile: 2, cadence: 2.9, timbre: "plate", volume: 0.95 },
   p: { stepsPerTile: 2, cadence: 2.7, timbre: "scuff", volume: 0.72 },
 };
+
+/**
+ * The two ranks that never touch what they kill: the sorceress queen and the
+ * staff-bearing mage. Both open the fight from where they stand, throwing a
+ * ball of fire down the line, and only walk onto the square once the body on it
+ * has burned away.
+ */
+const RANGED_KINDS: PieceKind[] = ["q", "b"];
 
 /**
  * A marching distance profile: a short push-off, a long stretch at constant
@@ -517,9 +526,12 @@ export class SceneEngine {
     if (victim) {
       const strikeSquare = event.capture ? event.capture.square : event.to;
       // The battle beat is a camera performance — it has no meaning on the map.
-      if (this.captureCinematics && !this.tactical)
-        await this.playCaptureCinematic(piece, victim, from, to, strikeSquare);
-      else {
+      if (this.captureCinematics && !this.tactical) {
+        // The casters kill at range; everyone else has to walk into the blow.
+        if (RANGED_KINDS.includes(piece.kind))
+          await this.playSpellCinematic(piece, victim, from, to, strikeSquare);
+        else await this.playCaptureCinematic(piece, victim, from, to, strikeSquare);
+      } else {
         const approach = squareToWorld(event.from);
         await this.glide(piece, from, to, event.kind === "n");
         this.strikeImpact(strikeSquare, 0.8);
@@ -883,6 +895,235 @@ export class SceneEngine {
       this.glide(attacker, standoff, to, false, 1.5),
     ]);
     audio.play("place", 0.5);
+  }
+
+  /**
+   * The caster's beat. Nothing about this fight is fought at arm's length: the
+   * sorceress and the mage stay on their own square, level the staff down the
+   * line, gather fire at the crystal and throw it. The target burns where it
+   * stands — and only once the body is gone does the caster walk the whole
+   * distance and take the square, footsteps and all.
+   */
+  private async playSpellCinematic(
+    attacker: PieceView,
+    victim: PieceView,
+    from: THREE.Vector3,
+    to: THREE.Vector3,
+    strikeSquare: SquareId,
+  ): Promise<void> {
+    // En passant aside, the victim stands on the destination square; either way
+    // the fire flies at the body, and the blast throws it away from the caster.
+    const victimSpot = victim.container.position.clone();
+    const blow = victimSpot.clone().sub(from).setY(0);
+    if (blow.lengthSq() < 1e-6) blow.copy(to.clone().sub(from).setY(0));
+    if (blow.lengthSq() < 1e-6) blow.set(0, 0, 1);
+    blow.normalize();
+
+    const originalFov = this.camera.fov;
+    void this.tweens.to({
+      duration: 0.28,
+      easing: Ease.outCubic,
+      onUpdate: (t) => {
+        this.camera.fov = originalFov - 4.5 * t;
+        this.camera.updateProjectionMatrix();
+      },
+    });
+
+    // The caster levels its staff; the target sees what is coming for it.
+    await Promise.all([
+      attacker.turnTowards(victimSpot, this.tweens, 0.34),
+      victim.turnTowards(from, this.tweens, 0.32),
+    ]);
+    attacker.faceTowards(victimSpot);
+
+    // The strike clip doubles as the incantation: fire builds at the crystal
+    // right up to the frame the clip would have landed its blow.
+    const cast = attacker.hasClip("attack") ? attacker.playAttack() : null;
+    const gather = cast && cast.duration > 0 ? Math.max(0.34, cast.impact) : 0.55;
+    await this.gatherSpell(attacker, gather);
+
+    const impact = victimSpot.clone().setY(0.62);
+    await this.throwFireball(attacker, impact);
+    this.spellBurst(attacker.color, impact, strikeSquare);
+
+    // Dead before the caster has taken a single step.
+    await this.slay(victim, blow);
+
+    void this.tweens.to({
+      duration: 0.45,
+      easing: Ease.outCubic,
+      onUpdate: (t) => {
+        this.camera.fov = originalFov - 4.5 * (1 - t);
+        this.camera.updateProjectionMatrix();
+      },
+    });
+
+    // The body is cleared off the board, and only then is the square walked to.
+    await this.banish(victim, blow);
+    if (cast) attacker.playIdle(0.2);
+    await this.glide(attacker, from, to, false, 1.15);
+    audio.play("place", 0.5);
+  }
+
+  /**
+   * The wind-up: a ball of fire drawn together at the head of the staff, fed by
+   * embers pulled in out of the air around it, over a rising charge in the mix.
+   * The fire is repositioned every frame from the prop's own casting point, so
+   * it stays in the crystal however the casting arm swings.
+   */
+  private async gatherSpell(attacker: PieceView, duration: number): Promise<void> {
+    const settings = QUALITY_SETTINGS[this.preset];
+    const look = SPELL_LOOK[attacker.color];
+    const orb = new SpellOrb(look, 0.4, settings.postFx);
+    orb.group.position.copy(attacker.castOrigin());
+    this.scene.add(orb.group);
+
+    audio.spellCharge({ pan: this.stereoPan(orb.group.position), duration });
+    attacker.flareAura(0.55);
+
+    const motes = Math.max(3, Math.round(settings.captureParticles * 0.14));
+    let nextMote = 0.14;
+    try {
+      await this.tweens.to({
+        duration,
+        easing: Ease.linear,
+        onUpdate: (t) => {
+          const at = attacker.castOrigin();
+          orb.group.position.copy(at);
+          // Slow to catch, then it runs away with itself.
+          orb.setIntensity(t * t * 1.15);
+          orb.animate(this.elapsed);
+          if (t >= nextMote) {
+            nextMote += 0.16;
+            // Motes falling inward: thrown out wide, dragged back by the pull.
+            this.effects.spawnBurst(at, look.ember, motes, {
+              speed: 0.55,
+              life: 0.45,
+              gravity: -1.1,
+              radius: 0.36,
+              size: 0.075,
+              growth: 0.28,
+              drag: 2.6,
+              rise: 0.2,
+            });
+          }
+        },
+      });
+    } finally {
+      orb.dispose();
+    }
+  }
+
+  /**
+   * The bolt itself: a flat, fast arc from the staff to the target's chest,
+   * shedding embers and a thin trail of smoke the whole way. Longer shots take
+   * proportionally longer, so the distance across the board is felt.
+   */
+  private async throwFireball(attacker: PieceView, target: THREE.Vector3): Promise<void> {
+    const settings = QUALITY_SETTINGS[this.preset];
+    const look = SPELL_LOOK[attacker.color];
+    const start = attacker.castOrigin();
+    const distance = start.distanceTo(target);
+    const flight = THREE.MathUtils.clamp(distance * 0.1, 0.22, 0.62);
+    const lift = 0.1 + distance * 0.05;
+    const motes = Math.max(3, Math.round(settings.captureParticles * 0.16));
+    const smoking = settings.captureParticles >= 34;
+
+    const orb = new SpellOrb(look, 0.52, settings.postFx);
+    orb.group.position.copy(start);
+    orb.setIntensity(1);
+    this.scene.add(orb.group);
+
+    audio.spellCast({ pan: this.stereoPan(start) });
+    this.shake.add(0.08);
+
+    const at = new THREE.Vector3();
+    let nextTrail = 0;
+    try {
+      await this.tweens.to({
+        duration: flight,
+        easing: Ease.linear,
+        onUpdate: (t) => {
+          at.lerpVectors(start, target, t);
+          at.y += Math.sin(Math.PI * t) * lift;
+          orb.group.position.copy(at);
+          // It tightens and brightens as it closes on the body.
+          orb.setIntensity(1 + t * 0.4);
+          orb.animate(this.elapsed);
+          if (t >= nextTrail) {
+            nextTrail += 0.1;
+            this.effects.spawnBurst(at.clone(), look.ember, motes, {
+              speed: 0.7,
+              life: 0.65,
+              gravity: -0.4,
+              radius: 0.12,
+              size: 0.09,
+              growth: 0.35,
+              drag: 2.2,
+              rise: 0.1,
+            });
+            if (smoking) {
+              this.effects.spawnSmoke(at.clone(), {
+                count: 2,
+                radius: 0.12,
+                scale: 0.32,
+                growth: 2.6,
+                life: 0.6,
+                speed: 0.25,
+                rise: 0.18,
+                color: 0x8a7d6e,
+                opacity: 0.22,
+              });
+            }
+          }
+        },
+      });
+    } finally {
+      orb.dispose();
+    }
+  }
+
+  /**
+   * The bolt breaking open on the body: a hard white flash, a shell of fire
+   * thrown outward, embers left hanging on the air and the square itself struck
+   * as hard as any blade would have struck it.
+   */
+  private spellBurst(color: Faction, at: THREE.Vector3, square: SquareId): void {
+    const settings = QUALITY_SETTINGS[this.preset];
+    const look = SPELL_LOOK[color];
+
+    audio.spellImpact({ pan: this.stereoPan(at) });
+    audio.play("capture", 0.5);
+    this.strikeImpact(square, 1.1);
+    this.effects.spawnFlash(at, 3.4, 0.3);
+    this.effects.spawnBurst(at, look.core, settings.captureParticles, {
+      speed: 4.4,
+      life: 0.55,
+      gravity: 2.6,
+      radius: 0.1,
+    });
+    this.effects.spawnBurst(at, look.ember, Math.round(settings.captureParticles * 0.7), {
+      speed: 1.5,
+      life: 1.5,
+      gravity: -0.7,
+      radius: 0.3,
+      size: 0.1,
+      growth: 0.38,
+      drag: 1.6,
+      rise: 0.5,
+    });
+    this.effects.spawnSmoke(at, {
+      count: Math.max(3, Math.round(settings.captureParticles * 0.22)),
+      radius: 0.34,
+      scale: 0.7,
+      growth: 2.8,
+      life: 1.1,
+      speed: 1.2,
+      rise: 0.6,
+      color: 0x7d7062,
+      opacity: 0.55,
+    });
+    this.shake.add(0.6);
   }
 
   /**

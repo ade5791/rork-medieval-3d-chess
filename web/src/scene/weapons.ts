@@ -69,6 +69,12 @@ interface WeaponSpec {
   shield?: boolean;
   /** Half-height of a shield, so its rim can be kept off the floor. */
   half?: number;
+  /**
+   * Height of the business end in the prop's own authored coordinates — the
+   * crystal in a staff's claw, the gem on a sceptre. Casters throw their fire
+   * from exactly this point, read out of the live pose.
+   */
+  focus?: number;
 }
 
 // ------------------------------------------------------------------ geometry
@@ -324,6 +330,7 @@ const WEAPONS: Record<WeaponId, WeaponSpec> = {
   /** Queen: gold sceptre crowned with a faction-coloured crystal. */
   scepter: {
     grip: 0.16,
+    focus: 0.56,
     aim: new THREE.Vector3(-0.04, 1, 0.1),
     offset: new THREE.Vector3(0.02, 0, 0.03),
     build: () => [
@@ -339,6 +346,7 @@ const WEAPONS: Record<WeaponId, WeaponSpec> = {
   /** Bishop: tall cleric staff with a floating crystal in a gold claw. */
   crystalStaff: {
     grip: 0.34,
+    focus: 0.775,
     aim: new THREE.Vector3(-0.03, 1, 0.07),
     offset: new THREE.Vector3(0.02, 0, 0.03),
     build: () => [
@@ -517,6 +525,7 @@ const WEAPONS: Record<WeaponId, WeaponSpec> = {
   /** Serpent priest: feathered-serpent staff with a jade skull orb. */
   serpentStaff: {
     grip: 0.34,
+    focus: 0.712,
     aim: new THREE.Vector3(-0.03, 1, 0.07),
     offset: new THREE.Vector3(0.02, 0, 0.03),
     build: () => [
@@ -537,6 +546,7 @@ const WEAPONS: Record<WeaponId, WeaponSpec> = {
   /** Priestess queen: gold sun disc raised on a jade-banded rod. */
   sunScepter: {
     grip: 0.16,
+    focus: 0.54,
     aim: new THREE.Vector3(-0.04, 1, 0.1),
     offset: new THREE.Vector3(0.02, 0, 0.03),
     build: () => {
@@ -746,6 +756,11 @@ export interface AttachedArms {
   materials: THREE.MeshStandardMaterial[];
   /** Emissive strength each material was authored with, for highlight blending. */
   baseEmissive: number[];
+  /**
+   * Empty marker parented at the head of the main weapon, where a caster's fire
+   * gathers. Null for arms with no focus (a sword has nothing to cast from).
+   */
+  focus: THREE.Object3D | null;
 }
 
 /**
@@ -762,7 +777,7 @@ export function attachWeapons(
   unit: number,
   baseY = 0,
 ): AttachedArms {
-  const arms: AttachedArms = { meshes: [], materials: [], baseEmissive: [] };
+  const arms: AttachedArms = { meshes: [], materials: [], baseEmissive: [], focus: null };
   const loadout = LOADOUT[color][kind];
 
   root.updateMatrixWorld(true);
@@ -826,6 +841,16 @@ export function attachWeapons(
     const inner = new THREE.Group();
     inner.position.y = -grip;
     group.add(inner);
+
+    // The casting point travels with the prop, so a spell always leaves the
+    // crystal itself however the arm is swinging that frame.
+    if (hand === "right" && spec.focus !== undefined) {
+      const focus = new THREE.Object3D();
+      focus.name = `focus_${id}`;
+      focus.position.y = spec.focus;
+      inner.add(focus);
+      arms.focus = focus;
+    }
 
     for (const [role, geometry] of weaponGeometries(id)) {
       const material = makeMaterial(role, color);

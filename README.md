@@ -53,6 +53,11 @@ cd web && bun install && bun run dev
   sparks fly, the screen shakes, and the defender **burns away from the soles upward**
   through a ragged edge of light, shedding motes that drift off (cold soul-light for the
   Kingdom, live embers for the Empire).
+- **Casters kill at range** — the queen and the mage never close the distance. They level the
+  staff from their own square, gather fire at the crystal, and throw a ball of it down the
+  line: it lights the hall as it flies, breaks open on the body, and only once the corpse has
+  burned away do they walk the whole distance and take the square (cold witchfire for the
+  Kingdom, sunfire for the Empire).
 - **Twelve death cries** — one recorded voice per rank per army, panned to where the body is
   on screen, ducking the music for a beat and pitch-jittered so no two deaths sound alike.
 - **Four battlegrounds** that relight the whole world — sky, haze, stone colour, tile
@@ -222,7 +227,7 @@ in `PIECE_ANIMATED_MODELS` (`src/assets/generated.ts`):
 | `idle` | Looping combat stance, desynced per figure so the army does not breathe in lockstep |
 | `walk` | Looping in-place stride, retimed to the cadence of the move that is under way |
 | `run` | Looping in-place run — the knight charging through its leap (knights only) |
-| `attack` | One-shot strike the moment a capture lands — sparks, shake and clash are timed to the hit frame |
+| `attack` | One-shot strike the moment a capture lands — sparks, shake and clash are timed to the hit frame. For the queen and the mage the same clip is the incantation, and its hit frame is the moment the fireball is released |
 | `death` | One-shot fall played by the captured figure before it dissolves into dust |
 
 How it is wired (`src/scene/pieces.ts`):
@@ -257,6 +262,26 @@ How it is wired (`src/scene/pieces.ts`):
 Footsteps are fully synthesised in `src/audio/audioManager.ts` — a low body thump for the
 weight, a band-passed noise transient for the sole, and a metallic afterring for armour, one
 voice per `FootstepTimbre` (`scuff` / `leather` / `plate` / `regal`). No asset, no latency.
+
+### Ranged combat (queen and mage)
+
+`RANGED_KINDS` in `src/scene/sceneEngine.ts` routes captures by the queen (`q`) and the mage
+(`b`) to `playSpellCinematic()` instead of the melee beat, in this order:
+
+1. Caster and target turn to face each other; the caster does not move off its square.
+2. `gatherSpell()` grows a `SpellOrb` (`src/scene/spells.ts`) at the weapon's casting point
+   for the length of the strike clip's wind-up, pulling embers inward over a rising charge.
+3. `throwFireball()` flies the orb to the target's chest on a flat arc, shedding embers and
+   smoke; flight time scales with the distance actually crossed.
+4. `spellBurst()` lands it — flash, fire shell, ember cloud, square impact and camera kick.
+5. `slay()` then `banish()` run to completion, so the target is **dead and gone** before the
+   caster takes a step, and only then does `glide()` march it onto the cleared square.
+
+The casting point is a marker parented at the head of the main weapon (`focus` in
+`src/scene/weapons.ts`), read out of the live pose each frame, so the fire hangs off the
+crystal wherever the casting arm swings it. `SPELL_LOOK` gives each army its own fire, and the
+orb carries a real point light on presets with post-processing. The three spell voices (charge,
+cast, impact) are synthesised alongside the footsteps — no assets.
 
 The capture dissolve is a shader injection: a noise field eats the body from the soles up with
 a glowing burn edge, while the whole mesh fades and sheds upward-drifting motes.

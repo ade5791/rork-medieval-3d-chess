@@ -36,6 +36,18 @@ export interface FootstepOptions {
   jitter?: number;
 }
 
+/** Placement of one spell sound in the mix. */
+export interface SpellOptions {
+  /** -1 hard left … 1 hard right — where the caster or the blast is on screen. */
+  pan?: number;
+  /** Relative loudness. */
+  volume?: number;
+  /** Seconds to wait before it sounds. */
+  delay?: number;
+  /** How long the charge takes to reach full power (charge only). */
+  duration?: number;
+}
+
 /** A wooden piece being lifted from or set down on the board. */
 export interface WoodTapOptions {
   /** -1 hard left … 1 hard right — where the square is on screen. */
@@ -607,6 +619,178 @@ export class AudioManager {
       ring.start(when);
       ring.stop(when + 0.2);
     }
+  }
+
+  /**
+   * Fire gathering at the head of a staff: two detuned saw voices climbing an
+   * octave under a band of noise that opens as the charge builds, so the ear
+   * hears the power being pulled in before the bolt leaves.
+   */
+  spellCharge(options: SpellOptions = {}): void {
+    if (!this.ctx || !this.master || this.muted) return;
+    const ctx = this.ctx;
+    const when = ctx.currentTime + Math.max(0, options.delay ?? 0);
+    const span = Math.max(0.18, options.duration ?? 0.5);
+    const level = 0.2 * (options.volume ?? 1);
+    const bus = this.spellBus(options.pan ?? 0, 0.6);
+
+    for (const detune of [1, 1.008, 0.5]) {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = detune === 0.5 ? "triangle" : "sawtooth";
+      osc.frequency.setValueAtTime(96 * detune, when);
+      osc.frequency.exponentialRampToValueAtTime(340 * detune, when + span);
+      gain.gain.setValueAtTime(0.0001, when);
+      gain.gain.exponentialRampToValueAtTime(level * (detune === 0.5 ? 0.7 : 1), when + span * 0.92);
+      gain.gain.exponentialRampToValueAtTime(0.0001, when + span + 0.06);
+      osc.connect(gain);
+      gain.connect(bus);
+      osc.start(when);
+      osc.stop(when + span + 0.12);
+    }
+
+    // Air being dragged into the crystal.
+    const noise = ctx.createBufferSource();
+    noise.buffer = this.noiseBuffer(span + 0.1, 0.35);
+    const band = ctx.createBiquadFilter();
+    band.type = "bandpass";
+    band.Q.value = 1.4;
+    band.frequency.setValueAtTime(420, when);
+    band.frequency.exponentialRampToValueAtTime(2600, when + span);
+    const noiseGain = ctx.createGain();
+    noiseGain.gain.setValueAtTime(0.0001, when);
+    noiseGain.gain.exponentialRampToValueAtTime(level * 1.5, when + span * 0.95);
+    noiseGain.gain.exponentialRampToValueAtTime(0.0001, when + span + 0.08);
+    noise.connect(band);
+    band.connect(noiseGain);
+    noiseGain.connect(bus);
+    noise.start(when);
+  }
+
+  /** The bolt leaving the staff: a bright snap into a falling whoosh. */
+  spellCast(options: SpellOptions = {}): void {
+    if (!this.ctx || !this.master || this.muted) return;
+    const ctx = this.ctx;
+    const when = ctx.currentTime + Math.max(0, options.delay ?? 0);
+    const level = 0.42 * (options.volume ?? 1);
+    const bus = this.spellBus(options.pan ?? 0, 0.7);
+
+    const noise = ctx.createBufferSource();
+    noise.buffer = this.noiseBuffer(0.42, 1.6);
+    const band = ctx.createBiquadFilter();
+    band.type = "bandpass";
+    band.Q.value = 0.9;
+    band.frequency.setValueAtTime(3200, when);
+    band.frequency.exponentialRampToValueAtTime(380, when + 0.36);
+    const noiseGain = ctx.createGain();
+    noiseGain.gain.setValueAtTime(level, when);
+    noiseGain.gain.exponentialRampToValueAtTime(0.0001, when + 0.4);
+    noise.connect(band);
+    band.connect(noiseGain);
+    noiseGain.connect(bus);
+    noise.start(when);
+
+    // The kick of it leaving the hand.
+    const thump = ctx.createOscillator();
+    const thumpGain = ctx.createGain();
+    thump.type = "sine";
+    thump.frequency.setValueAtTime(220, when);
+    thump.frequency.exponentialRampToValueAtTime(58, when + 0.24);
+    thumpGain.gain.setValueAtTime(0.0001, when);
+    thumpGain.gain.exponentialRampToValueAtTime(level * 0.7, when + 0.01);
+    thumpGain.gain.exponentialRampToValueAtTime(0.0001, when + 0.3);
+    thump.connect(thumpGain);
+    thumpGain.connect(bus);
+    thump.start(when);
+    thump.stop(when + 0.36);
+  }
+
+  /**
+   * The bolt landing on a body: a hard crack, a low boom that drops away under
+   * it, and a long crackle of fire eating what is left.
+   */
+  spellImpact(options: SpellOptions = {}): void {
+    if (!this.ctx || !this.master || this.muted) return;
+    const ctx = this.ctx;
+    const when = ctx.currentTime + Math.max(0, options.delay ?? 0);
+    const level = 0.5 * (options.volume ?? 1);
+    const bus = this.spellBus(options.pan ?? 0, 0.45);
+
+    const boom = ctx.createOscillator();
+    const boomGain = ctx.createGain();
+    boom.type = "sine";
+    boom.frequency.setValueAtTime(140, when);
+    boom.frequency.exponentialRampToValueAtTime(32, when + 0.5);
+    boomGain.gain.setValueAtTime(0.0001, when);
+    boomGain.gain.exponentialRampToValueAtTime(level, when + 0.008);
+    boomGain.gain.exponentialRampToValueAtTime(0.0001, when + 0.6);
+    boom.connect(boomGain);
+    boomGain.connect(bus);
+    boom.start(when);
+    boom.stop(when + 0.7);
+
+    // The crack of the shell breaking open.
+    const crack = ctx.createBufferSource();
+    crack.buffer = this.noiseBuffer(0.12, 5);
+    const snap = ctx.createBiquadFilter();
+    snap.type = "highpass";
+    snap.frequency.value = 1400;
+    const crackGain = ctx.createGain();
+    crackGain.gain.value = level * 0.55;
+    crack.connect(snap);
+    snap.connect(crackGain);
+    crackGain.connect(bus);
+    crack.start(when);
+
+    // Fire left burning on the stone.
+    const fire = ctx.createBufferSource();
+    fire.buffer = this.noiseBuffer(0.85, 1.1);
+    const body = ctx.createBiquadFilter();
+    body.type = "lowpass";
+    body.frequency.setValueAtTime(2600, when);
+    body.frequency.exponentialRampToValueAtTime(520, when + 0.8);
+    const fireGain = ctx.createGain();
+    fireGain.gain.setValueAtTime(level * 0.5, when + 0.02);
+    fireGain.gain.exponentialRampToValueAtTime(0.0001, when + 0.9);
+    fire.connect(body);
+    body.connect(fireGain);
+    fireGain.connect(bus);
+    fire.start(when);
+  }
+
+  /** Panned input bus shared by the spell voices. */
+  private spellBus(pan: number, width: number): GainNode {
+    const ctx = this.ctx;
+    const master = this.master;
+    if (!ctx || !master) throw new Error("mixer not started");
+    const bus = ctx.createGain();
+    bus.gain.value = 1;
+    if (typeof ctx.createStereoPanner === "function") {
+      const panner = ctx.createStereoPanner();
+      panner.pan.value = Math.max(-1, Math.min(1, pan)) * width;
+      bus.connect(panner);
+      panner.connect(master);
+    } else {
+      bus.connect(master);
+    }
+    return bus;
+  }
+
+  /**
+   * Decaying white noise of a given length.
+   *
+   * @param falloff envelope exponent — 1 fades evenly, higher is a sharper burst
+   */
+  private noiseBuffer(seconds: number, falloff: number): AudioBuffer {
+    const ctx = this.ctx;
+    if (!ctx) throw new Error("mixer not started");
+    const length = Math.max(1, Math.floor(ctx.sampleRate * seconds));
+    const buffer = ctx.createBuffer(1, length, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < length; i += 1) {
+      data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, falloff);
+    }
+    return buffer;
   }
 
   /** Synthesised UI feedback — cheap, instant, no assets. */

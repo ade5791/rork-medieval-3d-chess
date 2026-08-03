@@ -808,6 +808,27 @@ export class PieceView {
     return this.slain;
   }
 
+  /** True when this figure carries a staff or sceptre it can cast fire from. */
+  get canCast(): boolean {
+    return this.arms?.focus != null;
+  }
+
+  /**
+   * World point a spell leaves from: the crystal in the staff's claw or the gem
+   * on the sceptre, read out of the pose on the frame it is asked for, so the
+   * fire hangs off the prop wherever the casting arm has swung it.
+   */
+  castOrigin(): THREE.Vector3 {
+    const focus = this.arms?.focus;
+    if (focus) {
+      focus.updateWorldMatrix(true, false);
+      return focus.getWorldPosition(new THREE.Vector3());
+    }
+    // No prop (an unrigged fallback figure): cast from where the hands would be.
+    const height = PIECE_HEIGHT[this.kind] * 0.78;
+    return this.container.position.clone().setY(this.container.position.y + height);
+  }
+
   /** Snaps the figure round to look at a world position (its killer, a target). */
   faceTowards(point: THREE.Vector3): void {
     const forward = point.clone().sub(this.container.position);

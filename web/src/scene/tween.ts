@@ -92,6 +92,10 @@ export class TweenManager {
   }
 }
 
-export function wait(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+/**
+ * Holds for a number of *seconds* — every beat in the scene choreography is
+ * timed in seconds (clip lengths, held breaths), so this takes the same unit.
+ */
+export function wait(seconds: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, Math.max(0, seconds) * 1000));
 }
