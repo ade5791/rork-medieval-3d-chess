@@ -53,6 +53,14 @@ export interface PieceAnimationSet {
   attack?: string;
   /** One-shot death played when this figure is captured. */
   death?: string;
+  /**
+   * Looping in-place stride played while the figure marches to its square.
+   * In-place variants only: the board move is driven by the container tween,
+   * so a clip carrying root translation would double the travel.
+   */
+  walk?: string;
+  /** Looping in-place run — the knight's charge through its leap. */
+  run?: string;
 }
 
 export const PIECE_ANIMATED_MODELS: Record<Faction, Roster<PieceAnimationSet>> = {
@@ -63,36 +71,46 @@ export const PIECE_ANIMATED_MODELS: Record<Faction, Roster<PieceAnimationSet>> =
     idle: `${MODEL_BASE}/704a772c-4a50-4619-b5ad-6e2bbf9703b8-anim-idle.glb`,
     attack: `${MODEL_BASE}/704a772c-4a50-4619-b5ad-6e2bbf9703b8-anim-sword-judgment.glb`,
     death: `${MODEL_BASE}/704a772c-4a50-4619-b5ad-6e2bbf9703b8-anim-dead.glb`,
+    // The crown does not hurry: a slow, wide-shouldered strut.
+    walk: `${MODEL_BASE}/704a772c-4a50-4619-b5ad-6e2bbf9703b8-anim-proud-strut-inplace.glb`,
   },
   q: {
     rigged: `${MODEL_BASE}/13928f19-23a3-46ba-9879-aacca58f2886-rigged.glb`,
     idle: `${MODEL_BASE}/13928f19-23a3-46ba-9879-aacca58f2886-anim-idle.glb`,
     attack: `${MODEL_BASE}/13928f19-23a3-46ba-9879-aacca58f2886-anim-charged-spell-cast.glb`,
     death: `${MODEL_BASE}/13928f19-23a3-46ba-9879-aacca58f2886-anim-dying-backwards.glb`,
+    walk: `${MODEL_BASE}/13928f19-23a3-46ba-9879-aacca58f2886-anim-red-carpet-walk-inplace.glb`,
   },
   b: {
     rigged: `${MODEL_BASE}/6c99342a-e9a5-4959-a59b-c207e15a5c72-rigged.glb`,
     idle: `${MODEL_BASE}/6c99342a-e9a5-4959-a59b-c207e15a5c72-anim-combat-stance.glb`,
     attack: `${MODEL_BASE}/6c99342a-e9a5-4959-a59b-c207e15a5c72-anim-sword-judgment.glb`,
     death: `${MODEL_BASE}/6c99342a-e9a5-4959-a59b-c207e15a5c72-anim-dead.glb`,
+    walk: `${MODEL_BASE}/6c99342a-e9a5-4959-a59b-c207e15a5c72-anim-spear-walk-inplace.glb`,
   },
   n: {
     rigged: `${MODEL_BASE}/43f08150-5463-4112-9949-2e1a9a9a6bd2-rigged.glb`,
     idle: `${MODEL_BASE}/43f08150-5463-4112-9949-2e1a9a9a6bd2-anim-combat-stance.glb`,
     attack: `${MODEL_BASE}/43f08150-5463-4112-9949-2e1a9a9a6bd2-anim-charged-slash.glb`,
     death: `${MODEL_BASE}/43f08150-5463-4112-9949-2e1a9a9a6bd2-anim-dying-backwards.glb`,
+    walk: `${MODEL_BASE}/43f08150-5463-4112-9949-2e1a9a9a6bd2-anim-confident-strut-inplace.glb`,
+    // Carried through the leap, so the rider is charging rather than floating.
+    run: `${MODEL_BASE}/43f08150-5463-4112-9949-2e1a9a9a6bd2-anim-standard-forward-charge-inplace.glb`,
   },
   r: {
     rigged: `${MODEL_BASE}/211b0ba5-2c7f-44ff-8143-b625bca41df1-rigged.glb`,
     idle: `${MODEL_BASE}/211b0ba5-2c7f-44ff-8143-b625bca41df1-anim-combat-stance.glb`,
     attack: `${MODEL_BASE}/211b0ba5-2c7f-44ff-8143-b625bca41df1-anim-heavy-hammer-swing.glb`,
     death: `${MODEL_BASE}/211b0ba5-2c7f-44ff-8143-b625bca41df1-anim-knock-down.glb`,
+    // Full plate: a slow, lumbering tread that lands on the whole foot.
+    walk: `${MODEL_BASE}/211b0ba5-2c7f-44ff-8143-b625bca41df1-anim-slow-orc-walk-inplace.glb`,
   },
   p: {
     rigged: `${MODEL_BASE}/36d8c7d4-2f42-4672-8908-e9298fce9b69-rigged.glb`,
     idle: `${MODEL_BASE}/36d8c7d4-2f42-4672-8908-e9298fce9b69-anim-combat-stance.glb`,
     attack: `${MODEL_BASE}/36d8c7d4-2f42-4672-8908-e9298fce9b69-anim-thrust-slash.glb`,
     death: `${MODEL_BASE}/36d8c7d4-2f42-4672-8908-e9298fce9b69-anim-knock-down.glb`,
+    walk: `${MODEL_BASE}/36d8c7d4-2f42-4672-8908-e9298fce9b69-anim-spear-walk-inplace.glb`,
   },
   },
   b: {
@@ -101,36 +119,44 @@ export const PIECE_ANIMATED_MODELS: Record<Faction, Roster<PieceAnimationSet>> =
       idle: `${MODEL_BASE}/ad5cfb3c-4fbc-4952-a1f1-b1d4a684b2e7-anim-idle.glb`,
       attack: `${MODEL_BASE}/ad5cfb3c-4fbc-4952-a1f1-b1d4a684b2e7-anim-sword-judgment.glb`,
       death: `${MODEL_BASE}/ad5cfb3c-4fbc-4952-a1f1-b1d4a684b2e7-anim-dead.glb`,
+      walk: `${MODEL_BASE}/ad5cfb3c-4fbc-4952-a1f1-b1d4a684b2e7-anim-proud-strut-inplace.glb`,
     },
     q: {
       rigged: `${MODEL_BASE}/d39273ce-17e5-41df-a7f5-634f944e3467-rigged.glb`,
       idle: `${MODEL_BASE}/d39273ce-17e5-41df-a7f5-634f944e3467-anim-idle.glb`,
       attack: `${MODEL_BASE}/d39273ce-17e5-41df-a7f5-634f944e3467-anim-charged-spell-cast.glb`,
       death: `${MODEL_BASE}/d39273ce-17e5-41df-a7f5-634f944e3467-anim-dying-backwards.glb`,
+      walk: `${MODEL_BASE}/d39273ce-17e5-41df-a7f5-634f944e3467-anim-confident-strut-inplace.glb`,
     },
     b: {
       rigged: `${MODEL_BASE}/7066c2da-f466-438b-ab74-f2a45b2a0ddb-rigged.glb`,
       idle: `${MODEL_BASE}/7066c2da-f466-438b-ab74-f2a45b2a0ddb-anim-combat-stance.glb`,
       attack: `${MODEL_BASE}/7066c2da-f466-438b-ab74-f2a45b2a0ddb-anim-sword-judgment.glb`,
       death: `${MODEL_BASE}/7066c2da-f466-438b-ab74-f2a45b2a0ddb-anim-dead.glb`,
+      walk: `${MODEL_BASE}/7066c2da-f466-438b-ab74-f2a45b2a0ddb-anim-spear-walk-inplace.glb`,
     },
     n: {
       rigged: `${MODEL_BASE}/a5ff70a9-b2e7-40e0-b7bc-ea4fe0ba6d5c-rigged.glb`,
       idle: `${MODEL_BASE}/a5ff70a9-b2e7-40e0-b7bc-ea4fe0ba6d5c-anim-combat-stance.glb`,
       attack: `${MODEL_BASE}/a5ff70a9-b2e7-40e0-b7bc-ea4fe0ba6d5c-anim-charged-slash.glb`,
       death: `${MODEL_BASE}/a5ff70a9-b2e7-40e0-b7bc-ea4fe0ba6d5c-anim-dying-backwards.glb`,
+      // The jaguar warrior prowls where the ivory knight marches.
+      walk: `${MODEL_BASE}/a5ff70a9-b2e7-40e0-b7bc-ea4fe0ba6d5c-anim-sneaky-walk-inplace.glb`,
+      run: `${MODEL_BASE}/a5ff70a9-b2e7-40e0-b7bc-ea4fe0ba6d5c-anim-standard-forward-charge-inplace.glb`,
     },
     r: {
       rigged: `${MODEL_BASE}/c044d8e8-28fd-4aa9-af00-d58ca49fedee-rigged.glb`,
       idle: `${MODEL_BASE}/c044d8e8-28fd-4aa9-af00-d58ca49fedee-anim-combat-stance.glb`,
       attack: `${MODEL_BASE}/c044d8e8-28fd-4aa9-af00-d58ca49fedee-anim-heavy-hammer-swing.glb`,
       death: `${MODEL_BASE}/c044d8e8-28fd-4aa9-af00-d58ca49fedee-anim-knock-down.glb`,
+      walk: `${MODEL_BASE}/c044d8e8-28fd-4aa9-af00-d58ca49fedee-anim-slow-orc-walk-inplace.glb`,
     },
     p: {
       rigged: `${MODEL_BASE}/2cd10f02-711f-4e51-8b32-1d6603e7cc3f-rigged.glb`,
       idle: `${MODEL_BASE}/2cd10f02-711f-4e51-8b32-1d6603e7cc3f-anim-combat-stance.glb`,
       attack: `${MODEL_BASE}/2cd10f02-711f-4e51-8b32-1d6603e7cc3f-anim-thrust-slash.glb`,
       death: `${MODEL_BASE}/2cd10f02-711f-4e51-8b32-1d6603e7cc3f-anim-knock-down.glb`,
+      walk: `${MODEL_BASE}/2cd10f02-711f-4e51-8b32-1d6603e7cc3f-anim-spear-walk-inplace.glb`,
     },
   },
 };

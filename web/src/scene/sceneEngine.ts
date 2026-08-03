@@ -3,7 +3,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 import type { GameController } from "../core/gameController";
 import type { Faction, GameSnapshot, MoveEvent, PieceKind, SquareId } from "../core/types";
-import { audio } from "../audio/audioManager";
+import { audio, type FootstepTimbre } from "../audio/audioManager";
 import type { ArenaTheme } from "./arena";
 import { ARENA_LOOKS, DEFAULT_ARENA } from "./arena";
 import { Battlefield } from "./battlefield";
@@ -14,7 +14,7 @@ import { EffectsSystem, ShakeSystem } from "./effects";
 import { FACTION_ACCENT, PieceFactory, PieceView } from "./pieces";
 import { PostFX } from "./postfx";
 import { QUALITY_SETTINGS, type QualityPreset } from "./quality";
-import { Ease, TweenManager, wait } from "./tween";
+import { Ease, type Easing, TweenManager, wait } from "./tween";
 
 export type CameraPreset = "white" | "black" | "top" | "cinematic";
 
@@ -88,6 +88,54 @@ const WOOD_WEIGHT: Record<PieceKind, number> = {
   n: 0.58,
   p: 0.3,
 };
+
+/** How one rank crosses the board on its own legs. */
+interface Gait {
+  /** Footfalls put down per square of travel — the length of the stride. */
+  stepsPerTile: number;
+  /** Footfalls per second — the cadence of the march. */
+  cadence: number;
+  /** What the boot sounds like against the stone. */
+  timbre: FootstepTimbre;
+  /** Loudness of one footfall. */
+  volume: number;
+}
+
+/**
+ * The twelve figures do not walk alike. Footsoldiers take short, quick, scuffing
+ * steps; the tower guardians tread slowly in full plate; the crown crosses the
+ * board at a deliberate pace that nothing on the board hurries.
+ */
+const GAITS: Record<PieceKind, Gait> = {
+  k: { stepsPerTile: 1.55, cadence: 1.85, timbre: "regal", volume: 1 },
+  q: { stepsPerTile: 1.7, cadence: 2.1, timbre: "regal", volume: 0.88 },
+  r: { stepsPerTile: 1.5, cadence: 1.95, timbre: "plate", volume: 1.12 },
+  b: { stepsPerTile: 1.9, cadence: 2.45, timbre: "leather", volume: 0.78 },
+  n: { stepsPerTile: 2, cadence: 2.9, timbre: "plate", volume: 0.95 },
+  p: { stepsPerTile: 2, cadence: 2.7, timbre: "scuff", volume: 0.72 },
+};
+
+/**
+ * A marching distance profile: a short push-off, a long stretch at constant
+ * speed, then a brief settle. The stride clock runs at a fixed cadence, so an
+ * eased-all-the-way curve (what a sliding piece uses) would leave the feet
+ * visibly skating at both ends of the move.
+ *
+ * @param ramp fraction of the move spent accelerating, and again decelerating
+ */
+function strideEasing(ramp: number): Easing {
+  const r = Math.min(0.4, Math.max(0.02, ramp));
+  // Distance covered by the ramp-up + cruise + ramp-down, before normalising.
+  const span = 1 - r;
+  return (t: number): number => {
+    if (t <= r) return t * t * 0.5 / r / span;
+    if (t >= 1 - r) {
+      const rest = 1 - t;
+      return (span - rest * rest * 0.5 / r) / span;
+    }
+    return (t - r * 0.5) / span;
+  };
+}
 
 /**
  * Owns every three.js object. The chess core drives it through events and the
@@ -489,17 +537,23 @@ export class SceneEngine {
     // Taking the square: dust ring, tile dip and the figure settling its weight.
     // Softer after a kill — the strike already shook the stone.
     this.landOn(piece, event.to, victim ? 0.7 : event.kind === "n" ? 1.25 : 1);
+    // Arrived: face the enemy side again rather than holding the march heading.
+    // A promoting figure is about to be replaced, so it is left alone.
+    if (!event.promotion) void piece.turnHome(this.tweens, 0.3);
 
     if (event.rook) {
       const rook = this.pieces.get(event.rook.from);
       if (rook) {
         this.pieces.delete(event.rook.from);
         this.motion.add(rook);
-        await this.glide(rook, squareToWorld(event.rook.from), squareToWorld(event.rook.to), false, 0.34);
+        // The tower walks its own path after the king has taken its square, so
+        // castling reads as two moves rather than one synchronised slide.
+        await this.glide(rook, squareToWorld(event.rook.from), squareToWorld(event.rook.to), false);
         this.motion.delete(rook);
         this.pieces.set(event.rook.to, rook);
         audio.play("place", 0.4);
         this.landOn(rook, event.rook.to, 0.85);
+        void rook.turnHome(this.tweens, 0.3);
       }
     }
 
@@ -545,13 +599,43 @@ export class SceneEngine {
     }
   }
 
-  private async glide(piece: PieceView, from: THREE.Vector3, to: THREE.Vector3, arc: boolean, duration?: number) {
+  /**
+   * Moving a figure between two squares. A rigged sculpt turns to face its
+   * destination, crosses the distance on its own legs and puts a real footfall
+   * down on every step: the walk clip is retimed to the cadence of its rank, so
+   * the skeleton and the stride clock that fires the footstep sounds and the
+   * grit puffs are the same clock — nothing skates.
+   *
+   * The knight keeps its leap and runs through the air instead of walking.
+   * Sculpts with no rig (and the low preset, where skeletal animation is off)
+   * keep the old smooth slide, but still step audibly so the board is not silent.
+   *
+   * @param hurry cadence multiplier — above 1 the figure presses forward, which
+   *   is what a charge into a standoff needs.
+   */
+  private async glide(piece: PieceView, from: THREE.Vector3, to: THREE.Vector3, arc: boolean, hurry = 1) {
     const settings = QUALITY_SETTINGS[this.preset];
     const distance = from.distanceTo(to);
-    const time = duration ?? Math.min(0.72, 0.24 + distance * 0.055);
+    const gait = GAITS[piece.kind];
+    const clip: "walk" | "run" = arc && piece.hasClip("run") ? "run" : "walk";
+    const onFoot =
+      !this.tactical && settings.characterAnimations && piece.hasAnimations && piece.hasClip(clip);
+
+    // Longer moves take more steps rather than a faster slide.
+    const tiles = Math.max(0.6, distance / TILE);
+    const steps = Math.max(2, Math.round(tiles * gait.stepsPerTile * (arc ? 0.8 : 1)));
+    const cadence = gait.cadence * hurry * (arc ? 1.5 : 1);
+    const time = onFoot
+      ? THREE.MathUtils.clamp(steps / cadence, 0.34, 2.4)
+      : Math.min(0.72, 0.24 + distance * 0.055) / hurry;
+    // The realised cadence, after the clamp — this is what the legs must match.
+    const stepRate = steps / time;
     const height = arc ? 0.85 + distance * 0.08 : 0.06;
     const trails = settings.captureParticles >= 34 && distance > TILE * 0.6;
     let nextTrail = 0.18;
+    // A fraction of a step, so the first boot lands just after the push-off
+    // instead of on the frame the figure starts to move.
+    let nextStep = 0.34;
 
     if (arc) {
       // Kicking off: grit thrown back off the tile the rider leaves behind.
@@ -560,16 +644,37 @@ export class SceneEngine {
         speed: 1.4,
         life: 0.4,
       });
+    } else if (onFoot) {
+      // Nobody walks backwards: square up on the destination before setting off.
+      await piece.turnTowards(to, this.tweens, Math.min(0.22, 0.5 / cadence));
     }
+
+    const marching = onFoot && piece.startMarch(clip, stepRate);
+    // A ground march holds a constant speed through the middle of the move; a
+    // slide and a leap keep their eased curves.
+    const easing: Easing = arc
+      ? Ease.inOutCubic
+      : marching
+        ? strideEasing(Math.min(0.3, 1.1 / steps))
+        : Ease.inOutQuart;
 
     await this.tweens.to({
       duration: time,
-      easing: arc ? Ease.inOutCubic : Ease.inOutQuart,
+      easing,
       onUpdate: (t) => {
         piece.container.position.lerpVectors(from, to, t);
         piece.container.position.y = from.y + Math.sin(Math.PI * t) * height;
-        // A thin wake of dust follows the figure across the stone.
-        if (trails && t >= nextTrail && t < 0.88) {
+        // Footfalls: the boot itself, plus the grit it lifts off the stone. The
+        // rider is in the air, so its run makes no contact until it lands.
+        if (!arc && steps > 0) {
+          const taken = t * steps;
+          while (taken >= nextStep && nextStep <= steps) {
+            this.footfall(piece, gait, Math.round(nextStep), trails);
+            nextStep += 1;
+          }
+        }
+        // A thin wake of dust follows a sliding figure or a leaping rider.
+        if (trails && !marching && t >= nextTrail && t < 0.88) {
           nextTrail += arc ? 0.2 : 0.24;
           this.effects.spawnSmoke(piece.container.position.clone().setY(BOARD_TOP + 0.07), {
             count: 2,
@@ -586,7 +691,36 @@ export class SceneEngine {
       },
     });
     piece.container.position.copy(to);
+    if (marching) piece.stopMarch(0.2);
     if (arc) this.shake.add(0.05);
+  }
+
+  /**
+   * One boot going down mid-march: the step itself, panned to where the figure
+   * is on screen and pitch-jittered so a long march never turns metronomic,
+   * plus a small puff of grit lifted exactly where the foot struck.
+   */
+  private footfall(piece: PieceView, gait: Gait, index: number, dust: boolean): void {
+    const at = piece.container.position;
+    audio.footstep({
+      pan: this.stereoPan(at),
+      timbre: gait.timbre,
+      // Alternating feet are never quite equal, and neither are two steps.
+      volume: gait.volume * (index % 2 === 0 ? 1 : 0.93),
+      jitter: (Math.random() - 0.5) * 0.16,
+    });
+    if (!dust) return;
+    this.effects.spawnSmoke(at.clone().setY(BOARD_TOP + 0.05), {
+      count: 2,
+      radius: 0.16,
+      scale: 0.24 + gait.volume * 0.12,
+      growth: 2.2,
+      life: 0.5,
+      speed: 0.26,
+      rise: 0.08,
+      color: 0xa2947c,
+      opacity: 0.15,
+    });
   }
 
   /**
@@ -604,6 +738,7 @@ export class SceneEngine {
 
     this.board.land(square, FACTION_ACCENT[piece.color], strength);
     this.woodKnock(piece, centre, strength);
+    this.landingSteps(piece, centre, strength);
     piece.flareAura(Math.min(1, 0.8 * strength));
     if (strength > 0.9) this.shake.add(0.035 * strength);
 
@@ -637,6 +772,20 @@ export class SceneEngine {
       weight: WOOD_WEIGHT[piece.kind],
       volume: Math.min(1.05, 0.5 + strength * 0.42),
     });
+  }
+
+  /**
+   * Boots taking the square. Everyone puts one foot down as they arrive; the
+   * rider drops out of its leap onto both, a beat apart, which is what makes
+   * the landing read as weight rather than a touch-down.
+   */
+  private landingSteps(piece: PieceView, at: THREE.Vector3, strength: number): void {
+    const gait = GAITS[piece.kind];
+    const pan = this.stereoPan(at);
+    const volume = gait.volume * Math.min(1.4, 0.85 + strength * 0.45);
+    audio.footstep({ pan, timbre: gait.timbre, volume });
+    if (piece.kind !== "n") return;
+    audio.footstep({ pan, timbre: gait.timbre, volume: volume * 1.15, delay: 0.07, jitter: -0.09 });
   }
 
   /** Knees taking the load: a fast compression that springs back out. */
@@ -684,7 +833,8 @@ export class SceneEngine {
     // Both fighters square up: the attacker charges in, the defender turns to
     // meet its killer so the blow never lands on the back of a head.
     await Promise.all([
-      this.glide(attacker, from, standoff, attacker.kind === "n", 0.34),
+      // Pressing forward into the blow: the same march, a quicker cadence.
+      this.glide(attacker, from, standoff, attacker.kind === "n", 1.35),
       victim.turnTowards(standoff, this.tweens, 0.3),
     ]);
     attacker.faceTowards(victimSpot);
@@ -742,7 +892,8 @@ export class SceneEngine {
     // The corpse is thrown clear in smoke as the victor takes the square.
     await Promise.all([
       this.banish(victim, blow),
-      this.glide(attacker, standoff, to, false, 0.3),
+      // The last stride onto the square it has just cleared.
+      this.glide(attacker, standoff, to, false, 1.5),
     ]);
     audio.play("place", 0.5);
   }

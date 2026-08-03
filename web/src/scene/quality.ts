@@ -19,7 +19,12 @@ export interface QualitySettings {
   emberCount: number;
   maxPixelRatio: number;
   captureParticles: number;
-  /** Looping skeletal idle on every figure (one-shots always play). */
+  /**
+   * Skeletal looping clips: the combat stance every figure holds and the walk /
+   * run cycle it crosses the board with. Off, figures slide to their square
+   * instead of marching (footstep sounds still play) and one-shots — strikes and
+   * deaths — always run.
+   */
   characterAnimations: boolean;
   /** Instanced silhouette soldiers drawn up per distant army. */
   troopCount: number;

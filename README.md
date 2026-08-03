@@ -40,7 +40,15 @@ cd web && bun install && bun run dev
 - **Full chess rules** — castling, en passant, promotion, check, checkmate, stalemate,
   threefold repetition, the fifty-move rule and insufficient material, all via chess.js.
 - **Rigged 3D characters, not chess pieces** — twelve sculpts (six per army), each with
-  `idle`, `attack` and `death` skeletal clips, plus weapons, shields and a floating rank crest.
+  `idle`, `walk`, `attack` and `death` skeletal clips, plus weapons, shields and a floating
+  rank crest.
+- **Figures march, they do not slide** — a moved piece turns to face its destination, walks
+  the distance on its own legs at the cadence of its rank, and squares up again on arrival.
+  Knights keep the leap, running through the air and landing on both feet.
+- **Synthesised footsteps on the stride clock** — every footfall is fired by the same clock
+  that retimes the walk cycle, so sound, grit puff and foot all land together: scuffs for
+  footsoldiers, leather for the clergy, plate for the tower guardians, a slow deliberate
+  tread for the crown.
 - **Cinematic captures** — the camera punches in, the attacker strikes on the hit frame,
   sparks fly, the screen shakes, and the defender **burns away from the soles upward**
   through a ragged edge of light, shedding motes that drift off (cold soul-light for the
@@ -206,26 +214,49 @@ of a black screen.
 
 ## Character animation
 
-Every figure is a rigged (skinned) character with three skeletal clips, declared per rank in
-`PIECE_ANIMATED_MODELS` (`src/assets/generated.ts`):
+Every figure is a rigged (skinned) character with up to five skeletal clips, declared per rank
+in `PIECE_ANIMATED_MODELS` (`src/assets/generated.ts`):
 
 | Clip | When it plays |
 | --- | --- |
 | `idle` | Looping combat stance, desynced per figure so the army does not breathe in lockstep |
+| `walk` | Looping in-place stride, retimed to the cadence of the move that is under way |
+| `run` | Looping in-place run — the knight charging through its leap (knights only) |
 | `attack` | One-shot strike the moment a capture lands — sparks, shake and clash are timed to the hit frame |
 | `death` | One-shot fall played by the captured figure before it dissolves into dust |
 
 How it is wired (`src/scene/pieces.ts`):
 
 - The **rigged** GLB is the visual — the plain GLB has no skeleton, so clips bound to it do
-  nothing. Each animation GLB contributes one clip, renamed to `idle` / `attack` / `death`.
+  nothing. Each animation GLB contributes one clip, renamed to `idle` / `walk` / `run` /
+  `attack` / `death`.
 - Every instance is cloned with `SkeletonUtils.clone` (never `Object3D.clone`) and gets its
   own `AnimationMixer`. One-shots use `LoopOnce` + `clampWhenFinished`, and the strike
   crossfades back to the stance on the mixer's `finished` event.
 - Clip root motion is stripped on X/Z so a figure never walks off its square; the death clip
-  keeps its motion so the fall reads properly.
+  keeps its motion so the fall reads properly. The locomotion clips are **in-place** cycles for
+  the same reason — board travel is owned by the container tween, so a clip carrying root
+  translation would double the distance.
 - The **Low** preset freezes the stance on its first frame (no per-frame mixer cost) — strikes
-  and deaths still play.
+  and deaths still play, and the figure slides instead of marching (footsteps still sound).
+
+### Marching and footsteps
+
+`SceneEngine.glide()` owns one stride clock per move (`src/scene/sceneEngine.ts`):
+
+1. `GAITS[kind]` declares steps per square, cadence, boot timbre and loudness for the rank.
+2. `steps = tiles × stepsPerTile`, and the move's duration is `steps / cadence` — a longer
+   move takes **more steps**, not a faster slide.
+3. `PieceView.startMarch(clip, stepRate)` retimes the walk cycle so one gait cycle equals two
+   footfalls at exactly that rate, so the skeleton cannot drift out of the clock.
+4. `strideEasing()` gives the move a push-off, a constant-speed cruise and a settle. A fully
+   eased curve would leave the feet skating at both ends against a fixed cadence.
+5. Each whole step crossing fires `audio.footstep()` (panned by screen position, alternating
+   feet, pitch-jittered) plus a small grit puff at the contact point.
+
+Footsteps are fully synthesised in `src/audio/audioManager.ts` — a low body thump for the
+weight, a band-passed noise transient for the sole, and a metallic afterring for armour, one
+voice per `FootstepTimbre` (`scuff` / `leather` / `plate` / `regal`). No asset, no latency.
 
 The capture dissolve is a shader injection: a noise field eats the body from the soles up with
 a glowing burn edge, while the whole mesh fades and sheds upward-drifting motes.
@@ -254,7 +285,7 @@ If a rigged model fails to download the loader falls back to the static sculpt, 
 fails too, to a procedural primitive figure — **the game always stays playable**.
 
 To animate your own characters, add a `PIECE_ANIMATED_MODELS` entry with a rigged GLB plus one
-GLB per clip; any missing clip is simply skipped.
+GLB per clip; any missing clip is simply skipped (no `walk` clip just means that rank slides).
 
 For shipping, compress the GLBs instead of streaming them from a remote host:
 
@@ -271,7 +302,8 @@ and fanfare one-shots. The twelve death cries in `DEATH_CRY_URLS` are lazily loa
 mixer unlocks, since they are only needed on a capture; each is a real one-second take, panned
 by the dying figure's screen position and pitch-jittered per playback.
 
-UI blips are synthesised with oscillators — no files. Everything routes through one master gain
+Footsteps, the wooden set-down knock, body falls and UI blips are synthesised with oscillators
+and noise buffers — no files. Everything routes through one master gain
 for the mute toggle, and playback only starts after the first user gesture (browser autoplay
 policy).
 

@@ -16,6 +16,26 @@ export interface DeathCryOptions {
   delay?: number;
 }
 
+/**
+ * The material voice of one footfall. Drives the noise band, the body mode and
+ * the ring, so the ear can tell a barefoot footsoldier from a plated guardian.
+ */
+export type FootstepTimbre = "scuff" | "leather" | "plate" | "regal";
+
+/** One foot meeting the stone. */
+export interface FootstepOptions {
+  /** -1 hard left … 1 hard right — where the figure is on screen. */
+  pan?: number;
+  /** Relative loudness. */
+  volume?: number;
+  /** How the boot is built — see {@link FootstepTimbre}. */
+  timbre?: FootstepTimbre;
+  /** Seconds to wait before it sounds. */
+  delay?: number;
+  /** Slight per-step detune so a march never turns into a metronome. */
+  jitter?: number;
+}
+
 /** A wooden piece being lifted from or set down on the board. */
 export interface WoodTapOptions {
   /** -1 hard left … 1 hard right — where the square is on screen. */
@@ -41,6 +61,91 @@ const MAX_VOICES = 3;
 const MAX_CRY_SECONDS = 1.15;
 /** Ramp-out at the tail so a trimmed clip never clicks. */
 const CRY_FADE = 0.1;
+
+interface FootstepVoice {
+  /** Overall loudness of this boot. */
+  level: number;
+  /** Low body mode — the weight going into the floor, in Hz. */
+  body: number;
+  /** Peak of the body thump. */
+  weight: number;
+  /** How long the thump takes to die away. */
+  decay: number;
+  /** Centre of the noise band — grit, cloth or steel. */
+  noise: number;
+  /** Sharpness of that band. */
+  q: number;
+  /** Level of the noise transient. */
+  hiss: number;
+  /** Length of the scuff in seconds. */
+  scuff: number;
+  /** Envelope exponent — higher is a shorter, snappier scrape. */
+  grit: number;
+  /** Level of the metallic afterring (0 for unarmoured feet). */
+  ring: number;
+  /** Pitch of that ring, in Hz. */
+  ringHz: number;
+}
+
+/**
+ * The four boots that walk this board. Footsoldiers scuff, the clergy creak in
+ * leather, the tower guardians clank in full plate, and the crown puts a slow,
+ * deep, deliberate weight through every step.
+ */
+const FOOTSTEP_VOICES: Record<FootstepTimbre, FootstepVoice> = {
+  scuff: {
+    level: 0.82,
+    body: 108,
+    weight: 0.2,
+    decay: 0.09,
+    noise: 1650,
+    q: 0.8,
+    hiss: 0.5,
+    scuff: 0.055,
+    grit: 3.2,
+    ring: 0,
+    ringHz: 0,
+  },
+  leather: {
+    level: 0.9,
+    body: 96,
+    weight: 0.24,
+    decay: 0.11,
+    noise: 1180,
+    q: 0.7,
+    hiss: 0.42,
+    scuff: 0.075,
+    grit: 2.4,
+    ring: 0.03,
+    ringHz: 2350,
+  },
+  plate: {
+    level: 1.12,
+    body: 72,
+    weight: 0.34,
+    decay: 0.17,
+    noise: 820,
+    q: 0.55,
+    hiss: 0.34,
+    scuff: 0.09,
+    grit: 2,
+    ring: 0.09,
+    ringHz: 3120,
+  },
+  regal: {
+    level: 1.05,
+    body: 62,
+    weight: 0.32,
+    decay: 0.2,
+    noise: 940,
+    q: 0.6,
+    hiss: 0.3,
+    scuff: 0.1,
+    grit: 2.2,
+    ring: 0.055,
+    ringHz: 2680,
+  },
+};
 
 interface Bed {
   gain: GainNode;
@@ -424,6 +529,83 @@ export class AudioManager {
       bodyGain.connect(bus);
       body.start(when);
       body.stop(when + 0.25);
+    }
+  }
+
+  /**
+   * One footfall on stone: a short low body thump for the weight, a burst of
+   * band-passed noise for the grit under the sole, and — for armour — a thin
+   * metallic ring of harness and plate riding on top. Fully synthesised, so a
+   * whole march costs nothing to stream and lands exactly on the frame the
+   * stride clock asks for.
+   */
+  footstep(options: FootstepOptions = {}): void {
+    if (!this.ctx || !this.master || this.muted) return;
+    const ctx = this.ctx;
+    const timbre = options.timbre ?? "scuff";
+    const voice = FOOTSTEP_VOICES[timbre];
+    const when = ctx.currentTime + Math.max(0, options.delay ?? 0);
+    const jitter = 1 + (options.jitter ?? (Math.random() - 0.5) * 0.16);
+    const level = 0.42 * voice.level * (options.volume ?? 1);
+
+    const bus = ctx.createGain();
+    bus.gain.value = level;
+    if (typeof ctx.createStereoPanner === "function") {
+      const panner = ctx.createStereoPanner();
+      panner.pan.value = Math.max(-1, Math.min(1, options.pan ?? 0)) * 0.6;
+      bus.connect(panner);
+      panner.connect(this.master);
+    } else {
+      bus.connect(this.master);
+    }
+
+    // Weight going through the sole into the floor.
+    const thump = ctx.createOscillator();
+    const thumpGain = ctx.createGain();
+    thump.type = "sine";
+    thump.frequency.setValueAtTime(voice.body * jitter, when);
+    thump.frequency.exponentialRampToValueAtTime(voice.body * 0.55 * jitter, when + voice.decay);
+    thumpGain.gain.setValueAtTime(0.0001, when);
+    thumpGain.gain.exponentialRampToValueAtTime(voice.weight, when + 0.006);
+    thumpGain.gain.exponentialRampToValueAtTime(0.0001, when + voice.decay);
+    thump.connect(thumpGain);
+    thumpGain.connect(bus);
+    thump.start(when);
+    thump.stop(when + voice.decay + 0.05);
+
+    // Grit and leather: a fast noise transient shaped by the sole material.
+    const length = Math.max(1, Math.floor(ctx.sampleRate * voice.scuff));
+    const buffer = ctx.createBuffer(1, length, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < length; i += 1) {
+      data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, voice.grit);
+    }
+    const noise = ctx.createBufferSource();
+    noise.buffer = buffer;
+    const band = ctx.createBiquadFilter();
+    band.type = "bandpass";
+    band.frequency.value = voice.noise * jitter;
+    band.Q.value = voice.q;
+    const noiseGain = ctx.createGain();
+    noiseGain.gain.value = voice.hiss;
+    noise.connect(band);
+    band.connect(noiseGain);
+    noiseGain.connect(bus);
+    noise.start(when);
+
+    // Harness, mail and greaves answering the step.
+    if (voice.ring > 0) {
+      const ring = ctx.createOscillator();
+      const ringGain = ctx.createGain();
+      ring.type = "triangle";
+      ring.frequency.setValueAtTime(voice.ringHz * jitter, when);
+      ringGain.gain.setValueAtTime(0.0001, when + 0.008);
+      ringGain.gain.exponentialRampToValueAtTime(voice.ring, when + 0.016);
+      ringGain.gain.exponentialRampToValueAtTime(0.0001, when + 0.16);
+      ring.connect(ringGain);
+      ringGain.connect(bus);
+      ring.start(when);
+      ring.stop(when + 0.2);
     }
   }
 

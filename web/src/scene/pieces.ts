@@ -190,9 +190,16 @@ export interface PieceClips {
   idle?: THREE.AnimationClip;
   attack?: THREE.AnimationClip;
   death?: THREE.AnimationClip;
+  /** Looping in-place stride used to cross the board on foot. */
+  walk?: THREE.AnimationClip;
+  /** Looping in-place run — the knight charging through its leap. */
+  run?: THREE.AnimationClip;
 }
 
 type ClipName = keyof PieceClips;
+
+/** The two locomotion loops, as opposed to the stance and the one-shots. */
+export type MarchClip = "walk" | "run";
 
 interface Template {
   scene: THREE.Object3D;
@@ -300,6 +307,8 @@ export class PieceView {
   private actions = new Map<ClipName, THREE.AnimationAction>();
   private activeOneShot: ClipName | null = null;
   private idleLooping = false;
+  /** Locomotion loop currently carrying the figure across the board. */
+  private marchLoop: MarchClip | null = null;
   /** Root bone + its bind translation, used to strip clip root motion. */
   private rootBone: THREE.Bone | null = null;
   private rootRest = new THREE.Vector3();
@@ -575,6 +584,55 @@ export class PieceView {
     return this.mixer !== null;
   }
 
+  /** Whether this sculpt actually carries a given clip (rigs differ per rank). */
+  hasClip(name: ClipName): boolean {
+    return this.actions.has(name);
+  }
+
+  get isMarching(): boolean {
+    return this.marchLoop !== null;
+  }
+
+  /**
+   * Puts the figure on its own legs for a board move. `stepRate` is how many
+   * footfalls a second the march should take; the clip is one full gait cycle
+   * (two steps), so it is retimed to that cadence and the caller's stride clock
+   * and the skeleton stay locked to each other. Returns false when the sculpt
+   * has no such clip, so the caller can fall back to a slide.
+   */
+  startMarch(name: MarchClip, stepRate: number): boolean {
+    const action = this.actions.get(name);
+    if (!action || !this.mixer || this.slain) return false;
+    const clip = action.getClip();
+    const cycles = Math.max(0.15, stepRate * 0.5);
+    // Clamped so a very long or very short move never turns the stride into a
+    // slideshow or a sprint of blurred legs.
+    const timeScale = THREE.MathUtils.clamp(cycles * clip.duration, 0.4, 2.8);
+
+    for (const [key, other] of this.actions) {
+      if (key !== name) other.fadeOut(0.16);
+    }
+    action.reset();
+    action.setLoop(THREE.LoopRepeat, Infinity);
+    action.clampWhenFinished = false;
+    action.paused = false;
+    action.setEffectiveTimeScale(timeScale);
+    action.setEffectiveWeight(1);
+    action.fadeIn(0.14).play();
+
+    this.activeOneShot = null;
+    this.idleLooping = false;
+    this.marchLoop = name;
+    this.lockRootMotion = true;
+    return true;
+  }
+
+  /** Ends the march and eases the figure back into its combat stance. */
+  stopMarch(fade = 0.22): void {
+    if (!this.marchLoop) return;
+    this.playIdle(fade);
+  }
+
   /** Freezes the first stance frame so "low" quality still reads as a fighter. */
   private poseFromIdle(): void {
     const idle = this.actions.get("idle");
@@ -586,6 +644,12 @@ export class PieceView {
 
   /** Crossfades back to the looping combat stance. */
   playIdle(fade = 0.25): void {
+    // A stride left running underneath would blend into the stance and keep the
+    // legs walking on the spot.
+    if (this.marchLoop) {
+      this.actions.get(this.marchLoop)?.fadeOut(Math.max(0.06, fade));
+      this.marchLoop = null;
+    }
     const idle = this.actions.get("idle");
     if (!idle) return;
     this.activeOneShot = null;
@@ -620,6 +684,7 @@ export class PieceView {
     for (const [key, other] of this.actions) {
       if (key !== name) other.fadeOut(0.1);
     }
+    this.marchLoop = null;
     action.reset();
     action.setLoop(THREE.LoopOnce, 1);
     action.clampWhenFinished = true;
@@ -651,6 +716,7 @@ export class PieceView {
    */
   playDeath(): number {
     this.slain = true;
+    this.marchLoop = null;
     this.hovered = false;
     this.selected = false;
     this.alarm = 0;
@@ -690,6 +756,7 @@ export class PieceView {
     for (const action of this.actions.values()) action.stop();
     this.activeOneShot = null;
     this.idleLooping = false;
+    this.marchLoop = null;
     this.lockRootMotion = true;
     this.container.rotation.set(0, 0, 0);
     this.playIdle(0);
@@ -1114,7 +1181,7 @@ export class PieceFactory {
    */
   private async loadAnimated(kind: PieceKind, set: PieceAnimationSet): Promise<Template> {
     const rigged = await this.loader.loadAsync(set.rigged);
-    const names: (keyof PieceClips)[] = ["idle", "attack", "death"];
+    const names: (keyof PieceClips)[] = ["idle", "attack", "death", "walk", "run"];
     const clips: PieceClips = {};
     await Promise.all(
       names.map(async (name) => {
