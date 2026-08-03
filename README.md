@@ -63,7 +63,7 @@ cd web && bun install && bun run dev
 - **Four battlegrounds** that relight the whole world — sky, haze, stone colour, tile
   contrast, fires, birds, siege engines and the film grade.
 - **2D tactical view** — one key lifts the camera straight overhead and flattens every figure
-  into a stamped counter, so nothing can hide a square. Selection and drag keep working.
+  into a stamped counter, so nothing can hide a square. Selection and moving keep working.
 - **Three engine strengths** running off the main thread, so the render loop never blocks.
 - **Showcase / attract mode** — let two engines duel on their own with pace control, pause,
   auto-rematch, and a clean capture view with the entire interface hidden.
@@ -94,7 +94,7 @@ Cloudflare Pages or any static host. No environment variables are required to ru
 | --- | --- |
 | Orbit / zoom | Drag, mouse wheel (one-finger drag and pinch on touch) |
 | Select a figure | Click it — legal squares glow green, captures red |
-| Move | Click a highlighted square, or drag the figure onto it |
+| Move | Click a highlighted square (click the figure again to deselect) |
 | Promotion | Pick one of the four figures rotating on pedestals |
 | Camera presets | Ivory / Obsidian / Overhead / Cinematic buttons in the HUD |
 | Skip the intro | Click anywhere during the opening sweep |
@@ -353,7 +353,7 @@ Run from `web/`:
 ## Browser support
 
 Any browser with **WebGL 2** and **Web Audio**: current Chrome, Edge, Firefox and Safari 16+,
-on desktop and tablet. Touch orbit, pinch zoom and drag-to-move are supported; on narrow
+on desktop and tablet. Touch orbit, pinch zoom and tap-to-move are supported; on narrow
 screens the move ledger folds into a corner button so the board keeps the whole viewport.
 
 ## Contributing

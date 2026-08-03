@@ -22,7 +22,7 @@ bun run preview
 | --- | --- |
 | Orbit / zoom | Drag, mouse wheel (pinch on touch) |
 | Select a figure | Click it (legal squares glow green, captures red) |
-| Move | Click a highlighted square, or drag the figure onto it |
+| Move | Click a highlighted square (click the figure again to deselect) |
 | Promotion | Pick one of the four rotating figures on pedestals |
 | Camera presets | Ivory / Obsidian / Overhead / Cinematic buttons |
 | Skip the intro | Click anywhere during the opening sweep |

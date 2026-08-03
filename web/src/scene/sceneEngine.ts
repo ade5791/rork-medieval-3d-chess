@@ -184,7 +184,6 @@ export class SceneEngine {
 
   private selected: SquareId | null = null;
   private hoveredPiece: PieceView | null = null;
-  private dragging: { piece: PieceView; from: SquareId; origin: THREE.Vector3 } | null = null;
   private pointerDownAt: { x: number; y: number; square: SquareId | null } | null = null;
   private legalTargets = new Map<SquareId, boolean>();
   private previewing = false;
@@ -1947,15 +1946,6 @@ export class SceneEngine {
     if (!this.interactive) return;
     this.updatePointer(event);
 
-    if (this.dragging) {
-      const point = new THREE.Vector3();
-      if (this.raycaster.ray.intersectPlane(this.boardPlane, point)) {
-        this.dragging.piece.container.position.set(point.x, 0.42, point.z);
-      }
-      this.board.setHover(this.squareUnderRay());
-      return;
-    }
-
     if (this.promotionGroup) {
       this.board.setHover(null);
       return;
@@ -2009,67 +1999,40 @@ export class SceneEngine {
       return;
     }
 
-    const { square, piece } = this.pickTarget();
+    // Only the press position is recorded here — the board is played entirely
+    // by tapping (pick a figure, then tap its destination), so acting on release
+    // lets a press that turns into a camera orbit be discarded.
+    const { square } = this.pickTarget();
     this.pointerDownAt = { x: event.clientX, y: event.clientY, square };
-    if (!square) return;
-
-    const snapshot = this.controller.getSnapshot();
-    if (snapshot.status !== "playing" || !this.controller.isHumanTurn()) return;
-
-    if (piece && piece.color === snapshot.turn) {
-      this.select(square);
-      this.dragging = { piece, from: square, origin: piece.container.position.clone() };
-      this.controls.enabled = false;
-      // Picking the figure up off the board: a dry, brighter tick, not a UI blip.
-      audio.woodTap({
-        pan: this.stereoPan(piece.container.position),
-        weight: WOOD_WEIGHT[piece.kind],
-        volume: 0.8,
-        lift: true,
-      });
-    }
   };
 
   private onPointerUp = (event: PointerEvent): void => {
     if (!this.interactive) return;
     const down = this.pointerDownAt;
     this.pointerDownAt = null;
-    const drag = this.dragging;
-    this.dragging = null;
-    this.controls.enabled = this.interactive && !this.introPlaying;
-
     if (!down) return;
-    this.updatePointer(event);
-    const { square } = this.pickTarget(drag?.piece ?? null);
-    const moved = Math.hypot(event.clientX - down.x, event.clientY - down.y) > 8;
 
-    if (drag) {
-      if (moved) {
-        // Drag and drop.
-        if (square && square !== drag.from && this.legalTargets.has(square)) {
-          void this.commitMove(drag.from, square);
-        } else {
-          drag.piece.container.position.copy(drag.origin);
-          if (square && square !== drag.from) void this.rejectMove(drag.from);
-        }
-        return;
-      }
-      drag.piece.container.position.copy(drag.origin);
-    }
+    // A press that travelled was the camera being swung around, not a tap on a
+    // square, so it must never move a figure or change the selection.
+    if (Math.hypot(event.clientX - down.x, event.clientY - down.y) > 8) return;
+
+    this.updatePointer(event);
+    const { square, piece } = this.pickTarget();
 
     if (!square) {
       this.clearSelection();
       return;
     }
 
+    const snapshot = this.controller.getSnapshot();
+    if (snapshot.status !== "playing" || !this.controller.isHumanTurn()) return;
+
     if (this.selected && square !== this.selected) {
       if (this.legalTargets.has(square)) {
         void this.commitMove(this.selected, square);
         return;
       }
-      const piece = this.pieces.get(square);
-      const snapshot = this.controller.getSnapshot();
-      if (piece && piece.color === snapshot.turn) this.select(square);
+      if (piece && piece.color === snapshot.turn) this.selectWithTap(square, piece);
       else {
         void this.rejectMove(this.selected);
         this.clearSelection();
@@ -2077,8 +2040,24 @@ export class SceneEngine {
       return;
     }
 
-    if (this.selected === square && !drag) this.clearSelection();
+    if (this.selected === square) {
+      this.clearSelection();
+      return;
+    }
+
+    if (piece && piece.color === snapshot.turn) this.selectWithTap(square, piece);
   };
+
+  /** Selecting by tap: the figure stands to attention with a dry wooden tick. */
+  private selectWithTap(square: SquareId, piece: PieceView): void {
+    this.select(square);
+    audio.woodTap({
+      pan: this.stereoPan(piece.container.position),
+      weight: WOOD_WEIGHT[piece.kind],
+      volume: 0.8,
+      lift: true,
+    });
+  }
 
   private async commitMove(from: SquareId, to: SquareId): Promise<void> {
     let promotion: PieceKind | undefined;
