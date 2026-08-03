@@ -95,7 +95,7 @@ Every figure is a rigged (skinned) character with three skeletal clips, listed p
 | Clip | When it plays |
 | --- | --- |
 | `idle` | Looping combat stance, desynced per figure so the army does not breathe in lockstep |
-| `attack` | One-shot strike the moment the attacker lands a capture (sparks, shake and clash sound are timed to the hit frame) |
+| `attack` | One-shot strike the moment the attacker lands a capture (sparks, shake and clash sound are timed to the hit frame). For the queen and the mage the same clip is the incantation, and its hit frame releases the fire |
 | `death` | One-shot fall played by the captured figure before it dissolves into dust |
 
 How it is wired (`src/scene/pieces.ts`):
@@ -109,6 +109,17 @@ How it is wired (`src/scene/pieces.ts`):
   keeps its motion so the fall reads properly.
 - The **Low** preset freezes the stance on its first frame (no per-frame mixer cost); strikes
   and deaths still play.
+
+### Strike weight by rank
+
+The hand-to-hand beat is one piece of choreography, but its weight comes from `STRIKES[kind]`
+in `src/scene/sceneEngine.ts`. The pawn's line is the original beat and is unchanged; each rank
+above it adds something: the knight a crescent of steel and a dust wake on the charge, the rook a
+wave rolling across the stone with a low slam and a long aftershock, the king a column of light
+dropped on the condemned, a bell, and a gold arc plus gold ground wave. Ranged captures follow
+the same idea — `MAGE_SPELL` throws one bolt, `QUEEN_SPELL` gathers longer and throws a volley of
+three that leaves fire burning on the square. Visuals live in `src/scene/strikes.ts`, and the
+swing / slam / bell voices are synthesised in the mixer.
 
 ## Swapping in different character models
 

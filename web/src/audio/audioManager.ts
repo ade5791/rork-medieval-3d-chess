@@ -48,6 +48,18 @@ export interface SpellOptions {
   duration?: number;
 }
 
+/** Placement of one melee-strike sound in the mix. */
+export interface StrikeSoundOptions {
+  /** -1 hard left … 1 hard right — where the blow is on screen. */
+  pan?: number;
+  /** Relative loudness. */
+  volume?: number;
+  /** Seconds to wait before it sounds. */
+  delay?: number;
+  /** 0 = a light blade cutting air, 1 = a siege hammer being hauled round. */
+  weight?: number;
+}
+
 /** A wooden piece being lifted from or set down on the board. */
 export interface WoodTapOptions {
   /** -1 hard left … 1 hard right — where the square is on screen. */
@@ -756,6 +768,171 @@ export class AudioManager {
     body.connect(fireGain);
     fireGain.connect(bus);
     fire.start(when);
+  }
+
+  /**
+   * Steel moving through air: a band of noise sweeping down as the swing comes
+   * round, with a low gust under it for anything heavy enough to shift weight.
+   * `weight` runs from a light blade to a two-handed siege hammer.
+   */
+  bladeWhoosh(options: StrikeSoundOptions = {}): void {
+    if (!this.ctx || !this.master || this.muted) return;
+    const ctx = this.ctx;
+    const when = ctx.currentTime + Math.max(0, options.delay ?? 0);
+    const weight = Math.max(0, Math.min(1, options.weight ?? 0.5));
+    const level = 0.3 * (options.volume ?? 1);
+    const span = 0.22 + weight * 0.16;
+    const bus = this.spellBus(options.pan ?? 0, 0.55);
+
+    // The air being cut. A heavier weapon sweeps a lower, longer band.
+    const air = ctx.createBufferSource();
+    air.buffer = this.noiseBuffer(span + 0.08, 1.4);
+    const band = ctx.createBiquadFilter();
+    band.type = "bandpass";
+    band.Q.value = 1.1 + weight * 0.6;
+    band.frequency.setValueAtTime(2600 - weight * 900, when);
+    band.frequency.exponentialRampToValueAtTime(380 - weight * 180, when + span);
+    const airGain = ctx.createGain();
+    airGain.gain.setValueAtTime(0.0001, when);
+    airGain.gain.exponentialRampToValueAtTime(level, when + span * 0.62);
+    airGain.gain.exponentialRampToValueAtTime(0.0001, when + span + 0.06);
+    air.connect(band);
+    band.connect(airGain);
+    airGain.connect(bus);
+    air.start(when);
+
+    if (weight <= 0.2) return;
+    // Mass being hauled round: a short low gust trailing the swing.
+    const gust = ctx.createOscillator();
+    const gustGain = ctx.createGain();
+    gust.type = "sine";
+    gust.frequency.setValueAtTime(150 - weight * 60, when + span * 0.3);
+    gust.frequency.exponentialRampToValueAtTime(62 - weight * 18, when + span);
+    gustGain.gain.setValueAtTime(0.0001, when + span * 0.3);
+    gustGain.gain.exponentialRampToValueAtTime(level * 0.55 * weight, when + span * 0.55);
+    gustGain.gain.exponentialRampToValueAtTime(0.0001, when + span + 0.1);
+    gust.connect(gustGain);
+    gustGain.connect(bus);
+    gust.start(when + span * 0.28);
+    gust.stop(when + span + 0.16);
+  }
+
+  /**
+   * A blow that goes through the body and into the floor: a sub-bass drop, the
+   * crack of stone giving, and a tail of rubble settling. What the tower
+   * guardians and the crown leave behind — never a footsoldier.
+   */
+  groundSlam(options: StrikeSoundOptions = {}): void {
+    if (!this.ctx || !this.master || this.muted) return;
+    const ctx = this.ctx;
+    const when = ctx.currentTime + Math.max(0, options.delay ?? 0);
+    const level = 0.46 * (options.volume ?? 1);
+    const bus = this.spellBus(options.pan ?? 0, 0.4);
+
+    // The floor taking it.
+    for (const [start, end, gain, span] of [
+      [96, 26, 1, 0.62],
+      [58, 19, 0.55, 0.9],
+    ] as const) {
+      const sub = ctx.createOscillator();
+      const subGain = ctx.createGain();
+      sub.type = "sine";
+      sub.frequency.setValueAtTime(start, when);
+      sub.frequency.exponentialRampToValueAtTime(end, when + span);
+      subGain.gain.setValueAtTime(0.0001, when);
+      subGain.gain.exponentialRampToValueAtTime(level * gain, when + 0.012);
+      subGain.gain.exponentialRampToValueAtTime(0.0001, when + span);
+      sub.connect(subGain);
+      subGain.connect(bus);
+      sub.start(when);
+      sub.stop(when + span + 0.08);
+    }
+
+    // Stone splitting under the head of the weapon.
+    const crack = ctx.createBufferSource();
+    crack.buffer = this.noiseBuffer(0.16, 4.5);
+    const shape = ctx.createBiquadFilter();
+    shape.type = "bandpass";
+    shape.Q.value = 0.7;
+    shape.frequency.setValueAtTime(900, when);
+    shape.frequency.exponentialRampToValueAtTime(240, when + 0.15);
+    const crackGain = ctx.createGain();
+    crackGain.gain.value = level * 0.7;
+    crack.connect(shape);
+    shape.connect(crackGain);
+    crackGain.connect(bus);
+    crack.start(when);
+
+    // Grit and chips coming back down.
+    const rubble = ctx.createBufferSource();
+    rubble.buffer = this.noiseBuffer(0.55, 2.2);
+    const grit = ctx.createBiquadFilter();
+    grit.type = "highpass";
+    grit.frequency.value = 1800;
+    const rubbleGain = ctx.createGain();
+    rubbleGain.gain.setValueAtTime(0.0001, when + 0.05);
+    rubbleGain.gain.exponentialRampToValueAtTime(level * 0.3, when + 0.1);
+    rubbleGain.gain.exponentialRampToValueAtTime(0.0001, when + 0.6);
+    rubble.connect(grit);
+    grit.connect(rubbleGain);
+    rubbleGain.connect(bus);
+    rubble.start(when + 0.04);
+
+    this.duckBeds(0.7, 0.7);
+  }
+
+  /**
+   * The sentence being passed: a struck bell built from inharmonic partials with
+   * a slow bloom of air under it. Only the crown gets to ring this.
+   */
+  judgementToll(options: StrikeSoundOptions = {}): void {
+    if (!this.ctx || !this.master || this.muted) return;
+    const ctx = this.ctx;
+    const when = ctx.currentTime + Math.max(0, options.delay ?? 0);
+    const level = 0.26 * (options.volume ?? 1);
+    const bus = this.spellBus(options.pan ?? 0, 0.35);
+    const root = 196;
+
+    // A real bell is not a harmonic series — these ratios are what make it metal.
+    const partials: { ratio: number; gain: number; decay: number }[] = [
+      { ratio: 0.5, gain: 0.7, decay: 2.6 },
+      { ratio: 1, gain: 1, decay: 2.2 },
+      { ratio: 2.02, gain: 0.5, decay: 1.6 },
+      { ratio: 2.98, gain: 0.28, decay: 1.1 },
+      { ratio: 4.07, gain: 0.15, decay: 0.7 },
+    ];
+    for (const partial of partials) {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.value = root * partial.ratio;
+      gain.gain.setValueAtTime(0.0001, when);
+      gain.gain.exponentialRampToValueAtTime(level * partial.gain, when + 0.014);
+      gain.gain.exponentialRampToValueAtTime(0.0001, when + partial.decay);
+      osc.connect(gain);
+      gain.connect(bus);
+      osc.start(when);
+      osc.stop(when + partial.decay + 0.1);
+    }
+
+    // Air pulled up around the light.
+    const swell = ctx.createBufferSource();
+    swell.buffer = this.noiseBuffer(0.9, 0.6);
+    const body = ctx.createBiquadFilter();
+    body.type = "bandpass";
+    body.Q.value = 0.8;
+    body.frequency.setValueAtTime(520, when);
+    body.frequency.exponentialRampToValueAtTime(2200, when + 0.7);
+    const swellGain = ctx.createGain();
+    swellGain.gain.setValueAtTime(0.0001, when);
+    swellGain.gain.exponentialRampToValueAtTime(level * 0.55, when + 0.5);
+    swellGain.gain.exponentialRampToValueAtTime(0.0001, when + 0.95);
+    swell.connect(body);
+    body.connect(swellGain);
+    swellGain.connect(bus);
+    swell.start(when);
+
+    this.duckBeds(0.6, 1.1);
   }
 
   /** Panned input bus shared by the spell voices. */

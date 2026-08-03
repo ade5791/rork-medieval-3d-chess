@@ -53,11 +53,17 @@ cd web && bun install && bun run dev
   sparks fly, the screen shakes, and the defender **burns away from the soles upward**
   through a ragged edge of light, shedding motes that drift off (cold soul-light for the
   Kingdom, live embers for the Empire).
+- **A blow that scales with rank** — the footsoldier stabs and moves on; the rider cuts on the
+  charge and leaves an arc of steel hanging in the air; the tower guardian's hammer sends a
+  wave rolling across the stone and the hall keeps shaking afterwards; the crown drops a
+  **column of light on the condemned**, rings a bell over it, and executes it in gold. Each
+  rank has its own lens punch, hitstop, swing weight and aftershock.
 - **Casters kill at range** — the queen and the mage never close the distance. They level the
-  staff from their own square, gather fire at the crystal, and throw a ball of it down the
-  line: it lights the hall as it flies, breaks open on the body, and only once the corpse has
-  burned away do they walk the whole distance and take the square (cold witchfire for the
-  Kingdom, sunfire for the Empire).
+  staff from their own square, gather fire at the crystal, and throw it down the line: it
+  lights the hall as it flies, breaks open on the body, and only once the corpse has burned
+  away do they walk the whole distance and take the square. The mage throws **one** bolt; the
+  sorceress throws a **volley of three** and leaves a ring of fire burning on the square (cold
+  witchfire for the Kingdom, sunfire for the Empire).
 - **Twelve death cries** — one recorded voice per rank per army, panned to where the body is
   on screen, ducking the music for a beat and pitch-jittered so no two deaths sound alike.
 - **Four battlegrounds** that relight the whole world — sky, haze, stone colour, tile
@@ -263,6 +269,29 @@ Footsteps are fully synthesised in `src/audio/audioManager.ts` — a low body th
 weight, a band-passed noise transient for the sole, and a metallic afterring for armour, one
 voice per `FootstepTimbre` (`scuff` / `leather` / `plate` / `regal`). No asset, no latency.
 
+### Strikes by rank
+
+The hand-to-hand beat is one piece of choreography — charge, square up, strike, crumble — but
+its weight is read out of `STRIKES[kind]` in `src/scene/sceneEngine.ts`, so the same code carries
+a footsoldier's stab and a royal execution. The pawn's line is the original beat and is left
+exactly as it was; everything above it is measured against it:
+
+| Rank | What is added on top of the pawn's beat |
+| --- | --- |
+| Pawn (`p`) | The baseline: 5.5° lens punch, sparks, one camera kick |
+| Knight (`n`) | Fastest charge, a crescent of steel through the body (`spawnSlash`), dust torn up along the line of the charge, a light aftershock |
+| Bishop (`b`) | Safety net only — the mage fights at range |
+| Rook (`r`) | Slowest wind-up, heaviest swing in the mix, a wave rolling out across the stone (`spawnGroundWave`) with a second echo, low-frequency slam, long aftershock |
+| Queen (`q`) | Safety net only — the sorceress fights at range |
+| King (`k`) | A column of light dropped on the condemned before the blow (`spawnPillar` + `judgementToll`), 11° lens punch, gold arc **and** gold ground wave, the longest hitstop and aftershock |
+
+The supporting visuals live in `src/scene/strikes.ts` (`spawnSlash`, `spawnGroundWave`,
+`spawnPillar`). Each one builds a throwaway object, animates it off the caller's tween clock and
+disposes itself, so none of them needs a slot in the frame loop; the textures and geometry are
+shared module singletons freed by `disposeStrikeAssets()`. The swing, the slam and the bell
+(`bladeWhoosh`, `groundSlam`, `judgementToll`) are synthesised in the mixer alongside the
+footsteps — no assets.
+
 ### Ranged combat (queen and mage)
 
 `RANGED_KINDS` in `src/scene/sceneEngine.ts` routes captures by the queen (`q`) and the mage
@@ -276,6 +305,12 @@ voice per `FootstepTimbre` (`scuff` / `leather` / `plate` / `regal`). No asset, 
 4. `spellBurst()` lands it — flash, fire shell, ember cloud, square impact and camera kick.
 5. `slay()` then `banish()` run to completion, so the target is **dead and gone** before the
    caster takes a step, and only then does `glide()` march it onto the cleared square.
+
+How much fire is thrown is a profile too — `MAGE_SPELL` versus `QUEEN_SPELL`. The mage holds a
+small orb and throws a single bolt. The sorceress gathers roughly half again as long, holds a
+much larger ball, and throws a **volley of three**: two smaller leaders that come in off the
+shoulder and clap on the body first, then the killing bolt behind them, whose blast is 1.75× the
+mage's and rolls a ring of fire out across the square.
 
 The casting point is a marker parented at the head of the main weapon (`focus` in
 `src/scene/weapons.ts`), read out of the live pose each frame, so the fire hangs off the

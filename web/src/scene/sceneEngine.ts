@@ -15,6 +15,7 @@ import { FACTION_ACCENT, PieceFactory, PieceView } from "./pieces";
 import { PostFX } from "./postfx";
 import { QUALITY_SETTINGS, type QualityPreset } from "./quality";
 import { SPELL_LOOK, SpellOrb } from "./spells";
+import { disposeStrikeAssets, spawnGroundWave, spawnPillar, spawnSlash } from "./strikes";
 import { Ease, type Easing, TweenManager, wait } from "./tween";
 
 export type CameraPreset = "white" | "black" | "top" | "cinematic";
@@ -123,6 +124,167 @@ const GAITS: Record<PieceKind, Gait> = {
  * has burned away.
  */
 const RANGED_KINDS: PieceKind[] = ["q", "b"];
+
+/**
+ * How one rank's blow is staged. The shape of a hand-to-hand kill never changes
+ * — charge, square up, strike, crumble — but its weight does, and it climbs
+ * with rank: a footsoldier stabs and moves on, a rider cuts on the charge, a
+ * tower guardian puts the floor out of shape, and the crown calls the light
+ * down before it swings.
+ */
+interface StrikeProfile {
+  /** Degrees of lens punch-in held over the beat. */
+  zoom: number;
+  /** March-speed multiplier on the run into the stand-off. */
+  charge: number;
+  /** Held breath between arriving and swinging. */
+  wind: number;
+  /** Scales the flash, the sparks, the board hit and the camera kick. */
+  power: number;
+  /** Loudness of the swing through the air; 0 keeps the wind-up silent. */
+  swing: number;
+  /** 0 = a light blade, 1 = a siege weapon being hauled round. */
+  heft: number;
+  /** Arc of steel left hanging where the blade went through. */
+  slash: { size: number; color: number } | null;
+  /** Wave rolling out across the stone, for a blow that reaches the floor. */
+  wave: { radius: number; color: number } | null;
+  /** Column of light dropped on the condemned before the blow. */
+  pillar: { radius: number; color: number } | null;
+  /** Dust torn up along the line of a charge. */
+  wake: boolean;
+  /** Second tremor a beat after the strike; 0 leaves the hall still. */
+  aftershock: number;
+  /** Hitstop on the frame of contact, before the body starts to go down. */
+  hold: number;
+}
+
+/**
+ * The six blows, in order of what the rank is worth. The footsoldier's line is
+ * the original beat and is deliberately left untouched — everything above it is
+ * measured against it.
+ */
+const STRIKES: Record<PieceKind, StrikeProfile> = {
+  p: {
+    zoom: 5.5,
+    charge: 1.35,
+    wind: 0.1,
+    power: 1,
+    swing: 0,
+    heft: 0,
+    slash: null,
+    wave: null,
+    pillar: null,
+    wake: false,
+    aftershock: 0,
+    hold: 0,
+  },
+  // The rider arrives faster than it can be answered and cuts on the way past.
+  n: {
+    zoom: 7.2,
+    charge: 1.75,
+    wind: 0.04,
+    power: 1.35,
+    swing: 0.7,
+    heft: 0.3,
+    slash: { size: 1.7, color: 0xfff3d8 },
+    wave: null,
+    pillar: null,
+    wake: true,
+    aftershock: 0.12,
+    hold: 0.05,
+  },
+  // The mage only ever fights at range; this is a safety net, not a beat.
+  b: {
+    zoom: 6,
+    charge: 1.4,
+    wind: 0.12,
+    power: 1.15,
+    swing: 0.45,
+    heft: 0.15,
+    slash: { size: 1.2, color: 0xd8e6ff },
+    wave: null,
+    pillar: null,
+    wake: false,
+    aftershock: 0,
+    hold: 0.03,
+  },
+  // Plate and a hammer: slow in, and the stone takes most of the blow.
+  r: {
+    zoom: 8.6,
+    charge: 1.1,
+    wind: 0.24,
+    power: 1.8,
+    swing: 1,
+    heft: 0.95,
+    slash: null,
+    wave: { radius: 3.2, color: 0xffa257 },
+    pillar: null,
+    wake: false,
+    aftershock: 0.3,
+    hold: 0.09,
+  },
+  // Never reached — the sorceress burns her victims from her own square.
+  q: {
+    zoom: 8,
+    charge: 1.3,
+    wind: 0.16,
+    power: 1.6,
+    swing: 0.6,
+    heft: 0.35,
+    slash: { size: 1.5, color: 0xffe0b0 },
+    wave: null,
+    pillar: null,
+    wake: false,
+    aftershock: 0.14,
+    hold: 0.06,
+  },
+  // An execution, not a fight: the light comes down, the bell rings, then gold.
+  k: {
+    zoom: 11,
+    charge: 1.2,
+    wind: 0.3,
+    power: 2.25,
+    swing: 1,
+    heft: 0.7,
+    slash: { size: 2, color: 0xffdf9a },
+    wave: { radius: 3.7, color: 0xffcf7a },
+    pillar: { radius: 0.6, color: 0xffe3a8 },
+    wake: false,
+    aftershock: 0.34,
+    hold: 0.13,
+  },
+};
+
+/** How much fire a caster throws, and what it does when it lands. */
+interface SpellProfile {
+  /** Degrees of lens punch-in held over the beat. */
+  zoom: number;
+  /** Seconds of wind-up added on top of the cast clip. */
+  gather: number;
+  /** Size of the ball held at the head of the staff. */
+  orb: number;
+  /** How many bolts go down the line. */
+  bolts: number;
+  /** Scales the blast at the far end. */
+  blast: number;
+  /** Radius of the fire rolled out across the square; 0 for none. */
+  ring: number;
+}
+
+/** The mage: one bolt, thrown clean. */
+const MAGE_SPELL: SpellProfile = { zoom: 4.5, gather: 0, orb: 0.42, bolts: 1, blast: 1, ring: 0 };
+
+/**
+ * The sorceress: a longer, heavier gather and a volley of three — two leaders
+ * that break on the body and a killing bolt behind them that takes the square
+ * with it.
+ */
+const QUEEN_SPELL: SpellProfile = { zoom: 7.5, gather: 0.28, orb: 0.66, bolts: 3, blast: 1.75, ring: 3.4 };
+
+function spellProfile(kind: PieceKind): SpellProfile {
+  return kind === "q" ? QUEEN_SPELL : MAGE_SPELL;
+}
 
 /**
  * A marching distance profile: a short push-off, a long stretch at constant
@@ -815,7 +977,12 @@ export class SceneEngine {
     piece.setSquash(0);
   }
 
-  /** Sub-1.5s battle beat: lunge, strike, sparks, shake, crumble. */
+  /**
+   * The hand-to-hand battle beat: charge, square up, strike, crumble. How hard
+   * it hits is read out of {@link STRIKES} for the attacking rank, so the same
+   * choreography carries a footsoldier's stab and a royal execution without
+   * either one borrowing the other's weight.
+   */
   private async playCaptureCinematic(
     attacker: PieceView,
     victim: PieceView,
@@ -823,6 +990,8 @@ export class SceneEngine {
     to: THREE.Vector3,
     strikeSquare: SquareId,
   ): Promise<void> {
+    const profile = STRIKES[attacker.kind];
+    const settings = QUALITY_SETTINGS[this.preset];
     const direction = to.clone().sub(from).normalize();
     const standoff = to.clone().sub(direction.clone().multiplyScalar(TILE * 0.52));
     // En passant kills a pawn on a different square than the one moved to.
@@ -836,7 +1005,7 @@ export class SceneEngine {
       duration: 0.22,
       easing: Ease.outCubic,
       onUpdate: (t) => {
-        this.camera.fov = originalFov - 5.5 * t;
+        this.camera.fov = originalFov - profile.zoom * t;
         this.camera.updateProjectionMatrix();
       },
     });
@@ -845,34 +1014,105 @@ export class SceneEngine {
     // meet its killer so the blow never lands on the back of a head.
     await Promise.all([
       // Pressing forward into the blow: the same march, a quicker cadence.
-      this.glide(attacker, from, standoff, attacker.kind === "n", 1.35),
+      this.glide(attacker, from, standoff, attacker.kind === "n", profile.charge),
       victim.turnTowards(standoff, this.tweens, 0.3),
     ]);
     attacker.faceTowards(victimSpot);
     // Arrival beat: the march has stopped and the figure is squared up on its
     // target. A held breath here is what makes the blow read as its own action
-    // rather than the tail of the walk.
-    await wait(0.1);
+    // rather than the tail of the walk. The heavier the rank, the longer it
+    // stands there before it commits.
+    await wait(profile.wind);
+
+    // Sentence before execution: the crown drops a column of light on the
+    // condemned and the hall is told what is coming.
+    if (profile.pillar) await this.passSentence(victim, victimSpot, profile.pillar, settings.postFx);
 
     // Strike: the skeletal attack clip when the rig carries one, otherwise a
     // wind-up and lunge driven off the runtime node so the board anchor stays
     // put. Note this asks for the clip itself, not merely for a rig — a figure
     // whose strike failed to download must still visibly attack.
     const strike = attacker.hasClip("attack") ? attacker.playAttack() : null;
+    if (profile.swing > 0) {
+      // The weapon is heard coming round just before it arrives.
+      const lead = strike && strike.duration > 0 ? Math.max(0, strike.impact - 0.18) : 0.05;
+      audio.bladeWhoosh({
+        pan: this.stereoPan(standoff),
+        volume: profile.swing,
+        weight: profile.heft,
+        delay: lead,
+      });
+    }
     if (strike && strike.duration > 0) await wait(strike.impact);
     else await this.lunge(attacker, direction);
 
     const impact = victimSpot.clone().setY(0.55);
-    audio.play("capture", 0.85);
-    this.strikeImpact(strikeSquare, 1);
-    this.effects.spawnFlash(impact, 2.2, 0.24);
-    this.effects.spawnBurst(impact, 0xffc978, QUALITY_SETTINGS[this.preset].captureParticles, {
-      speed: 3.4,
+    const power = profile.power;
+    audio.play("capture", Math.min(1, 0.85 * power));
+    // The board itself is capped: past a point the tiles stop reading as stone.
+    this.strikeImpact(strikeSquare, Math.min(1.5, power));
+    this.effects.spawnFlash(impact, Math.min(4.4, 2.2 * power), 0.24);
+    this.effects.spawnBurst(impact, 0xffc978, Math.round(settings.captureParticles * power), {
+      speed: 3.4 * (0.9 + power * 0.1),
       life: 0.75,
     });
-    this.shake.add(0.55);
+    this.shake.add(Math.min(1, 0.55 * power));
+
+    // Steel: the cut hangs in the air for a couple of frames after the blade.
+    if (profile.slash) {
+      void spawnSlash(this.scene, this.tweens, impact, {
+        color: profile.slash.color,
+        size: profile.slash.size,
+        tilt: -0.55 - Math.random() * 0.35,
+      });
+    }
+
+    // Weight: a blow that carries into the floor sends a wave across the stone.
+    if (profile.wave) {
+      audio.groundSlam({ pan: this.stereoPan(victimSpot), volume: Math.min(1, power * 0.6) });
+      void spawnGroundWave(this.scene, this.tweens, victimSpot, {
+        color: profile.wave.color,
+        radius: profile.wave.radius,
+        height: BOARD_TOP + 0.03,
+        echo: profile.aftershock > 0.2,
+      });
+      this.effects.spawnSmoke(victimSpot.clone().setY(BOARD_TOP + 0.14), {
+        count: Math.max(4, Math.round(settings.captureParticles * 0.3)),
+        radius: 0.5,
+        scale: 0.8,
+        growth: 3.2,
+        life: 1.2,
+        speed: 2.4,
+        rise: 0.1,
+        color: 0x9c8f7d,
+        opacity: 0.5,
+      });
+    }
+
+    // A charge does not stop where it strikes: dust keeps going past the body.
+    if (profile.wake) {
+      this.effects.spawnSmoke(standoff.clone().setY(BOARD_TOP + 0.12), {
+        count: Math.max(3, Math.round(settings.captureParticles * 0.2)),
+        radius: 0.34,
+        scale: 0.6,
+        growth: 2.8,
+        life: 0.9,
+        speed: 0.8,
+        rise: 0.15,
+        color: 0xa5977f,
+        opacity: 0.4,
+        drift: direction.clone().multiplyScalar(2.1),
+      });
+    }
+
+    // Hitstop: on a heavy blow the whole beat holds for a frame or two on
+    // contact, which is what makes the hit feel like it connected with mass.
+    if (profile.hold > 0) await wait(profile.hold);
 
     if (!strike || strike.duration === 0) this.recover(attacker, direction);
+
+    // The hall answers a beat later.
+    if (profile.aftershock > 0) void this.aftershock(strikeSquare, profile.aftershock);
 
     // The defender goes down while the attacker finishes following through.
     const recovery = strike ? Math.min(0.45, Math.max(0, strike.duration - strike.impact)) : 0.18;
@@ -882,7 +1122,7 @@ export class SceneEngine {
       duration: 0.45,
       easing: Ease.outCubic,
       onUpdate: (t) => {
-        this.camera.fov = originalFov - 5.5 * (1 - t);
+        this.camera.fov = originalFov - profile.zoom * (1 - t);
         this.camera.updateProjectionMatrix();
       },
     });
@@ -894,6 +1134,60 @@ export class SceneEngine {
       this.glide(attacker, standoff, to, false, 1.5),
     ]);
     audio.play("place", 0.5);
+  }
+
+  /**
+   * The crown's prerogative: before the blow, a column of light is dropped on
+   * the condemned, a bell is rung over it, and motes are drawn up off the stone
+   * around its feet. Nothing else on the board is allowed this beat.
+   */
+  private async passSentence(
+    victim: PieceView,
+    at: THREE.Vector3,
+    pillar: { radius: number; color: number },
+    withLight: boolean,
+  ): Promise<void> {
+    const settings = QUALITY_SETTINGS[this.preset];
+    audio.judgementToll({ pan: this.stereoPan(at), volume: 0.95 });
+    void spawnPillar(this.scene, this.tweens, at, {
+      color: pillar.color,
+      radius: pillar.radius,
+      height: 5.6,
+      floor: BOARD_TOP,
+      hold: 0.46,
+      withLight,
+    });
+    // Light pulling the dust up off the floor around the condemned.
+    this.effects.spawnBurst(at.clone().setY(BOARD_TOP + 0.1), 0xffe6b4, Math.round(settings.captureParticles * 0.4), {
+      speed: 0.5,
+      life: 1,
+      gravity: -1.6,
+      radius: pillar.radius * 0.9,
+      size: 0.08,
+      growth: 0.4,
+      drag: 1.4,
+      rise: 0.7,
+    });
+    victim.flareAura(0.8);
+    await wait(0.36);
+  }
+
+  /**
+   * The stone still moving after a heavy blow: a second, softer kick through the
+   * tiles and a low cloud of grit rolling off the square.
+   */
+  private async aftershock(square: SquareId, strength: number): Promise<void> {
+    await wait(0.18);
+    const settings = QUALITY_SETTINGS[this.preset];
+    this.shake.add(strength);
+    this.board.impact(square, 0xffa457, strength * 0.7);
+    const ground = squareToWorld(square, BOARD_TOP + 0.06);
+    this.effects.spawnBurst(ground, 0xd8b285, Math.round(settings.captureParticles * 0.3), {
+      speed: 1.4,
+      life: 0.9,
+      gravity: 2.2,
+      radius: 0.55,
+    });
   }
 
   /**
@@ -918,12 +1212,13 @@ export class SceneEngine {
     if (blow.lengthSq() < 1e-6) blow.set(0, 0, 1);
     blow.normalize();
 
+    const spell = spellProfile(attacker.kind);
     const originalFov = this.camera.fov;
     void this.tweens.to({
       duration: 0.28,
       easing: Ease.outCubic,
       onUpdate: (t) => {
-        this.camera.fov = originalFov - 4.5 * t;
+        this.camera.fov = originalFov - spell.zoom * t;
         this.camera.updateProjectionMatrix();
       },
     });
@@ -936,14 +1231,27 @@ export class SceneEngine {
     attacker.faceTowards(victimSpot);
 
     // The strike clip doubles as the incantation: fire builds at the crystal
-    // right up to the frame the clip would have landed its blow.
+    // right up to the frame the clip would have landed its blow. The sorceress
+    // holds hers longer, and holds far more of it.
     const cast = attacker.hasClip("attack") ? attacker.playAttack() : null;
-    const gather = cast && cast.duration > 0 ? Math.max(0.34, cast.impact) : 0.55;
-    await this.gatherSpell(attacker, gather);
+    const gather = (cast && cast.duration > 0 ? Math.max(0.34, cast.impact) : 0.55) + spell.gather;
+    await this.gatherSpell(attacker, gather, spell.orb);
 
     const impact = victimSpot.clone().setY(0.62);
-    await this.throwFireball(attacker, impact);
-    this.spellBurst(attacker.color, impact, strikeSquare);
+    if (spell.bolts > 1) {
+      // A volley: leaders go first and break on the body, the killing bolt lands
+      // behind them and is the one that takes the square.
+      const leaders: Promise<void>[] = [];
+      for (let i = 0; i < spell.bolts - 1; i += 1) {
+        leaders.push(this.throwFireball(attacker, impact, { size: 0.34, delay: i * 0.11, leader: true }));
+      }
+      await wait(0.18);
+      await this.throwFireball(attacker, impact, { size: 0.64 });
+      await Promise.all(leaders);
+    } else {
+      await this.throwFireball(attacker, impact);
+    }
+    this.spellBurst(attacker.color, impact, strikeSquare, spell.blast, spell.ring);
 
     // Dead before the caster has taken a single step.
     await this.slay(victim, blow);
@@ -952,7 +1260,7 @@ export class SceneEngine {
       duration: 0.45,
       easing: Ease.outCubic,
       onUpdate: (t) => {
-        this.camera.fov = originalFov - 4.5 * (1 - t);
+        this.camera.fov = originalFov - spell.zoom * (1 - t);
         this.camera.updateProjectionMatrix();
       },
     });
@@ -970,17 +1278,17 @@ export class SceneEngine {
    * The fire is repositioned every frame from the prop's own casting point, so
    * it stays in the crystal however the casting arm swings.
    */
-  private async gatherSpell(attacker: PieceView, duration: number): Promise<void> {
+  private async gatherSpell(attacker: PieceView, duration: number, size: number): Promise<void> {
     const settings = QUALITY_SETTINGS[this.preset];
     const look = SPELL_LOOK[attacker.color];
-    const orb = new SpellOrb(look, 0.4, settings.postFx);
+    const orb = new SpellOrb(look, size, settings.postFx);
     orb.group.position.copy(attacker.castOrigin());
     this.scene.add(orb.group);
 
-    audio.spellCharge({ pan: this.stereoPan(orb.group.position), duration });
-    attacker.flareAura(0.55);
+    audio.spellCharge({ pan: this.stereoPan(orb.group.position), duration, volume: size * 2 });
+    attacker.flareAura(Math.min(1.2, size * 1.4));
 
-    const motes = Math.max(3, Math.round(settings.captureParticles * 0.14));
+    const motes = Math.max(3, Math.round(settings.captureParticles * 0.14 * (size * 2.4)));
     let nextMote = 0.14;
     try {
       await this.tweens.to({
@@ -1014,27 +1322,44 @@ export class SceneEngine {
   }
 
   /**
-   * The bolt itself: a flat, fast arc from the staff to the target's chest,
-   * shedding embers and a thin trail of smoke the whole way. Longer shots take
+   * One bolt: a flat, fast arc from the staff to the target's chest, shedding
+   * embers and a thin trail of smoke the whole way. Longer shots take
    * proportionally longer, so the distance across the board is felt.
+   *
+   * A `leader` is one of the smaller balls the sorceress sends ahead of the
+   * killing bolt — it is thrown off-centre, breaks on the body on its own and
+   * never takes the square with it.
    */
-  private async throwFireball(attacker: PieceView, target: THREE.Vector3): Promise<void> {
+  private async throwFireball(
+    attacker: PieceView,
+    target: THREE.Vector3,
+    options: { size?: number; delay?: number; leader?: boolean } = {},
+  ): Promise<void> {
+    if (options.delay && options.delay > 0) await wait(options.delay);
     const settings = QUALITY_SETTINGS[this.preset];
     const look = SPELL_LOOK[attacker.color];
     const start = attacker.castOrigin();
-    const distance = start.distanceTo(target);
+    const size = options.size ?? 0.52;
+    const leader = options.leader === true;
+    // Leaders come in off the shoulder rather than straight down the line.
+    const aim = target.clone();
+    if (leader) {
+      const side = new THREE.Vector3(0, 1, 0).cross(target.clone().sub(start).setY(0).normalize());
+      aim.addScaledVector(side, (Math.random() - 0.5) * 0.5).setY(target.y + (Math.random() - 0.4) * 0.3);
+    }
+    const distance = start.distanceTo(aim);
     const flight = THREE.MathUtils.clamp(distance * 0.1, 0.22, 0.62);
     const lift = 0.1 + distance * 0.05;
-    const motes = Math.max(3, Math.round(settings.captureParticles * 0.16));
-    const smoking = settings.captureParticles >= 34;
+    const motes = Math.max(3, Math.round(settings.captureParticles * 0.16 * (leader ? 0.6 : 1)));
+    const smoking = settings.captureParticles >= 34 && !leader;
 
-    const orb = new SpellOrb(look, 0.52, settings.postFx);
+    const orb = new SpellOrb(look, size, settings.postFx);
     orb.group.position.copy(start);
     orb.setIntensity(1);
     this.scene.add(orb.group);
 
-    audio.spellCast({ pan: this.stereoPan(start) });
-    this.shake.add(0.08);
+    audio.spellCast({ pan: this.stereoPan(start), volume: leader ? 0.5 : 1 });
+    this.shake.add(leader ? 0.04 : 0.08);
 
     const at = new THREE.Vector3();
     let nextTrail = 0;
@@ -1080,41 +1405,56 @@ export class SceneEngine {
     } finally {
       orb.dispose();
     }
+
+    // A leader breaks on its own: a small clap of fire, no square taken.
+    if (leader) {
+      audio.spellImpact({ pan: this.stereoPan(aim), volume: 0.4 });
+      this.effects.spawnFlash(aim, 1.5, 0.2);
+      this.effects.spawnBurst(aim, look.core, Math.round(settings.captureParticles * 0.35), {
+        speed: 2.8,
+        life: 0.45,
+        gravity: 1.8,
+        radius: 0.12,
+      });
+      this.shake.add(0.14);
+    }
   }
 
   /**
    * The bolt breaking open on the body: a hard white flash, a shell of fire
    * thrown outward, embers left hanging on the air and the square itself struck
-   * as hard as any blade would have struck it.
+   * as hard as any blade would have struck it. `scale` is how much fire the
+   * caster put behind it, and `ring` rolls the blast out across the stone — the
+   * sorceress leaves one, the mage does not.
    */
-  private spellBurst(color: Faction, at: THREE.Vector3, square: SquareId): void {
+  private spellBurst(color: Faction, at: THREE.Vector3, square: SquareId, scale = 1, ring = 0): void {
     const settings = QUALITY_SETTINGS[this.preset];
     const look = SPELL_LOOK[color];
 
-    audio.spellImpact({ pan: this.stereoPan(at) });
-    audio.play("capture", 0.5);
-    this.strikeImpact(square, 1.1);
-    this.effects.spawnFlash(at, 3.4, 0.3);
-    this.effects.spawnBurst(at, look.core, settings.captureParticles, {
-      speed: 4.4,
+    audio.spellImpact({ pan: this.stereoPan(at), volume: Math.min(1.4, scale) });
+    audio.play("capture", Math.min(1, 0.5 * scale));
+    this.strikeImpact(square, Math.min(1.5, 1.1 * scale));
+    this.effects.spawnFlash(at, Math.min(6, 3.4 * scale), 0.3);
+    this.effects.spawnBurst(at, look.core, Math.round(settings.captureParticles * scale), {
+      speed: 4.4 * (0.9 + scale * 0.1),
       life: 0.55,
       gravity: 2.6,
       radius: 0.1,
     });
-    this.effects.spawnBurst(at, look.ember, Math.round(settings.captureParticles * 0.7), {
+    this.effects.spawnBurst(at, look.ember, Math.round(settings.captureParticles * 0.7 * scale), {
       speed: 1.5,
       life: 1.5,
       gravity: -0.7,
-      radius: 0.3,
+      radius: 0.3 * scale,
       size: 0.1,
       growth: 0.38,
       drag: 1.6,
       rise: 0.5,
     });
     this.effects.spawnSmoke(at, {
-      count: Math.max(3, Math.round(settings.captureParticles * 0.22)),
-      radius: 0.34,
-      scale: 0.7,
+      count: Math.max(3, Math.round(settings.captureParticles * 0.22 * scale)),
+      radius: 0.34 * scale,
+      scale: 0.7 * scale,
       growth: 2.8,
       life: 1.1,
       speed: 1.2,
@@ -1122,7 +1462,28 @@ export class SceneEngine {
       color: 0x7d7062,
       opacity: 0.55,
     });
-    this.shake.add(0.6);
+    this.shake.add(Math.min(1, 0.6 * scale));
+
+    if (ring > 0) {
+      // Fire thrown out flat across the square, and the floor answering it.
+      audio.groundSlam({ pan: this.stereoPan(at), volume: 0.5 });
+      void spawnGroundWave(this.scene, this.tweens, at, {
+        color: look.flame,
+        radius: ring,
+        height: BOARD_TOP + 0.03,
+        life: 0.62,
+        echo: true,
+      });
+      this.effects.spawnBurst(at.clone().setY(BOARD_TOP + 0.12), look.ember, Math.round(settings.captureParticles * 0.5), {
+        speed: 3.6,
+        life: 0.9,
+        gravity: 1.2,
+        radius: 0.2,
+        size: 0.1,
+        growth: 0.5,
+        drag: 1.8,
+      });
+    }
   }
 
   /**
@@ -2347,6 +2708,7 @@ export class SceneEngine {
     this.pieces.clear();
     this.captured = [];
     this.effects.dispose();
+    disposeStrikeAssets();
     this.board.dispose();
     this.hall.dispose();
     this.battlefield.dispose();

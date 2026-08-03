@@ -617,6 +617,78 @@ export function smokeTexture(): THREE.CanvasTexture {
   return texture;
 }
 
+/**
+ * A blade arc: a thin crescent of light, hot on its leading edge and trailing
+ * off to nothing, drawn once and swept through a body on a heavy strike.
+ */
+export function crescentTexture(): THREE.CanvasTexture {
+  const size = 256;
+  const { canvas, ctx } = createCanvas(size);
+  const c = size / 2;
+
+  // The sweep: a wide stroke around most of a circle, thinning as it goes.
+  const steps = 46;
+  const from = -Math.PI * 0.78;
+  const to = Math.PI * 0.32;
+  ctx.lineCap = "round";
+  for (let i = 0; i < steps; i += 1) {
+    const t = i / (steps - 1);
+    const angle = from + (to - from) * t;
+    // Hot and fat at the leading edge, feathering out along the trail.
+    const fade = Math.pow(1 - t, 1.5);
+    const radius = size * (0.4 - t * 0.03);
+    const width = size * (0.012 + fade * 0.055);
+    ctx.strokeStyle = `rgba(255,255,255,${(0.1 + fade * 0.9).toFixed(3)})`;
+    ctx.lineWidth = width;
+    ctx.beginPath();
+    ctx.arc(c, c, radius, angle - 0.05, angle + 0.05);
+    ctx.stroke();
+  }
+
+  // Glint at the tip of the swing, where the steel is moving fastest.
+  const tipX = c + Math.cos(from) * size * 0.4;
+  const tipY = c + Math.sin(from) * size * 0.4;
+  const glint = ctx.createRadialGradient(tipX, tipY, 0, tipX, tipY, size * 0.1);
+  glint.addColorStop(0, "rgba(255,255,255,0.95)");
+  glint.addColorStop(1, "rgba(255,255,255,0)");
+  ctx.fillStyle = glint;
+  ctx.fillRect(0, 0, size, size);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  return texture;
+}
+
+/**
+ * The wall of a column of light: brightest where it meets the floor, thinning
+ * as it climbs out of frame, with faint vertical striations so it reads as
+ * falling light rather than a plastic tube.
+ */
+export function pillarTexture(): THREE.CanvasTexture {
+  const size = 128;
+  const { canvas, ctx } = createCanvas(size);
+  const gradient = ctx.createLinearGradient(0, size, 0, 0);
+  gradient.addColorStop(0, "rgba(255,255,255,0.9)");
+  gradient.addColorStop(0.35, "rgba(255,255,255,0.42)");
+  gradient.addColorStop(0.75, "rgba(255,255,255,0.12)");
+  gradient.addColorStop(1, "rgba(255,255,255,0)");
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, size, size);
+
+  ctx.globalCompositeOperation = "destination-out";
+  for (let i = 0; i < 14; i += 1) {
+    const x = Math.random() * size;
+    const width = size * (0.01 + Math.random() * 0.05);
+    ctx.fillStyle = `rgba(0,0,0,${(0.1 + Math.random() * 0.25).toFixed(3)})`;
+    ctx.fillRect(x, 0, width, size);
+  }
+  ctx.globalCompositeOperation = "source-over";
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  return texture;
+}
+
 /** Vertical light-shaft gradient (bright at the window, fading to the floor). */
 export function shaftTexture(): THREE.CanvasTexture {
   const size = 128;
