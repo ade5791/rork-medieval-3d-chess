@@ -1,0 +1,753 @@
+{
+  "generatedAt": "2026-08-04T22:29:26.920Z",
+  "base": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd",
+  "results": [
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/704a772c-4a50-4619-b5ad-6e2bbf9703b8.glb",
+      "status": 206,
+      "ms": 206,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/13928f19-23a3-46ba-9879-aacca58f2886.glb",
+      "status": 206,
+      "ms": 254,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/6c99342a-e9a5-4959-a59b-c207e15a5c72.glb",
+      "status": 206,
+      "ms": 186,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/43f08150-5463-4112-9949-2e1a9a9a6bd2.glb",
+      "status": 206,
+      "ms": 285,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/211b0ba5-2c7f-44ff-8143-b625bca41df1.glb",
+      "status": 206,
+      "ms": 68,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/36d8c7d4-2f42-4672-8908-e9298fce9b69.glb",
+      "status": 206,
+      "ms": 96,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/ad5cfb3c-4fbc-4952-a1f1-b1d4a684b2e7.glb",
+      "status": 206,
+      "ms": 78,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/d39273ce-17e5-41df-a7f5-634f944e3467.glb",
+      "status": 206,
+      "ms": 85,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/7066c2da-f466-438b-ab74-f2a45b2a0ddb.glb",
+      "status": 206,
+      "ms": 119,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/a5ff70a9-b2e7-40e0-b7bc-ea4fe0ba6d5c.glb",
+      "status": 206,
+      "ms": 90,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/c044d8e8-28fd-4aa9-af00-d58ca49fedee.glb",
+      "status": 206,
+      "ms": 86,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/2cd10f02-711f-4e51-8b32-1d6603e7cc3f.glb",
+      "status": 206,
+      "ms": 128,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/704a772c-4a50-4619-b5ad-6e2bbf9703b8-rigged.glb",
+      "status": 206,
+      "ms": 68,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/704a772c-4a50-4619-b5ad-6e2bbf9703b8-anim-idle.glb",
+      "status": 206,
+      "ms": 62,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/704a772c-4a50-4619-b5ad-6e2bbf9703b8-anim-sword-judgment.glb",
+      "status": 206,
+      "ms": 75,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/704a772c-4a50-4619-b5ad-6e2bbf9703b8-anim-dead.glb",
+      "status": 206,
+      "ms": 93,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/704a772c-4a50-4619-b5ad-6e2bbf9703b8-anim-casual-walk-inplace.glb",
+      "status": 206,
+      "ms": 65,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/13928f19-23a3-46ba-9879-aacca58f2886-rigged.glb",
+      "status": 206,
+      "ms": 73,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/13928f19-23a3-46ba-9879-aacca58f2886-anim-idle.glb",
+      "status": 206,
+      "ms": 68,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/13928f19-23a3-46ba-9879-aacca58f2886-anim-charged-spell-cast.glb",
+      "status": 206,
+      "ms": 106,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/13928f19-23a3-46ba-9879-aacca58f2886-anim-dying-backwards.glb",
+      "status": 206,
+      "ms": 80,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/13928f19-23a3-46ba-9879-aacca58f2886-anim-casual-walk-inplace.glb",
+      "status": 206,
+      "ms": 79,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/6c99342a-e9a5-4959-a59b-c207e15a5c72-rigged.glb",
+      "status": 206,
+      "ms": 68,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/6c99342a-e9a5-4959-a59b-c207e15a5c72-anim-combat-stance.glb",
+      "status": 206,
+      "ms": 87,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/6c99342a-e9a5-4959-a59b-c207e15a5c72-anim-sword-judgment.glb",
+      "status": 206,
+      "ms": 68,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/6c99342a-e9a5-4959-a59b-c207e15a5c72-anim-dead.glb",
+      "status": 206,
+      "ms": 64,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/6c99342a-e9a5-4959-a59b-c207e15a5c72-anim-spear-walk-inplace.glb",
+      "status": 206,
+      "ms": 57,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/43f08150-5463-4112-9949-2e1a9a9a6bd2-rigged.glb",
+      "status": 206,
+      "ms": 116,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/43f08150-5463-4112-9949-2e1a9a9a6bd2-anim-combat-stance.glb",
+      "status": 206,
+      "ms": 72,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/43f08150-5463-4112-9949-2e1a9a9a6bd2-anim-charged-slash.glb",
+      "status": 206,
+      "ms": 97,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/43f08150-5463-4112-9949-2e1a9a9a6bd2-anim-dying-backwards.glb",
+      "status": 206,
+      "ms": 62,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/43f08150-5463-4112-9949-2e1a9a9a6bd2-anim-confident-strut-inplace.glb",
+      "status": 206,
+      "ms": 88,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/43f08150-5463-4112-9949-2e1a9a9a6bd2-anim-standard-forward-charge-inplace.glb",
+      "status": 206,
+      "ms": 65,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/211b0ba5-2c7f-44ff-8143-b625bca41df1-rigged.glb",
+      "status": 206,
+      "ms": 68,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/211b0ba5-2c7f-44ff-8143-b625bca41df1-anim-combat-stance.glb",
+      "status": 206,
+      "ms": 61,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/211b0ba5-2c7f-44ff-8143-b625bca41df1-anim-heavy-hammer-swing.glb",
+      "status": 206,
+      "ms": 73,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/211b0ba5-2c7f-44ff-8143-b625bca41df1-anim-knock-down.glb",
+      "status": 206,
+      "ms": 75,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/211b0ba5-2c7f-44ff-8143-b625bca41df1-anim-casual-walk-inplace.glb",
+      "status": 206,
+      "ms": 78,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/36d8c7d4-2f42-4672-8908-e9298fce9b69-rigged.glb",
+      "status": 206,
+      "ms": 112,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/36d8c7d4-2f42-4672-8908-e9298fce9b69-anim-combat-stance.glb",
+      "status": 206,
+      "ms": 104,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/36d8c7d4-2f42-4672-8908-e9298fce9b69-anim-thrust-slash.glb",
+      "status": 206,
+      "ms": 85,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/36d8c7d4-2f42-4672-8908-e9298fce9b69-anim-knock-down.glb",
+      "status": 206,
+      "ms": 73,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/36d8c7d4-2f42-4672-8908-e9298fce9b69-anim-spear-walk-inplace.glb",
+      "status": 206,
+      "ms": 67,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/ad5cfb3c-4fbc-4952-a1f1-b1d4a684b2e7-rigged.glb",
+      "status": 206,
+      "ms": 73,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/ad5cfb3c-4fbc-4952-a1f1-b1d4a684b2e7-anim-idle.glb",
+      "status": 206,
+      "ms": 69,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/ad5cfb3c-4fbc-4952-a1f1-b1d4a684b2e7-anim-sword-judgment.glb",
+      "status": 206,
+      "ms": 77,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/ad5cfb3c-4fbc-4952-a1f1-b1d4a684b2e7-anim-dead.glb",
+      "status": 206,
+      "ms": 61,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/ad5cfb3c-4fbc-4952-a1f1-b1d4a684b2e7-anim-casual-walk-inplace.glb",
+      "status": 206,
+      "ms": 78,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/d39273ce-17e5-41df-a7f5-634f944e3467-rigged.glb",
+      "status": 206,
+      "ms": 65,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/d39273ce-17e5-41df-a7f5-634f944e3467-anim-idle.glb",
+      "status": 206,
+      "ms": 59,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/d39273ce-17e5-41df-a7f5-634f944e3467-anim-charged-spell-cast.glb",
+      "status": 206,
+      "ms": 66,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/d39273ce-17e5-41df-a7f5-634f944e3467-anim-dying-backwards.glb",
+      "status": 206,
+      "ms": 58,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/d39273ce-17e5-41df-a7f5-634f944e3467-anim-casual-walk-inplace.glb",
+      "status": 206,
+      "ms": 68,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/7066c2da-f466-438b-ab74-f2a45b2a0ddb-rigged.glb",
+      "status": 206,
+      "ms": 64,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/7066c2da-f466-438b-ab74-f2a45b2a0ddb-anim-combat-stance.glb",
+      "status": 206,
+      "ms": 61,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/7066c2da-f466-438b-ab74-f2a45b2a0ddb-anim-sword-judgment.glb",
+      "status": 206,
+      "ms": 78,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/7066c2da-f466-438b-ab74-f2a45b2a0ddb-anim-dead.glb",
+      "status": 206,
+      "ms": 68,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/7066c2da-f466-438b-ab74-f2a45b2a0ddb-anim-spear-walk-inplace.glb",
+      "status": 206,
+      "ms": 67,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/a5ff70a9-b2e7-40e0-b7bc-ea4fe0ba6d5c-rigged.glb",
+      "status": 206,
+      "ms": 62,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/a5ff70a9-b2e7-40e0-b7bc-ea4fe0ba6d5c-anim-combat-stance.glb",
+      "status": 206,
+      "ms": 55,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/a5ff70a9-b2e7-40e0-b7bc-ea4fe0ba6d5c-anim-charged-slash.glb",
+      "status": 206,
+      "ms": 75,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/a5ff70a9-b2e7-40e0-b7bc-ea4fe0ba6d5c-anim-dying-backwards.glb",
+      "status": 206,
+      "ms": 84,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/a5ff70a9-b2e7-40e0-b7bc-ea4fe0ba6d5c-anim-sneaky-walk-inplace.glb",
+      "status": 206,
+      "ms": 62,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/a5ff70a9-b2e7-40e0-b7bc-ea4fe0ba6d5c-anim-standard-forward-charge-inplace.glb",
+      "status": 206,
+      "ms": 64,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/c044d8e8-28fd-4aa9-af00-d58ca49fedee-rigged.glb",
+      "status": 206,
+      "ms": 59,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/c044d8e8-28fd-4aa9-af00-d58ca49fedee-anim-combat-stance.glb",
+      "status": 206,
+      "ms": 67,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/c044d8e8-28fd-4aa9-af00-d58ca49fedee-anim-heavy-hammer-swing.glb",
+      "status": 206,
+      "ms": 74,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/c044d8e8-28fd-4aa9-af00-d58ca49fedee-anim-knock-down.glb",
+      "status": 206,
+      "ms": 132,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/c044d8e8-28fd-4aa9-af00-d58ca49fedee-anim-casual-walk-inplace.glb",
+      "status": 206,
+      "ms": 69,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/2cd10f02-711f-4e51-8b32-1d6603e7cc3f-rigged.glb",
+      "status": 206,
+      "ms": 64,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/2cd10f02-711f-4e51-8b32-1d6603e7cc3f-anim-combat-stance.glb",
+      "status": 206,
+      "ms": 78,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/2cd10f02-711f-4e51-8b32-1d6603e7cc3f-anim-thrust-slash.glb",
+      "status": 206,
+      "ms": 85,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/2cd10f02-711f-4e51-8b32-1d6603e7cc3f-anim-knock-down.glb",
+      "status": 206,
+      "ms": 63,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd/2cd10f02-711f-4e51-8b32-1d6603e7cc3f-anim-spear-walk-inplace.glb",
+      "status": 206,
+      "ms": 64,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "glTF"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-3d-models/g9111r67kl6tq85g540sd",
+      "status": 404,
+      "ms": 58,
+      "bytes": 27150,
+      "contentLength": null,
+      "acao": "*",
+      "magic": "<!do"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-audio/g9111r67kl6tq85g540sd",
+      "status": 404,
+      "ms": 83,
+      "bytes": 27150,
+      "contentLength": null,
+      "acao": "*",
+      "magic": "<!do"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-audio/g9111r67kl6tq85g540sd/e62d5bb9-8c84-4464-8696-dbcf975f938b.mp3",
+      "status": 206,
+      "ms": 117,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "ID3\u0004"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-audio/g9111r67kl6tq85g540sd/3fbe58de-9d38-4d91-a002-794d0e979eb0.mp3",
+      "status": 206,
+      "ms": 103,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "ID3\u0004"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-audio/g9111r67kl6tq85g540sd/00baae5a-fde3-478a-8190-b1ad14d2e96d.mp3",
+      "status": 206,
+      "ms": 112,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "ID3\u0004"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-audio/g9111r67kl6tq85g540sd/73f19d09-0275-4c4b-87cd-eeeed26a616b.mp3",
+      "status": 206,
+      "ms": 99,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "ID3\u0004"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-audio/g9111r67kl6tq85g540sd/64ee8170-b796-413f-8249-f1deb7803393.mp3",
+      "status": 206,
+      "ms": 95,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "ID3\u0004"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-audio/g9111r67kl6tq85g540sd/20ebb41c-0b20-4b4b-8c75-5f78541722d3.mp3",
+      "status": 206,
+      "ms": 124,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "ID3\u0004"
+    },
+    {
+      "url": "https://r2-pub.rork.com/generated-audio/g9111r67kl6tq85g540sd/c89fa5ef-7904-4a5f-899e-e1973b13b30f.mp3",
+      "status": 206,
+      "ms": 111,
+      "bytes": 2048,
+      "contentLength": "2048",
+      "acao": "*",
+      "magic": "ID3\u0004"
+    }
+  ]
+}

@@ -4,6 +4,7 @@ import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js
 import type { ArenaLook, FloraLook } from "./arena";
 import { ARENA_LOOKS, DEFAULT_ARENA } from "./arena";
 import { terrainHeight } from "./battlefield";
+import { earthSurface, metalSurface, stoneSurface } from "./detail";
 import { QUALITY_SETTINGS, type QualityPreset } from "./quality";
 import { shaftTexture, sparkTexture } from "./textures";
 
@@ -208,12 +209,23 @@ export class JungleOverlay {
    * and always keeps the ring that frames the board.
    */
   private buildForest(): void {
+    const bark = earthSurface();
     const trunkGeo = this.track(new THREE.CylinderGeometry(0.28, 0.62, 1, 6, 1));
     trunkGeo.translate(0, 0.5, 0);
     const blobGeo = this.track(new THREE.IcosahedronGeometry(1, 0));
 
     const trunkMat = this.track(
-      new THREE.MeshStandardMaterial({ color: 0x5b4732, roughness: 1, metalness: 0, flatShading: true }),
+      new THREE.MeshStandardMaterial({
+        color: 0x5b4732,
+        roughness: 1,
+        metalness: 0,
+        flatShading: true,
+        // Bark relief. flatShading stays on for the faceted canopy read, but
+        // the normal map still gives the trunk close-range grain.
+        normalMap: bark.normalMap,
+        normalScale: new THREE.Vector2(1.2, 1.2),
+        roughnessMap: bark.roughnessMap,
+      }),
     );
     this.trunkMaterial = trunkMat;
 
@@ -393,12 +405,36 @@ export class JungleOverlay {
   // ----------------------------------------------------------------- temples
 
   private buildTemples(): void {
+    const templeRock = stoneSurface();
+    const gild = metalSurface();
     this.templeStone = this.track(
-      new THREE.MeshStandardMaterial({ color: 0xb3a785, roughness: 0.95, metalness: 0.02 }),
+      new THREE.MeshStandardMaterial({
+        color: 0xb3a785,
+        roughness: 0.95,
+        metalness: 0.02,
+        normalMap: templeRock.normalMap,
+        normalScale: new THREE.Vector2(1.1, 1.1),
+        roughnessMap: templeRock.roughnessMap,
+      }),
     );
-    this.templeMoss = this.track(new THREE.MeshStandardMaterial({ color: 0x6d8149, roughness: 1 }));
+    this.templeMoss = this.track(
+      new THREE.MeshStandardMaterial({
+        color: 0x6d8149,
+        roughness: 1,
+        normalMap: templeRock.normalMap,
+        normalScale: new THREE.Vector2(0.8, 0.8),
+      }),
+    );
     this.templeGold = this.track(
-      new THREE.MeshStandardMaterial({ color: 0xe2b64c, roughness: 0.32, metalness: 0.85 }),
+      new THREE.MeshStandardMaterial({
+        color: 0xe2b64c,
+        roughness: 0.32,
+        // Gold leaf is a metal: 1, not a 0.85 blend.
+        metalness: 1,
+        normalMap: gild.normalMap,
+        normalScale: new THREE.Vector2(0.4, 0.4),
+        roughnessMap: gild.roughnessMap,
+      }),
     );
 
     this.group.add(this.buildTemple(1.02, 58, 1, true));

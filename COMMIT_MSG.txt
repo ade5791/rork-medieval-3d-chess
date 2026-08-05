@@ -1,0 +1,32 @@
+Multiplayer: authoritative relay, online lobby, and three verified defect fixes
+
+Adds the online multiplayer layer and fixes three defects found by a live
+two-client browser test rather than by inspection.
+
+Layer:
+- server/: authoritative WebSocket relay. chess.js validates every move
+  server-side; clients render optimistically and resync on FEN divergence.
+  Seats are held 60s after a drop so a refresh reclaims the same colour.
+- web/src/net/: wire protocol (flat JSON, tagged, versioned), client state
+  machine with reconnect backoff, and the bridge into the game controller.
+- web/src/ui/OnlineLobby.tsx: host/join lobby with shareable invite links.
+
+Defects fixed (each found live, each now covered by a test):
+- D1 connection badge read OFFLINE during a live match. The shell subscribed
+  to the client's "status" event after the lobby handshake had already
+  reached "connected", so the initial event was missed. Now seeded from
+  client.getStatus() before subscribing.
+- D2 invite deep links were generated but never read. A ?room=CODE link
+  landed on the HOST tab with an empty field. Now preselects JOIN and
+  prefills the code.
+- D3 isValidRoomCode() truncated before checking length, so a 6-character
+  code validated true and silently resolved to a DIFFERENT room. Now counts
+  alphabet characters without truncating.
+
+Verification:
+- typecheck: tsc -b clean
+- unit: 79/79 vitest passing (21 new multiplayer tests)
+- server e2e: 37/37 passing (turn order, illegal moves, reconnect tokens,
+  forged tokens, room-full, bad version, malformed frames, resign, rematch)
+- live two-client browser duel: 10/10 checks, both clients seated in the same
+  hall, badge reads HALL <code>, zero console errors on either client

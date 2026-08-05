@@ -4,6 +4,7 @@ import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js
 import type { ArenaLook } from "./arena";
 import { ARENA_LOOKS, DEFAULT_ARENA } from "./arena";
 import { QUALITY_SETTINGS, type QualityPreset } from "./quality";
+import { earthSurface, metalSurface, stoneSurface } from "./detail";
 import { clothTexture, mudTexture, smokeTexture, sparkTexture } from "./textures";
 
 /**
@@ -58,6 +59,23 @@ const MAX_TROOPS = 320;
 const MAX_ASH = 220;
 const MAX_SMOKE = 90;
 const CROW_COUNT = 11;
+
+
+// TF_S2_PROP_SURFACE: attach relief + roughness variation to a prop material.
+// Shared, cached maps - no per-material texture allocation.
+function dressProp(
+  material: THREE.MeshStandardMaterial,
+  maps: { normalMap: THREE.Texture; roughnessMap: THREE.Texture },
+  strength = 0.45,
+): THREE.MeshStandardMaterial {
+  if (!material.normalMap) {
+    material.normalMap = maps.normalMap;
+    material.normalScale = new THREE.Vector2(strength, strength);
+  }
+  if (!material.roughnessMap) material.roughnessMap = maps.roughnessMap;
+  material.needsUpdate = true;
+  return material;
+}
 
 export class Battlefield {
   readonly group = new THREE.Group();
@@ -254,6 +272,10 @@ export class Battlefield {
   private buildPlain(): void {
     const map = this.track(mudTexture());
     map.repeat.set(64, 64);
+    // Churned mud relief, tiled to match the albedo so the two agree.
+    const ground = earthSurface();
+    ground.normalMap.repeat.set(64, 64);
+    ground.roughnessMap.repeat.set(64, 64);
     const geometry = this.track(new THREE.PlaneGeometry(320, 320, 110, 110));
     const position = geometry.getAttribute("position") as THREE.BufferAttribute;
     for (let i = 0; i < position.count; i += 1) {
@@ -265,7 +287,15 @@ export class Battlefield {
     geometry.computeVertexNormals();
 
     const material = this.track(
-      new THREE.MeshStandardMaterial({ map, color: 0x6b6055, roughness: 1, metalness: 0 }),
+      new THREE.MeshStandardMaterial({
+        map,
+        color: 0x6b6055,
+        roughness: 1,
+        metalness: 0,
+        normalMap: ground.normalMap,
+        normalScale: new THREE.Vector2(1.4, 1.4),
+        roughnessMap: ground.roughnessMap,
+      }),
     );
     this.plainMaterial = material;
     const plain = new THREE.Mesh(geometry, material);
@@ -284,7 +314,16 @@ export class Battlefield {
     const geometry = this.track(mergeGeometries([stake, tip], false) ?? stake);
     tip.dispose();
 
-    const material = this.track(new THREE.MeshStandardMaterial({ color: 0x3a2c1e, roughness: 0.95 }));
+    const stakeGrain = earthSurface();
+    const material = this.track(
+      new THREE.MeshStandardMaterial({
+        color: 0x4d3b2a,
+        roughness: 0.95,
+        normalMap: stakeGrain.normalMap,
+        normalScale: new THREE.Vector2(0.9, 0.9),
+        roughnessMap: stakeGrain.roughnessMap,
+      }),
+    );
     const count = 132;
     const mesh = new THREE.InstancedMesh(geometry, material, count);
     mesh.castShadow = true;
@@ -373,7 +412,7 @@ export class Battlefield {
   /** Pole + cloth banner whose vertices ripple in a shader-driven wind. */
   private addBanner(x: number, z: number, color: number): void {
     const ground = terrainHeight(x, z) - 0.7;
-    const poleMat = this.track(new THREE.MeshStandardMaterial({ color: 0x2c2118, roughness: 0.85 }));
+    const poleMat = this.track(dressProp(new THREE.MeshStandardMaterial({ color: 0x453427, roughness: 0.85 }), earthSurface()));
     const poleGeo = this.track(new THREE.CylinderGeometry(0.07, 0.09, 6.4, 6));
     const pole = new THREE.Mesh(poleGeo, poleMat);
     pole.position.set(x, ground + 3.2, z);
@@ -417,8 +456,20 @@ export class Battlefield {
   // --------------------------------------------------------- siege machines
 
   private buildSiegeEngines(): void {
-    const timber = this.track(new THREE.MeshStandardMaterial({ color: 0x241b13, roughness: 0.95 }));
-    const iron = this.track(new THREE.MeshStandardMaterial({ color: 0x1c1c20, roughness: 0.6, metalness: 0.55 }));
+    const timber = this.track(dressProp(new THREE.MeshStandardMaterial({ color: 0x3f3123, roughness: 0.95 }), earthSurface()));
+    const ironWork = metalSurface();
+    const iron = this.track(
+      new THREE.MeshStandardMaterial({
+        // Wrought siege iron: a metal, not a 0.55 blend. Albedo lifted off
+        // the 0.02 floor so it still reflects the torchlight.
+        color: 0x43434d,
+        roughness: 0.6,
+        metalness: 1,
+        normalMap: ironWork.normalMap,
+        normalScale: new THREE.Vector2(0.7, 0.7),
+        roughnessMap: ironWork.roughnessMap,
+      }),
+    );
     const beamGeo = this.track(new THREE.BoxGeometry(1, 1, 1));
     const wheelGeo = this.track(new THREE.TorusGeometry(0.9, 0.16, 6, 14));
 
@@ -514,7 +565,7 @@ export class Battlefield {
     shaft.dispose();
     head.dispose();
 
-    const spearMat = this.track(new THREE.MeshStandardMaterial({ color: 0x2f2519, roughness: 0.85, metalness: 0.25 }));
+    const spearMat = this.track(dressProp(new THREE.MeshStandardMaterial({ color: 0x473a29, roughness: 0.85, metalness: 0 }), earthSurface()));
     this.scatter(spearGeo, spearMat, 90, 24, 60, (dummy) => {
       dummy.rotation.set((this.rng() - 0.5) * 0.9, this.rng() * Math.PI, (this.rng() - 0.5) * 0.9);
       dummy.scale.setScalar(0.8 + this.rng() * 0.6);
@@ -522,7 +573,12 @@ export class Battlefield {
 
     const shieldGeo = this.track(new THREE.CylinderGeometry(0.62, 0.62, 0.1, 12));
     const shieldMat = this.track(
-      new THREE.MeshStandardMaterial({ color: 0x53402c, roughness: 0.8, metalness: 0.2 }),
+      new THREE.MeshStandardMaterial({
+        color: 0x53402c,
+        roughness: 0.8,
+        // Painted limewood: dielectric.
+        metalness: 0,
+      }),
     );
     this.scatter(shieldGeo, shieldMat, 46, 23, 52, (dummy) => {
       dummy.rotation.set(Math.PI / 2 - 0.35 - this.rng() * 1.2, this.rng() * Math.PI, this.rng() * 0.6);
@@ -530,14 +586,17 @@ export class Battlefield {
     });
 
     const rockGeo = this.track(new THREE.IcosahedronGeometry(0.55, 0));
-    const rockMat = this.track(new THREE.MeshStandardMaterial({ color: 0x4a4238, roughness: 1 }));
+    const rockMat = this.track(dressProp(new THREE.MeshStandardMaterial({ color: 0x4a4238, roughness: 1 }), stoneSurface(), 0.6));
     this.scatter(rockGeo, rockMat, 70, 22, 62, (dummy) => {
       dummy.rotation.set(this.rng() * 3, this.rng() * 3, this.rng() * 3);
       dummy.scale.set(0.5 + this.rng() * 1.6, 0.4 + this.rng() * 0.9, 0.5 + this.rng() * 1.6);
     });
 
     const wheelGeo = this.track(new THREE.TorusGeometry(0.85, 0.13, 5, 12));
-    const wheelMat = this.track(new THREE.MeshStandardMaterial({ color: 0x2a2118, roughness: 0.95 }));
+    // Was 0x2a2118 (linear luminance 0.0142) - under the 0.02 albedo floor.
+    const wheelMat = this.track(
+      dressProp(new THREE.MeshStandardMaterial({ color: 0x4b3d2d, roughness: 0.95 }), earthSurface()),
+    );
     this.scatter(wheelGeo, wheelMat, 14, 26, 55, (dummy) => {
       dummy.rotation.set(Math.PI / 2 - this.rng() * 0.5, this.rng() * Math.PI, 0);
       dummy.position.y += 0.2;
@@ -577,8 +636,12 @@ export class Battlefield {
 
   /** Camp pyres: stone ring, burning logs, a warm point light and a glow disc. */
   private buildPyres(): void {
-    const stoneMat = this.track(new THREE.MeshStandardMaterial({ color: 0x3d372f, roughness: 1 }));
-    const logMat = this.track(new THREE.MeshStandardMaterial({ color: 0x1d150e, roughness: 1 }));
+    const stoneMat = this.track(dressProp(new THREE.MeshStandardMaterial({ color: 0x4e4740, roughness: 1 }), stoneSurface(), 0.6));
+    // Was 0x1d150e (linear luminance 0.0074), the darkest violation in the
+    // audit. Charred wood is dark but it is not a black hole.
+    const logMat = this.track(
+      dressProp(new THREE.MeshStandardMaterial({ color: 0x453728, roughness: 1 }), earthSurface()),
+    );
     const ringGeo = this.track(new THREE.TorusGeometry(1.15, 0.24, 5, 12));
     const logGeo = this.track(new THREE.CylinderGeometry(0.16, 0.2, 1.8, 5));
     const flameGeo = this.track(new THREE.ConeGeometry(0.7, 1.9, 8));
@@ -677,7 +740,8 @@ export class Battlefield {
         new THREE.MeshStandardMaterial({
           color: army.tint,
           roughness: 0.95,
-          metalness: 0.2,
+          // Cloth and leather livery: dielectric, not a 0.2 metal blend.
+          metalness: 0,
           emissive: new THREE.Color(army.emissive),
           emissiveIntensity: 0.5,
         }),

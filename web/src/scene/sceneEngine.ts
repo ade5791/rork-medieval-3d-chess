@@ -6,6 +6,7 @@ import type { Faction, GameSnapshot, MoveEvent, PieceKind, SquareId } from "../c
 import { audio, type FootstepTimbre } from "../audio/audioManager";
 import type { ArenaTheme } from "./arena";
 import { ARENA_LOOKS, DEFAULT_ARENA } from "./arena";
+import { DEFAULT_ERA, ERAS, type EraId } from "./eras";
 import { Battlefield } from "./battlefield";
 import { JungleOverlay } from "./jungle";
 import { BOARD_TOP, BoardView, type HighlightKind, TILE, squareToWorld, worldToSquare } from "./board";
@@ -14,8 +15,19 @@ import { EffectsSystem, ShakeSystem } from "./effects";
 import { FACTION_ACCENT, PieceFactory, PieceView, type ClipName, type TemplateKey } from "./pieces";
 import { PostFX } from "./postfx";
 import { QUALITY_SETTINGS, type QualityPreset } from "./quality";
+import { disposeSurfaces } from "./detail";
+import { readReviewState } from "./reviewState";
 import { SPELL_LOOK, SpellLightPool, SpellOrb } from "./spells";
 import { disposeStrikeAssets, spawnGroundWave, spawnPillar, spawnSlash } from "./strikes";
+import {
+  CaptureMachine,
+  ContactLedger,
+  moveIdOf,
+  specForCapture,
+  withWatchdog,
+  type CombatPhase,
+} from "../core/combatMachine";
+import { rng } from "../core/rng";
 import { Ease, type Easing, TweenManager, wait } from "./tween";
 
 export type CameraPreset = "white" | "black" | "top" | "cinematic";
@@ -352,6 +364,8 @@ export class SceneEngine {
   private boardPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
 
   private selected: SquareId | null = null;
+  /** Online move interceptor; null in every offline mode. */
+  private moveSink: ((from: SquareId, to: SquareId, promotion?: PieceKind) => boolean) | null = null;
   private hoveredPiece: PieceView | null = null;
   private pointerDownAt: { x: number; y: number; square: SquareId | null } | null = null;
   private legalTargets = new Map<SquareId, boolean>();
@@ -359,14 +373,40 @@ export class SceneEngine {
 
   private lastFrameTime = 0;
   private elapsed = 0;
+  /** Deterministic review-state flags parsed from the query string. */
+  private review = readReviewState();
+  private probeFrameTimes: number[] = [];
   private frameId = 0;
   private running = false;
   private disposed = false;
   private frameErrors = 0;
+  /**
+   * Guarantees a capture applies its damage exactly once, keyed by a stable
+   * move id rather than by animation state. A retried or duplicated beat
+   * replays the visuals harmlessly but can never double-resolve the kill.
+   */
+  private readonly contacts = new ContactLedger();
+  /**
+   * The declared timing of the beat currently on screen, and the ledger that
+   * keeps its phase-machine contact separate from the board-level claim above.
+   * Exposed through the probe so a review capture can assert which window the
+   * scene is in without reading animation state.
+   */
+  private beat: CaptureMachine | null = null;
+  private readonly beatLedger = new ContactLedger();
+  private phase: CombatPhase = "done";
+  /** Beats cut short by the watchdog. Non-zero is a defect signal for QA. */
+  private beatTimeouts = 0;
+  /** Half-move counter, used to build the stable per-move id. */
+  private ply = 0;
+  /** Seeded stream for strike dressing - keeps staged captures reproducible. */
+  private readonly strikeRng = rng.fork("scene:engine");
   private blackFrameChecks = 0;
 
   private preset: QualityPreset;
   private arena: ArenaTheme = DEFAULT_ARENA;
+  /** Active historical era - the game mode. */
+  private era: EraId = DEFAULT_ERA;
   /** Travels with the camera so the near face of every figure stays readable. */
   private cameraLamp: THREE.DirectionalLight;
   private captureCinematics = true;
@@ -400,7 +440,24 @@ export class SceneEngine {
     private callbacks: SceneCallbacks,
     preset: QualityPreset,
     arena: ArenaTheme = DEFAULT_ARENA,
+    era: EraId = DEFAULT_ERA,
   ) {
+    // Deterministic review states: a capture harness pins the arena, the
+    // preset and post-processing through the query string so two builds can
+    // be diffed pixel-for-pixel. Inert when no query string is present.
+    if (this.review.era) era = this.review.era;
+    // The era names its own battleground. An explicit arena (caller or query
+    // string) still wins, so a capture can stage any era in any map.
+    const eraDef = ERAS[era] ?? ERAS[DEFAULT_ERA];
+    if (arena === DEFAULT_ARENA) arena = eraDef.arena;
+    if (this.review.arena) arena = this.review.arena;
+    if (this.review.quality) preset = this.review.quality;
+
+    this.era = era;
+    // Must precede load(): the factory normalises each sculpt to board height
+    // when it builds its templates, so the roster cannot change afterwards.
+    this.factory.setEra(era);
+
     this.preset = preset;
     this.arena = arena;
     const look = ARENA_LOOKS[arena];
@@ -469,6 +526,8 @@ export class SceneEngine {
     this.postfx.setGrade(look.grade);
     this.postfx.setBloom(look.bloom);
     this.postfx.setPreset(preset);
+    // NO-POST BASELINE GATE: the scene must read with the whole composer off.
+    if (this.review.noPost) this.postfx.forceDirect("no-post baseline gate");
 
     this.bindEvents();
     this.factory.onClip((keys, name, clip) => this.adoptClip(keys, name, clip));
@@ -478,6 +537,312 @@ export class SceneEngine {
     this.controller.on("illegal", ({ from }) => this.rejectMove(from));
     this.controller.on("gameover", () => void this.playEndCinematic());
     this.handleResize();
+    if (this.review.probe) this.installProbe();
+  }
+
+  /**
+   * Measurement probe for the capture harness. Exposes the real rendered state
+   * so a visual claim can be backed by numbers instead of an opinion: scene
+   * counts, a material census (albedo luminance, metalness, map channels) and
+   * a luminance histogram sampled off the actual framebuffer.
+   */
+  private installProbe(): void {
+    const srgbToLinear = (c: number): number =>
+      c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+
+    const api = {
+      ready: () => this.factory.isReady,
+      arena: () => this.arena,
+      era: () => this.era,
+      preset: () => this.preset,
+      postEnabled: () => this.postfx.enabled,
+      exposure: () => this.renderer.toneMappingExposure,
+      info: () => ({
+        calls: this.renderer.info.render.calls,
+        triangles: this.renderer.info.render.triangles,
+        programs: this.renderer.info.programs?.length ?? 0,
+        geometries: this.renderer.info.memory.geometries,
+        textures: this.renderer.info.memory.textures,
+      }),
+      /** Every light actually in the graph, with its contribution. */
+      lights: () => {
+        const out: Record<string, unknown>[] = [];
+        this.scene.traverse((node) => {
+          const light = node as THREE.Light;
+          if (!light.isLight) return;
+          out.push({
+            type: light.type,
+            name: light.name,
+            visible: light.visible,
+            intensity: light.intensity,
+            color: `#${light.color.getHexString()}`,
+            luminance: light.intensity * light.color.getHSL({ h: 0, s: 0, l: 0 }).l,
+          });
+        });
+        return out;
+      },
+      /** Material census against the photometric bar. */
+      /**
+       * Ground truth for the albedo floor check. ColorManagement converts a
+       * hex assignment into the linear working space on assignment, so
+       * material.color is ALREADY linear - running srgbToLinear over it again
+       * double-converts and under-reports every albedo.
+       */
+      albedoTruth: () => {
+        const seen = new Set<string>();
+        const rows: Record<string, unknown>[] = [];
+        this.scene.traverse((node) => {
+          const mesh = node as THREE.Mesh;
+          if (!mesh.isMesh) return;
+          const list = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+          for (const raw of list) {
+            const m = raw as THREE.MeshStandardMaterial;
+            if (!m || !m.isMeshStandardMaterial || seen.has(m.uuid)) continue;
+            seen.add(m.uuid);
+            const anyMat = m as unknown as { transparent?: boolean; blending?: number; depthWrite?: boolean };
+            const isFx =
+              anyMat.blending === THREE.AdditiveBlending ||
+              (anyMat.transparent === true && anyMat.depthWrite === false);
+            if (isFx) continue;
+            const lumWorking =
+              0.2126 * m.color.r + 0.7152 * m.color.g + 0.0722 * m.color.b;
+            const lumDouble =
+              0.2126 * srgbToLinear(m.color.r) +
+              0.7152 * srgbToLinear(m.color.g) +
+              0.0722 * srgbToLinear(m.color.b);
+            rows.push({
+              hex: `#${m.color.getHexString()}`,
+              lumWorking: Number(lumWorking.toFixed(5)),
+              lumDouble: Number(lumDouble.toFixed(5)),
+              hasMap: Boolean(m.map),
+              owner: mesh.name || mesh.type,
+            });
+          }
+        });
+        rows.sort((a, b) => (a.lumWorking as number) - (b.lumWorking as number));
+        const belowWorking = rows.filter((r) => (r.lumWorking as number) < 0.02 && !r.hasMap).length;
+        const belowDouble = rows.filter((r) => (r.lumDouble as number) < 0.02 && !r.hasMap).length;
+        return { count: rows.length, belowWorking, belowDouble, darkest: rows.slice(0, 10) };
+      },
+      /**
+       * On-screen size of every rank badge, projected through the live
+       * camera. Legibility is screen-space: a badge is only readable if its
+       * rendered footprint is large enough at the real play distance.
+       */
+      badgeMetrics: () => {
+        const cam = this.camera;
+        cam.updateMatrixWorld();
+        const w = this.renderer.domElement.width;
+        const h = this.renderer.domElement.height;
+        const shots: Record<string, unknown>[] = [];
+        const a = new THREE.Vector3();
+        const b = new THREE.Vector3();
+        this.scene.traverse((node) => {
+          const sprite = node as THREE.Sprite;
+          if (!sprite.isSprite || !sprite.visible) return;
+          if (!node.name || node.name.indexOf('badge') === -1) return;
+          sprite.updateMatrixWorld();
+          // Project the sprite centre and a point one half-height above it;
+          // the pixel gap between them is the on-screen half size.
+          a.setFromMatrixPosition(sprite.matrixWorld);
+          b.copy(a);
+          b.y += sprite.scale.y * 0.5;
+          const dist = a.distanceTo(cam.position);
+          a.project(cam);
+          b.project(cam);
+          const ax = (a.x * 0.5 + 0.5) * w;
+          const ay = (-a.y * 0.5 + 0.5) * h;
+          const by = (-b.y * 0.5 + 0.5) * h;
+          const halfPx = Math.abs(ay - by);
+          shots.push({
+            name: node.name,
+            x: Number(ax.toFixed(1)),
+            y: Number(ay.toFixed(1)),
+            pxHeight: Number((halfPx * 2).toFixed(1)),
+            camDistance: Number(dist.toFixed(2)),
+            onScreen: ax >= 0 && ax <= w && ay >= 0 && ay <= h && a.z < 1,
+          });
+        });
+        shots.sort((p, q) => (q.pxHeight as number) - (p.pxHeight as number));
+        const visible = shots.filter((s) => s.onScreen);
+        const heights = visible.map((s) => s.pxHeight as number);
+        return {
+          canvas: { w, h },
+          badgeCount: shots.length,
+          onScreenCount: visible.length,
+          minPx: heights.length ? Math.min(...heights) : null,
+          maxPx: heights.length ? Math.max(...heights) : null,
+          medianPx: heights.length ? heights.sort((p, q) => p - q)[Math.floor(heights.length / 2)] : null,
+          shots: visible.slice(0, 12),
+        };
+      },
+      materials: () => {
+        const seen = new Set<string>();
+        const rows: Record<string, unknown>[] = [];
+        this.scene.traverse((node) => {
+          const mesh = node as THREE.Mesh;
+          if (!mesh.isMesh) return;
+          const list = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+          for (const raw of list) {
+            const m = raw as THREE.MeshStandardMaterial;
+            if (!m || seen.has(m.uuid)) continue;
+            seen.add(m.uuid);
+            const isStd = Boolean(m.isMeshStandardMaterial);
+            let lum: number | null = null;
+            if (m.color) {
+              // material.color is ALREADY in the linear working space
+              // (ColorManagement converts on assignment). Converting again
+              // here under-reported every albedo and produced 104 phantom
+              // floor violations - measured via albedoTruth().
+              lum =
+                0.2126 * m.color.r + 0.7152 * m.color.g + 0.0722 * m.color.b;
+            }
+            const anyMat = m as unknown as {
+              transparent?: boolean;
+              blending?: number;
+              depthWrite?: boolean;
+              opacity?: number;
+            };
+            // The photometric bar applies to LIT, OPAQUE surfaces. Additive
+            // sprites, transparent decals and masks are excluded - they are
+            // emissive effects, not surfaces with an albedo.
+            const isFx =
+              !isStd ||
+              anyMat.blending === THREE.AdditiveBlending ||
+              (anyMat.transparent === true && anyMat.depthWrite === false);
+            rows.push({
+              type: m.type,
+              std: isStd,
+              surface: isStd && !isFx,
+              transparent: Boolean(anyMat.transparent),
+              additive: anyMat.blending === THREE.AdditiveBlending,
+              albedoLum: lum,
+              roughness: isStd ? m.roughness : null,
+              metalness: isStd ? m.metalness : null,
+              map: Boolean(m.map),
+              normalMap: Boolean(m.normalMap),
+              roughnessMap: Boolean(m.roughnessMap),
+              aoMap: Boolean(m.aoMap),
+              // Ownership. A violation count is not actionable unless the
+              // offending surface traces back to the module that built it,
+              // so carry the mesh name plus its ancestor chain.
+              owner: ((): string => {
+                const parts: string[] = [];
+                let n: THREE.Object3D | null = node;
+                for (let i = 0; n && i < 5; i += 1) {
+                  parts.push(n.name || n.type);
+                  n = n.parent;
+                }
+                return parts.join(" < ");
+              })(),
+              matName: m.name || "",
+            });
+          }
+        });
+        return rows;
+      },
+      /** Luminance histogram off the real framebuffer. */
+      histogram: () => {
+        // Read from a target we own. The default back buffer is undefined
+        // after compositing unless preserveDrawingBuffer is set, which would
+        // cost every user a permanent copy just to serve the probe.
+        const size = this.renderer.getSize(new THREE.Vector2());
+        const dpr = this.renderer.getPixelRatio();
+        const rtW = Math.max(1, Math.floor(size.x * dpr));
+        const rtH = Math.max(1, Math.floor(size.y * dpr));
+        const rt = new THREE.WebGLRenderTarget(rtW, rtH, {
+          type: THREE.UnsignedByteType,
+          colorSpace: THREE.SRGBColorSpace,
+        });
+        const prevTarget = this.renderer.getRenderTarget();
+        this.renderer.setRenderTarget(rt);
+        this.renderer.render(this.scene, this.camera);
+        const px = new Uint8Array(rtW * rtH * 4);
+        this.renderer.readRenderTargetPixels(rt, 0, 0, rtW, rtH, px);
+        this.renderer.setRenderTarget(prevTarget);
+        rt.dispose();
+        {
+          const bins = new Array(16).fill(0);
+          let sum = 0;
+          let count = 0;
+          let black = 0;
+          let clipped = 0;
+          const lums: number[] = [];
+          for (let i = 0; i < px.length; i += 4) {
+            const l = (0.2126 * px[i] + 0.7152 * px[i + 1] + 0.0722 * px[i + 2]) / 255;
+            bins[Math.min(15, Math.floor(l * 16))] += 1;
+            sum += l;
+            count += 1;
+            lums.push(l);
+            if (l < 0.02) black += 1;
+            if (l > 0.98) clipped += 1;
+          }
+          lums.sort((a, b) => a - b);
+          const q = (p: number) => lums[Math.min(lums.length - 1, Math.floor(lums.length * p))] ?? 0;
+          return {
+            width: rtW,
+            height: rtH,
+            mean: sum / count,
+            p05: q(0.05),
+            p50: q(0.5),
+            p95: q(0.95),
+            blackPct: Number(((black / count) * 100).toFixed(2)),
+            whitePct: Number(((clipped / count) * 100).toFixed(2)),
+            blackFraction: black / count,
+            clippedFraction: clipped / count,
+            bins: bins.map((b) => b / count),
+          };
+        }
+      },
+      /** Frame-time distribution over n frames. */
+      frameTimes: () => this.probeFrameTimes.slice(),
+      resetFrameTimes: () => {
+        this.probeFrameTimes = [];
+      },
+      setArena: (theme: ArenaTheme) => this.setArena(theme),
+      setQuality: (preset: QualityPreset) => this.setQuality(preset),
+      setCamera: (preset: CameraPreset) => this.setCameraPreset(preset),
+      /** Game state, so the combat gate can assert the turn loop released. */
+      controller: this.controller,
+      /**
+       * Roster census for the era gate. Counts the figures actually standing
+       * in the scene and how many carry a skinned rig, so an era can be proven
+       * to have loaded its own animated sculpts rather than silently falling
+       * back to the classic army or a procedural stand-in.
+       */
+      roster: () => {
+        let pieces = 0;
+        let skinned = 0;
+        const kinds: Record<string, number> = {};
+        for (const piece of this.pieces.values()) {
+          pieces += 1;
+          const key = `${piece.color}${piece.kind}`;
+          kinds[key] = (kinds[key] ?? 0) + 1;
+          let hasSkin = false;
+          piece.object.traverse((node) => {
+            if ((node as THREE.SkinnedMesh).isSkinnedMesh) hasSkin = true;
+          });
+          if (hasSkin) skinned += 1;
+        }
+        return { pieces, skinned, kinds };
+      },
+      /** Combat diagnostics for the S3 gate. */
+      combat: () => ({
+        // Distinct captures that have resolved damage. Must equal the number
+        // of captures in the ledger - never more.
+        contactsResolved: this.contacts.size,
+        // Which authored window the beat is in right now, read from the phase
+        // machine rather than inferred from what the sculpt happens to be doing.
+        combatPhase: this.phase,
+        // Beats cut short by the scene watchdog. Must be 0 on a clean run.
+        beatTimeouts: this.beatTimeouts,
+        ply: this.ply,
+        frameErrors: this.frameErrors,
+        animationTimeouts: this.controller.getAnimationTimeouts(),
+      }),
+    };
+
+    (window as unknown as { __kg: typeof api }).__kg = api;
   }
 
   // ---------------------------------------------------------------- lifecycle
@@ -529,9 +894,19 @@ export class SceneEngine {
 
   private frame(): void {
     const now = performance.now();
+    // Raw, unclamped wall time for measurement. The simulation still uses the
+    // clamped delta below - but recording the clamped value made every frame
+    // sample exactly 50ms and destroyed the distribution.
+    const rawFrameMs = Math.max(0, now - this.lastFrameTime);
     const delta = Math.min(0.05, Math.max(0, (now - this.lastFrameTime) / 1000));
     this.lastFrameTime = now;
     this.elapsed += delta;
+
+    // The capture beat runs on the same clock as everything it describes, so
+    // the declared window and the visual performance of that window can never
+    // drift apart. It holds no timers of its own: if this loop stops, the beat
+    // stops with it and the controller watchdog is what ends the turn.
+    this.beat?.advance(delta);
 
     this.tweens.update(delta);
     this.hall.update(delta);
@@ -574,6 +949,10 @@ export class SceneEngine {
     this.postfx.render(delta);
     this.camera.position.sub(this.shake.offset);
 
+    if (this.review.probe) {
+      this.probeFrameTimes.push(rawFrameMs);
+      if (this.probeFrameTimes.length > 2000) this.probeFrameTimes.shift();
+    }
     this.guardAgainstBlackFrames();
     this.sampleFps(delta);
   }
@@ -631,6 +1010,9 @@ export class SceneEngine {
     this.callbacks.onFps(Math.round(average));
 
     // One automatic step down if the detected preset is clearly too heavy.
+    // A pinned preset never steps down: recompiling lit materials mid-capture
+    // would invalidate the pixel diff.
+    if (this.review.pinQuality) return;
     if (this.autoAdjusted || this.elapsed < 8 || this.fpsSamples.length < 100) return;
     if (average >= 40) return;
     const order: QualityPreset[] = ["low", "medium", "high", "ultra"];
@@ -715,18 +1097,76 @@ export class SceneEngine {
     const from = squareToWorld(event.from);
     const to = squareToWorld(event.to);
 
+    // Stable identity for this move, independent of any animation state.
+    const moveId = moveIdOf(event, this.ply);
+    this.ply += 1;
+
     if (victim) {
       const strikeSquare = event.capture ? event.capture.square : event.to;
+      // Exactly-once contact, keyed on the stable move id and NEVER on
+      // animation state. A duplicated or retried beat still plays its visuals
+      // (they are harmless and idempotent) but must not resolve a second kill:
+      // the victim is already gone from this.pieces and sending it to the tray
+      // twice double-counts the material and can strand a disposed view.
+      const firstContact = this.contacts.claim(moveId);
+      if (!firstContact) {
+        console.warn("[scene] duplicate capture suppressed", moveId);
+        // Board bookkeeping only - no strike, no death, no tray hand-off.
+        this.motion.delete(piece);
+        piece.container.position.copy(to);
+        this.pieces.set(event.to, piece);
+        return;
+      }
       // The battle beat is a camera performance — it has no meaning on the map.
       if (this.captureCinematics && !this.tactical) {
+        // The beat is declared before it runs: the phase machine holds the
+        // authored startup/active/recovery windows for this rank and is the
+        // thing tests drive, while the awaited cinematic below is the visual
+        // performance of those same windows. The machine is fed the RESOLVED
+        // chess move, never the animation state.
+        const spec = specForCapture(event, this.ply - 1);
+        this.beat?.abort();
+        const beat = spec
+          ? new CaptureMachine(spec, this.beatLedger, {
+              onPhase: (change) => {
+                this.phase = change.to;
+              },
+            })
+          : null;
+        this.beat = beat;
+
         // The strike and the fall are the whole beat: make sure both figures
         // actually hold those clips before the fight starts.
         await this.armCombat(piece, victim);
         try {
-          // The casters kill at range; everyone else has to walk into the blow.
-          if (RANGED_KINDS.includes(piece.kind))
-            await this.playSpellCinematic(piece, victim, from, to, strikeSquare);
-          else await this.playCaptureCinematic(piece, victim, from, to, strikeSquare);
+          // BEAT WATCHDOG - the scene-layer half of the queen-freeze fix.
+          //
+          // GameController already bounds the whole animator call, but that
+          // ceiling is 12s: a stalled beat would hold the board visibly frozen
+          // for all of it. Bounding the beat itself here means a hung clip or a
+          // tween that never completes costs a cut-short flourish measured in
+          // the beat's own budget, and the turn loop keeps its own ceiling as a
+          // second line of defence.
+          const budget = spec ? spec.budget * 1000 : 6000;
+          const finished = await withWatchdog(
+            RANGED_KINDS.includes(piece.kind)
+              ? // The casters kill at range; everyone else walks into the blow.
+                this.playSpellCinematic(piece, victim, from, to, strikeSquare)
+              : this.playCaptureCinematic(piece, victim, from, to, strikeSquare),
+            budget,
+            () => {
+              this.beatTimeouts += 1;
+              console.warn("[scene] battle beat exceeded its budget", moveId);
+            },
+          );
+          if (!finished) {
+            // Put the stage back the way a completed beat would leave it, then
+            // finish the kill plainly so the board stays consistent.
+            this.camera.fov = DEFAULT_FOV;
+            this.camera.updateProjectionMatrix();
+            piece.setStrikeTilt(0);
+            if (!victim.isSlain) await this.crumble(victim, from);
+          }
         } catch (error) {
           // A broken effect must never strand a figure in the middle of a fight:
           // finish the kill the plain way so the board stays consistent.
@@ -735,6 +1175,10 @@ export class SceneEngine {
           this.camera.updateProjectionMatrix();
           piece.setStrikeTilt(0);
           if (!victim.isSlain) await this.crumble(victim, from);
+        } finally {
+          beat?.abort();
+          if (this.beat === beat) this.beat = null;
+          this.phase = "done";
         }
       } else {
         const approach = squareToWorld(event.from);
@@ -943,7 +1387,7 @@ export class SceneEngine {
       timbre: gait.timbre,
       // Alternating feet are never quite equal, and neither are two steps.
       volume: gait.volume * (index % 2 === 0 ? 1 : 0.93),
-      jitter: (Math.random() - 0.5) * 0.16,
+      jitter: this.strikeRng.signed(0.08),
     });
     if (!dust) return;
     this.effects.spawnSmoke(at.clone().setY(BOARD_TOP + 0.05), {
@@ -1126,7 +1570,7 @@ export class SceneEngine {
       void spawnSlash(this.scene, this.tweens, impact, {
         color: profile.slash.color,
         size: profile.slash.size,
-        tilt: -0.55 - Math.random() * 0.35,
+        tilt: -0.55 - this.strikeRng.next() * 0.35,
       });
     }
 
@@ -1446,7 +1890,9 @@ export class SceneEngine {
     const aim = target.clone();
     if (leader) {
       const side = new THREE.Vector3(0, 1, 0).cross(target.clone().sub(start).setY(0).normalize());
-      aim.addScaledVector(side, (Math.random() - 0.5) * 0.5).setY(target.y + (Math.random() - 0.4) * 0.3);
+      aim
+      .addScaledVector(side, this.strikeRng.signed(0.25))
+      .setY(target.y + (this.strikeRng.next() - 0.4) * 0.3);
     }
     const distance = start.distanceTo(aim);
     const flight = THREE.MathUtils.clamp(distance * 0.1, 0.22, 0.62);
@@ -1745,16 +2191,30 @@ export class SceneEngine {
       opacity: 0.7,
     });
 
-    const lateral = new THREE.Vector3(-blow.z, 0, blow.x).multiplyScalar((Math.random() - 0.5) * TILE * 0.7);
+    const lateral = new THREE.Vector3(-blow.z, 0, blow.x).multiplyScalar(this.strikeRng.signed(0.5) * TILE * 0.7);
     const distance = TILE * 2.5;
     const spinAxis = new THREE.Vector3(-blow.z, 0.35, blow.x).normalize();
-    const spin = Math.PI * (1.7 + Math.random() * 1.1);
+    const spin = Math.PI * this.strikeRng.range(1.7, 2.8);
     const tumble = new THREE.Quaternion();
     const position = new THREE.Vector3();
     let nextTrail = 0.14;
     let nextEmber = 0.2;
     const motes = Math.max(4, Math.round(settings.captureParticles * 0.16));
 
+    // CLEANUP CONTRACT: the figure's transform, dissolve and airborne flag are
+    // restored in a finally block, so an aborted tween, a thrown effect or a scene
+    // teardown mid-flight all land on the same resting state. Calling it twice
+    // is a no-op, which is what makes the beat safe to retry.
+    const settle = (): void => {
+      victim.setDissolve(1);
+      victim.setOpacity(0);
+      victim.container.scale.setScalar(1);
+      victim.container.quaternion.copy(rest);
+      victim.container.position.copy(start);
+      victim.setAirborne(false);
+    };
+
+    try {
     await this.tweens.to({
       duration: 0.82,
       easing: Ease.linear,
@@ -1830,12 +2290,9 @@ export class SceneEngine {
       life: 0.7,
     });
 
-    victim.setDissolve(1);
-    victim.setOpacity(0);
-    victim.container.scale.setScalar(1);
-    victim.container.quaternion.copy(rest);
-    victim.container.position.copy(start);
-    victim.setAirborne(false);
+    } finally {
+      settle();
+    }
   }
 
   /** Court pieces go down with the board: sunk and turned into a smoke column. */
@@ -1952,8 +2409,8 @@ export class SceneEngine {
     audio.deathCry(victim.color, victim.kind, {
       pan: this.stereoPan(chest),
       volume: weight.volume,
-      rate: weight.rate * (0.95 + Math.random() * 0.1),
-      delay: 0.03 + Math.random() * 0.05,
+      rate: weight.rate * this.strikeRng.range(0.95, 1.05),
+      delay: this.strikeRng.range(0.03, 0.08),
     });
   }
 
@@ -2545,6 +3002,15 @@ export class SceneEngine {
       this.clearSelection();
       promotion = await this.requestPromotion(color);
     }
+    // ONLINE: the sink hands the move to the relay and returns true because
+    // it was SENT - the figure only walks when the server echoes it back. In
+    // every offline mode the sink is null and this is the normal local path.
+    if (this.moveSink) {
+      const sent = this.moveSink(from, to, promotion);
+      this.clearSelection();
+      if (!sent) void this.rejectMove(from);
+      return;
+    }
     const ok = await this.controller.tryMove(from, to, promotion);
     if (!ok) void this.rejectMove(from);
   }
@@ -2763,6 +3229,15 @@ export class SceneEngine {
     }
   }
 
+  /**
+   * Optional interceptor for committed moves. When set (online play) the board
+   * does NOT apply the move locally - it hands it to the relay and waits for
+   * the authoritative echo. Returns true when the move was dispatched.
+   */
+  setMoveSink(sink: ((from: SquareId, to: SquareId, promotion?: PieceKind) => boolean) | null): void {
+    this.moveSink = sink;
+  }
+
   setInteractive(interactive: boolean): void {
     this.interactive = interactive;
     this.controls.enabled = interactive && !this.introPlaying && !this.attract;
@@ -2807,6 +3282,9 @@ export class SceneEngine {
   };
 
   dispose(): void {
+    // Shared surface-detail maps are module-cached across the scene, so
+    // they are not owned by any one subsystem's disposable list.
+    disposeSurfaces();
     this.disposed = true;
     this.running = false;
     cancelAnimationFrame(this.frameId);

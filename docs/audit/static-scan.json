@@ -1,0 +1,564 @@
+{
+  "generatedAt": "2026-08-04T22:27:20.186Z",
+  "fileCount": 87,
+  "totalLines": 19477,
+  "counts": {
+    "mathRandom": 99,
+    "perfNow": 8,
+    "disposeCall": 93,
+    "newVecInFn": 150,
+    "seededRng": 4,
+    "instancedMesh": 20,
+    "hemiLight": 2,
+    "pmrem": 1,
+    "setPixelRatio": 4,
+    "rafCall": 2,
+    "cancelRaf": 2,
+    "toneMapping": 5,
+    "outputColorSpace": 1
+  },
+  "perFile": {
+    "src/ai/engine.worker.ts": {
+      "mathRandom": 3,
+      "perfNow": 2
+    },
+    "src/audio/audioManager.ts": {
+      "mathRandom": 6
+    },
+    "src/components/ui/sidebar.tsx": {
+      "mathRandom": 1
+    },
+    "src/core/gameController.ts": {
+      "disposeCall": 1,
+      "perfNow": 4
+    },
+    "src/scene/battlefield.ts": {
+      "mathRandom": 4,
+      "disposeCall": 12,
+      "newVecInFn": 28,
+      "seededRng": 2,
+      "instancedMesh": 9
+    },
+    "src/scene/board.ts": {
+      "mathRandom": 3,
+      "disposeCall": 1,
+      "newVecInFn": 1
+    },
+    "src/scene/effects.ts": {
+      "mathRandom": 19,
+      "disposeCall": 11,
+      "newVecInFn": 3
+    },
+    "src/scene/environment.ts": {
+      "mathRandom": 8,
+      "hemiLight": 2,
+      "pmrem": 1,
+      "disposeCall": 10,
+      "newVecInFn": 3,
+      "instancedMesh": 1
+    },
+    "src/scene/jungle.ts": {
+      "mathRandom": 2,
+      "disposeCall": 7,
+      "newVecInFn": 1,
+      "seededRng": 2,
+      "instancedMesh": 10
+    },
+    "src/scene/pieces.ts": {
+      "mathRandom": 5,
+      "disposeCall": 9,
+      "newVecInFn": 28
+    },
+    "src/scene/postfx.ts": {
+      "disposeCall": 3,
+      "newVecInFn": 2,
+      "setPixelRatio": 2
+    },
+    "src/scene/rankBadges.ts": {
+      "disposeCall": 1
+    },
+    "src/scene/sceneEngine.ts": {
+      "mathRandom": 8,
+      "rafCall": 2,
+      "cancelRaf": 2,
+      "disposeCall": 20,
+      "perfNow": 2,
+      "newVecInFn": 35,
+      "toneMapping": 5,
+      "outputColorSpace": 1,
+      "setPixelRatio": 2
+    },
+    "src/scene/spells.ts": {
+      "disposeCall": 3
+    },
+    "src/scene/strikes.ts": {
+      "mathRandom": 1,
+      "disposeCall": 9,
+      "newVecInFn": 1
+    },
+    "src/scene/textures.ts": {
+      "mathRandom": 39
+    },
+    "src/scene/weapons.ts": {
+      "disposeCall": 4,
+      "newVecInFn": 48
+    },
+    "src/ui/GameShell.tsx": {
+      "disposeCall": 2
+    }
+  },
+  "frameAllocSuspects": [
+    {
+      "file": "src/scene/battlefield.ts",
+      "line": 214,
+      "owner": "smoothstep",
+      "code": "const topColor = new THREE.Color(layer.top);"
+    },
+    {
+      "file": "src/scene/battlefield.ts",
+      "line": 215,
+      "owner": "smoothstep",
+      "code": "const baseColor = new THREE.Color(layer.base);"
+    },
+    {
+      "file": "src/scene/effects.ts",
+      "line": 322,
+      "owner": "update",
+      "code": "readonly offset = new THREE.Vector3();"
+    },
+    {
+      "file": "src/scene/environment.ts",
+      "line": 500,
+      "owner": "update",
+      "code": "topColor: { value: new THREE.Color(look.environment.top) },"
+    },
+    {
+      "file": "src/scene/environment.ts",
+      "line": 501,
+      "owner": "update",
+      "code": "bottomColor: { value: new THREE.Color(look.environment.bottom) },"
+    },
+    {
+      "file": "src/scene/environment.ts",
+      "line": 502,
+      "owner": "update",
+      "code": "glowColor: { value: new THREE.Color(look.environment.glow) },"
+    },
+    {
+      "file": "src/scene/pieces.ts",
+      "line": 133,
+      "owner": "smoothstep",
+      "code": "positiveX: new THREE.Vector3(1, 0, 0),"
+    },
+    {
+      "file": "src/scene/pieces.ts",
+      "line": 134,
+      "owner": "smoothstep",
+      "code": "negativeX: new THREE.Vector3(-1, 0, 0),"
+    },
+    {
+      "file": "src/scene/pieces.ts",
+      "line": 135,
+      "owner": "smoothstep",
+      "code": "positiveY: new THREE.Vector3(0, 1, 0),"
+    },
+    {
+      "file": "src/scene/pieces.ts",
+      "line": 136,
+      "owner": "smoothstep",
+      "code": "negativeY: new THREE.Vector3(0, -1, 0),"
+    },
+    {
+      "file": "src/scene/pieces.ts",
+      "line": 137,
+      "owner": "smoothstep",
+      "code": "positiveZ: new THREE.Vector3(0, 0, 1),"
+    },
+    {
+      "file": "src/scene/pieces.ts",
+      "line": 138,
+      "owner": "smoothstep",
+      "code": "negativeZ: new THREE.Vector3(0, 0, -1),"
+    },
+    {
+      "file": "src/scene/pieces.ts",
+      "line": 145,
+      "owner": "smoothstep",
+      "code": "const r = new THREE.Vector3().crossVectors(up, f).normalize();"
+    },
+    {
+      "file": "src/scene/pieces.ts",
+      "line": 146,
+      "owner": "smoothstep",
+      "code": "const u = new THREE.Vector3().crossVectors(f, r).normalize();"
+    },
+    {
+      "file": "src/scene/pieces.ts",
+      "line": 147,
+      "owner": "smoothstep",
+      "code": "return new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().makeBasis(r, u, f));"
+    },
+    {
+      "file": "src/scene/pieces.ts",
+      "line": 159,
+      "owner": "smoothstep",
+      "code": "const world = basisQuaternion(desiredWorldForward, new THREE.Vector3(0, 1, 0));"
+    },
+    {
+      "file": "src/scene/pieces.ts",
+      "line": 167,
+      "owner": "smoothstep",
+      "code": "const box = new THREE.Box3();"
+    },
+    {
+      "file": "src/scene/pieces.ts",
+      "line": 168,
+      "owner": "smoothstep",
+      "code": "const childBox = new THREE.Box3();"
+    },
+    {
+      "file": "src/scene/pieces.ts",
+      "line": 169,
+      "owner": "smoothstep",
+      "code": "const toRoot = new THREE.Matrix4();"
+    },
+    {
+      "file": "src/scene/pieces.ts",
+      "line": 177,
+      "owner": "smoothstep",
+      "code": "childBox.copy(skinned.boundingBox ?? new THREE.Box3());"
+    },
+    {
+      "file": "src/scene/pieces.ts",
+      "line": 180,
+      "owner": "smoothstep",
+      "code": "childBox.copy(mesh.geometry.boundingBox ?? new THREE.Box3());"
+    },
+    {
+      "file": "src/scene/pieces.ts",
+      "line": 1116,
+      "owner": "updateSlain",
+      "code": "material.emissive = new THREE.Color(color === \"w\" ? 0x2a4d94 : 0x711a12);"
+    },
+    {
+      "file": "src/scene/pieces.ts",
+      "line": 1126,
+      "owner": "updateSlain",
+      "code": "material.emissive = new THREE.Color(0x2a4d94);"
+    },
+    {
+      "file": "src/scene/pieces.ts",
+      "line": 1131,
+      "owner": "updateSlain",
+      "code": "material.emissive = new THREE.Color(0x711a12);"
+    },
+    {
+      "file": "src/scene/pieces.ts",
+      "line": 1443,
+      "owner": "loadAnimated",
+      "code": "const size = new THREE.Vector3();"
+    },
+    {
+      "file": "src/scene/pieces.ts",
+      "line": 1448,
+      "owner": "loadAnimated",
+      "code": "const centre = new THREE.Vector3();"
+    },
+    {
+      "file": "src/scene/pieces.ts",
+      "line": 1450,
+      "owner": "loadAnimated",
+      "code": "const offset = new THREE.Vector3(-centre.x * scale, -box.min.y * scale, -centre.z * scale);"
+    },
+    {
+      "file": "src/scene/pieces.ts",
+      "line": 1479,
+      "owner": "loadAnimated",
+      "code": "view.setFacing(new THREE.Vector3(0, 0, color === \"w\" ? -1 : 1));"
+    },
+    {
+      "file": "src/scene/postfx.ts",
+      "line": 116,
+      "owner": "smoothstep",
+      "code": "const size = new THREE.Vector2();"
+    },
+    {
+      "file": "src/scene/postfx.ts",
+      "line": 139,
+      "owner": "smoothstep",
+      "code": "new THREE.Vector2(size.x, size.y),"
+    },
+    {
+      "file": "src/scene/sceneEngine.ts",
+      "line": 422,
+      "owner": "blackFrameChecks",
+      "code": "this.scene.background = new THREE.Color(look.background);"
+    },
+    {
+      "file": "src/scene/sceneEngine.ts",
+      "line": 680,
+      "owner": "guardAgainstBlackFrames",
+      "code": "return new THREE.Vector3(x, 0, z);"
+    },
+    {
+      "file": "src/scene/sceneEngine.ts",
+      "line": 1448,
+      "owner": "onUpdate",
+      "code": "const side = new THREE.Vector3(0, 1, 0).cross(target.clone().sub(start).setY(0).normalize());"
+    },
+    {
+      "file": "src/scene/sceneEngine.ts",
+      "line": 1467,
+      "owner": "onUpdate",
+      "code": "const at = new THREE.Vector3();"
+    },
+    {
+      "file": "src/scene/sceneEngine.ts",
+      "line": 1748,
+      "owner": "onUpdate",
+      "code": "const lateral = new THREE.Vector3(-blow.z, 0, blow.x).multiplyScalar((Math.random() - 0.5) * TILE * 0.7);"
+    },
+    {
+      "file": "src/scene/sceneEngine.ts",
+      "line": 1750,
+      "owner": "onUpdate",
+      "code": "const spinAxis = new THREE.Vector3(-blow.z, 0.35, blow.x).normalize();"
+    },
+    {
+      "file": "src/scene/sceneEngine.ts",
+      "line": 1752,
+      "owner": "onUpdate",
+      "code": "const tumble = new THREE.Quaternion();"
+    },
+    {
+      "file": "src/scene/sceneEngine.ts",
+      "line": 1753,
+      "owner": "onUpdate",
+      "code": "const position = new THREE.Vector3();"
+    },
+    {
+      "file": "src/scene/sceneEngine.ts",
+      "line": 1847,
+      "owner": "onUpdate",
+      "code": "const up = new THREE.Vector3(0, 1, 0);"
+    },
+    {
+      "file": "src/scene/sceneEngine.ts",
+      "line": 1848,
+      "owner": "onUpdate",
+      "code": "const swirl = new THREE.Quaternion();"
+    },
+    {
+      "file": "src/scene/sceneEngine.ts",
+      "line": 1970,
+      "owner": "onUpdate",
+      "code": "const axis = new THREE.Vector3(blow.z, 0, -blow.x).normalize();"
+    },
+    {
+      "file": "src/scene/sceneEngine.ts",
+      "line": 1971,
+      "owner": "onUpdate",
+      "code": "const fallen = new THREE.Quaternion().setFromAxisAngle(axis, -Math.PI * 0.46);"
+    },
+    {
+      "file": "src/scene/sceneEngine.ts",
+      "line": 2166,
+      "owner": "onUpdate",
+      "code": "const up = new THREE.Vector3(0, 1, 0).applyQuaternion(this.camera.quaternion);"
+    },
+    {
+      "file": "src/scene/sceneEngine.ts",
+      "line": 2196,
+      "owner": "onUpdate",
+      "code": "this.camera.position.copy(target.clone().add(new THREE.Vector3().setFromSpherical(spherical)));"
+    },
+    {
+      "file": "src/scene/sceneEngine.ts",
+      "line": 2236,
+      "owner": "onUpdate",
+      "code": "{ position: new THREE.Vector3(13.5, 2.1, 12.5), target: new THREE.Vector3(5, 3.2, 3.5) },"
+    },
+    {
+      "file": "src/scene/sceneEngine.ts",
+      "line": 2237,
+      "owner": "onUpdate",
+      "code": "{ position: new THREE.Vector3(8.5, 2.4, 10.5), target: new THREE.Vector3(0, 1.4, 0) },"
+    },
+    {
+      "file": "src/scene/sceneEngine.ts",
+      "line": 2238,
+      "owner": "onUpdate",
+      "code": "{ position: new THREE.Vector3(2.6, 4.2, 9.6), target: new THREE.Vector3(0, 0.6, 0) },"
+    },
+    {
+      "file": "src/scene/sceneEngine.ts",
+      "line": 2273,
+      "owner": "onUpdate",
+      "code": "let focus = new THREE.Vector3(0, 0.6, 0);"
+    },
+    {
+      "file": "src/scene/sceneEngine.ts",
+      "line": 2412,
+      "owner": "updatePointer",
+      "code": "const point = new THREE.Vector3();"
+    },
+    {
+      "file": "src/scene/strikes.ts",
+      "line": 246,
+      "owner": "onUpdate",
+      "code": "const lightAt = new THREE.Vector3(at.x, options.floor + 0.9, at.z);"
+    }
+  ],
+  "inventory": [
+    {
+      "file": "src/scene/sceneEngine.ts",
+      "bytes": 106859,
+      "lines": 2841
+    },
+    {
+      "file": "src/scene/pieces.ts",
+      "bytes": 58108,
+      "lines": 1553
+    },
+    {
+      "file": "src/scene/battlefield.ts",
+      "bytes": 40014,
+      "lines": 1019
+    },
+    {
+      "file": "src/audio/audioManager.ts",
+      "bytes": 38616,
+      "lines": 1029
+    },
+    {
+      "file": "src/scene/weapons.ts",
+      "bytes": 34734,
+      "lines": 872
+    },
+    {
+      "file": "src/scene/board.ts",
+      "bytes": 28911,
+      "lines": 869
+    },
+    {
+      "file": "src/scene/jungle.ts",
+      "bytes": 25351,
+      "lines": 644
+    },
+    {
+      "file": "src/scene/textures.ts",
+      "bytes": 25112,
+      "lines": 706
+    },
+    {
+      "file": "src/scene/environment.ts",
+      "bytes": 20685,
+      "lines": 547
+    },
+    {
+      "file": "src/ui/Hud.tsx",
+      "bytes": 20194,
+      "lines": 555
+    },
+    {
+      "file": "src/core/gameController.ts",
+      "bytes": 18693,
+      "lines": 586
+    },
+    {
+      "file": "src/ui/GameShell.tsx",
+      "bytes": 17393,
+      "lines": 467
+    },
+    {
+      "file": "src/assets/generated.ts",
+      "bytes": 12540,
+      "lines": 226
+    },
+    {
+      "file": "src/scene/rankBadges.ts",
+      "bytes": 12120,
+      "lines": 443
+    },
+    {
+      "file": "src/scene/effects.ts",
+      "bytes": 11523,
+      "lines": 343
+    },
+    {
+      "file": "src/scene/arena.ts",
+      "bytes": 11414,
+      "lines": 292
+    },
+    {
+      "file": "src/ui/MainMenu.tsx",
+      "bytes": 10481,
+      "lines": 273
+    },
+    {
+      "file": "src/ai/engine.worker.ts",
+      "bytes": 10414,
+      "lines": 289
+    },
+    {
+      "file": "src/ui/MoveLedger.tsx",
+      "bytes": 9828,
+      "lines": 290
+    },
+    {
+      "file": "src/scene/strikes.ts",
+      "bytes": 9095,
+      "lines": 286
+    },
+    {
+      "file": "src/scene/postfx.ts",
+      "bytes": 8421,
+      "lines": 257
+    },
+    {
+      "file": "src/scene/spells.ts",
+      "bytes": 7345,
+      "lines": 213
+    },
+    {
+      "file": "src/ui/SettingsPanel.tsx",
+      "bytes": 5934,
+      "lines": 153
+    },
+    {
+      "file": "src/scene/quality.ts",
+      "bytes": 4654,
+      "lines": 167
+    },
+    {
+      "file": "src/core/types.ts",
+      "bytes": 3717,
+      "lines": 149
+    },
+    {
+      "file": "src/ui/GameOverModal.tsx",
+      "bytes": 3426,
+      "lines": 87
+    },
+    {
+      "file": "src/scene/tween.ts",
+      "bytes": 3215,
+      "lines": 102
+    },
+    {
+      "file": "src/ui/Heraldry.tsx",
+      "bytes": 2556,
+      "lines": 76
+    },
+    {
+      "file": "src/ai/aiClient.ts",
+      "bytes": 2308,
+      "lines": 83
+    },
+    {
+      "file": "src/core/emitter.ts",
+      "bytes": 901,
+      "lines": 33
+    }
+  ]
+}

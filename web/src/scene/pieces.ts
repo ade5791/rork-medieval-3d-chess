@@ -9,8 +9,10 @@ import {
   type PieceAnimationSet,
 } from "../assets/generated";
 import type { Faction, PieceKind } from "../core/types";
+import { DEFAULT_ERA, ERAS, type EraId, type EraRoster } from "./eras";
 import { BADGE_LIFT, BADGE_SCALE, TOKEN_SCALE, rankBadgeTexture, tacticalTokenTexture } from "./rankBadges";
 import { radialTexture } from "./textures";
+import { wearSurface } from "./detail";
 import { Ease, type TweenManager } from "./tween";
 import { attachWeapons, type AttachedArms } from "./weapons";
 
@@ -435,6 +437,8 @@ export class PieceView {
       sizeAttenuation: true,
     });
     const badge = new THREE.Sprite(material);
+    // Named so graph queries (legibility probe, QA tooling) can find it.
+    badge.name = `badge_${this.color}_${this.kind}`;
     badge.scale.setScalar(BADGE_SCALE[this.kind]);
     badge.position.y = PIECE_HEIGHT[this.kind] + BADGE_LIFT;
     badge.renderOrder = 40;
@@ -1112,7 +1116,11 @@ function applyFactionLook(
     // destroyed by a flat tint, so only the surface response is touched.
     material.color.setHex(0xffffff);
     material.roughness = Math.min(0.85, material.roughness * 0.9 + 0.18);
-    material.metalness = Math.max(0.08, Math.min(0.4, material.metalness));
+    // Metals are binary. The old clamp forced every painted piece into
+    // 0.08-0.4, which is physically neither metal nor dielectric and is why
+    // the armour read as shiny plastic. Snap to the nearest valid pole.
+    material.metalness = material.metalness >= 0.5 ? 1 : 0;
+    applyWear(material);
     material.emissive = new THREE.Color(color === "w" ? 0x2a4d94 : 0x711a12);
     material.emissiveIntensity = 0.05;
     material.envMapIntensity = 1.05;
@@ -1121,17 +1129,35 @@ function applyFactionLook(
   }
   if (color === "w") {
     material.color.setHex(0xfff2dd);
-    material.roughness = 0.34;
-    material.metalness = 0.1;
+    material.roughness = 0.42;
+    // Carved bone/ivory is a dielectric, not a 0.1 metal blend.
+    material.metalness = 0;
     material.emissive = new THREE.Color(0x2a4d94);
   } else {
     material.color.setHex(0x34363d);
-    material.roughness = 0.3;
-    material.metalness = 0.55;
+    material.roughness = 0.38;
+    // Blackened forged steel: a real metal, so 1 rather than the 0.55 blend.
+    material.metalness = 1;
     material.emissive = new THREE.Color(0x711a12);
   }
   material.emissiveIntensity = 0.05;
   material.envMapIntensity = 1.15;
+  applyWear(material);
+  material.needsUpdate = true;
+}
+
+// Edge wear + cavity grime. Without this the pieces have one uniform
+// roughness across the whole sculpt, which is what reads as untextured at
+// close camera distance regardless of how good the albedo is.
+function applyWear(material: THREE.MeshStandardMaterial): void {
+  const wear = wearSurface();
+  if (!material.roughnessMap) {
+    material.roughnessMap = wear.roughnessMap;
+  }
+  if (!material.normalMap) {
+    material.normalMap = wear.normalMap;
+    material.normalScale = new THREE.Vector2(0.3, 0.3);
+  }
   material.needsUpdate = true;
 }
 
@@ -1249,6 +1275,38 @@ export class PieceFactory {
   private clipJobs = new Map<string, Promise<THREE.AnimationClip | null>>();
   private clipListener: ClipListener | null = null;
   private warming: Promise<void> | null = null;
+  /** Active historical era - decides which roster each faction fields. */
+  private era: EraId = DEFAULT_ERA;
+
+  /**
+   * Selects the era whose roster the next `load()` builds. Must be set before
+   * loading; switching afterwards requires a fresh factory, because templates
+   * are normalised to board height at load time.
+   */
+  setEra(era: EraId): void {
+    this.era = era;
+  }
+
+  get activeEra(): EraId {
+    return this.era;
+  }
+
+  /** The era's roster, or null when the era uses the built-in armies. */
+  private eraRoster(): EraRoster | null {
+    return ERAS[this.era]?.roster ?? null;
+  }
+
+  /**
+   * The animation set a faction/kind should render. An era roster is shared by
+   * both armies - the livery pass tints them apart - so the same entry answers
+   * for "w" and "b", falling back to the built-in sculpt for any kind the era
+   * has not sculpted yet.
+   */
+  private animationSet(faction: Faction, kind: PieceKind): PieceAnimationSet | undefined {
+    const roster = this.eraRoster();
+    if (roster && roster[kind]) return roster[kind];
+    return PIECE_ANIMATED_MODELS[faction][kind];
+  }
 
   get isReady(): boolean {
     return this.loaded;
@@ -1266,7 +1324,8 @@ export class PieceFactory {
     for (const faction of factions) {
       for (const kind of kinds) {
         // Only load a second roster where the faction really owns a sculpt.
-        if (faction === "b" && !PIECE_MODEL_URLS.b[kind]) continue;
+        // Under an era roster both armies render era sculpts, so both load.
+        if (faction === "b" && !this.eraRoster() && !PIECE_MODEL_URLS.b[kind]) continue;
         jobs.push({ faction, kind });
       }
     }
@@ -1299,7 +1358,7 @@ export class PieceFactory {
 
   /** Rigged sculpt when the army has one, else its static GLB. */
   private async loadRoster(faction: Faction, kind: PieceKind): Promise<Template> {
-    const animated = PIECE_ANIMATED_MODELS[faction][kind];
+    const animated = this.animationSet(faction, kind);
     const still = PIECE_MODEL_URLS[faction][kind];
     if (animated) {
       try {
@@ -1504,7 +1563,12 @@ export class PieceFactory {
  */
 export function buildProceduralFigure(kind: PieceKind): THREE.Object3D {
   const group = new THREE.Group();
-  const stone = new THREE.MeshStandardMaterial({ color: 0xe8e0cf, roughness: 0.5, metalness: 0.1 });
+  const stone = new THREE.MeshStandardMaterial({
+    color: 0xe8e0cf,
+    roughness: 0.5,
+    // Carved stone fallback: dielectric.
+    metalness: 0,
+  });
 
   const base = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.4, 0.12, 20), stone);
   base.position.y = 0.06;

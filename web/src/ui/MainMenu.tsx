@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Clapperboard, Crown, Swords, Settings as SettingsIcon, Users } from "lucide-react";
+import { Clapperboard, Crown, Globe, Swords, Settings as SettingsIcon, Users } from "lucide-react";
 
 import type { DemoOptions, Difficulty, Faction } from "../core/types";
 import { Crest } from "./Heraldry";
@@ -14,6 +14,8 @@ export interface MatchConfig {
 
 interface MainMenuProps {
   onStart: (config: MatchConfig) => void;
+  /** Opens the online lobby (host / join a hall by code). */
+  onPlayOnline: () => void;
   onOpenSettings: () => void;
   attract: boolean;
   onInteract: () => void;
@@ -39,8 +41,8 @@ const CLOCKS: { label: string; value: number | null }[] = [
   { label: "15 min", value: 15 },
 ];
 
-export function MainMenu({ onStart, onOpenSettings, attract, onInteract }: MainMenuProps) {
-  const [tab, setTab] = useState<"ai" | "hotseat" | "demo">("ai");
+export function MainMenu({ onStart, onPlayOnline, onOpenSettings, attract, onInteract }: MainMenuProps) {
+  const [tab, setTab] = useState<"ai" | "hotseat" | "online" | "demo">("ai");
   const [difficulty, setDifficulty] = useState<Difficulty>("medium");
   const [playerColor, setPlayerColor] = useState<Faction>("w");
   const [clock, setClock] = useState<number | null>(null);
@@ -49,7 +51,11 @@ export function MainMenu({ onStart, onOpenSettings, attract, onInteract }: MainM
   const [demoSpeed, setDemoSpeed] = useState(1);
   const [demoLoop, setDemoLoop] = useState(true);
 
-  const start = (): void =>
+  const start = (): void => {
+    if (tab === "online") {
+      onPlayOnline();
+      return;
+    }
     onStart({
       mode: tab,
       difficulty,
@@ -57,6 +63,7 @@ export function MainMenu({ onStart, onOpenSettings, attract, onInteract }: MainM
       clockMinutes: tab === "demo" ? null : clock,
       demo: tab === "demo" ? { white: demoWhite, black: demoBlack, speed: demoSpeed, autoRematch: demoLoop } : undefined,
     });
+  };
 
   return (
     <div
@@ -76,7 +83,7 @@ export function MainMenu({ onStart, onOpenSettings, attract, onInteract }: MainM
       </div>
 
       <div className="mc-slate mc-goldleaf mc-rise flex w-full min-h-0 max-w-md flex-col p-5 sm:p-6">
-        <div className="mb-5 grid shrink-0 grid-cols-3 gap-2">
+        <div className="mb-5 grid shrink-0 grid-cols-2 gap-2 sm:grid-cols-4">
           <button
             type="button"
             className="mc-chip flex items-center justify-center gap-1.5 px-1 py-3"
@@ -92,6 +99,14 @@ export function MainMenu({ onStart, onOpenSettings, attract, onInteract }: MainM
             onClick={() => setTab("hotseat")}
           >
             <Users size={14} /> 2 Players
+          </button>
+          <button
+            type="button"
+            className="mc-chip flex items-center justify-center gap-1.5 px-1 py-3"
+            data-active={tab === "online"}
+            onClick={() => setTab("online")}
+          >
+            <Globe size={14} /> Online
           </button>
           <button
             type="button"
@@ -146,6 +161,16 @@ export function MainMenu({ onStart, onOpenSettings, attract, onInteract }: MainM
           <p className="mc-fade text-sm italic leading-relaxed text-[#b7a88a]">
             Two commanders, one board. The camera swings to the player on move — you can disable that in settings.
           </p>
+        ) : tab === "online" ? (
+          <div className="mc-fade space-y-3">
+            <p className="text-sm italic leading-relaxed text-[#b7a88a]">
+              Duel a friend across the world. Open a hall and send them the five-character code, or ride to theirs.
+            </p>
+            <p className="text-xs italic leading-relaxed text-[#9c8b6c]">
+              The relay keeps the board honest — every move is checked before it reaches your opponent. Lose your
+              connection and your seat is held for a minute while you ride back.
+            </p>
+          </div>
         ) : (
           <div className="mc-fade space-y-5">
             <p className="text-sm italic leading-relaxed text-[#b7a88a]">
@@ -217,7 +242,7 @@ export function MainMenu({ onStart, onOpenSettings, attract, onInteract }: MainM
           </div>
         )}
 
-        {tab === "demo" ? null : (
+        {tab === "demo" || tab === "online" ? null : (
           <div className="mt-5">
             <p className="mc-display mb-2 text-[0.62rem] tracking-[0.3em] text-[#a89268]">Hourglass</p>
             <div className="grid grid-cols-4 gap-2">
@@ -246,6 +271,10 @@ export function MainMenu({ onStart, onOpenSettings, attract, onInteract }: MainM
           {tab === "demo" ? (
             <>
               <Clapperboard size={16} /> Roll the showcase
+            </>
+          ) : tab === "online" ? (
+            <>
+              <Globe size={16} /> Enter the lobby
             </>
           ) : (
             <>

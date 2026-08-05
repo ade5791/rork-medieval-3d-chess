@@ -1,0 +1,27 @@
+{
+  "note": "Raw Meshy text-to-3d outputs for the Sengoku era. EXPIRING vendor URLs - inputs to the pre-rig gate and the rig step only, never shipped as asset references.",
+  "p": {
+    "name": "Ashigaru",
+    "mesh": "https://v3b.fal.media/files/b/0aa51479/6OSSFdpq3qJpLYVkvEhMN_model.glb"
+  },
+  "n": {
+    "name": "Samurai Cavalry",
+    "mesh": "https://v3b.fal.media/files/b/0aa51489/r8ASpBxw0XLDVvq0SBxwF_model.glb"
+  },
+  "b": {
+    "name": "Sohei Monk",
+    "mesh": "https://v3b.fal.media/files/b/0aa5149c/uKtZI6f0F56xNA37AQ6Wt_model.glb"
+  },
+  "r": {
+    "name": "Castle Guard",
+    "mesh": "https://v3b.fal.media/files/b/0aa514bf/Sx1I-ZtBwqGoFJtsnWOIJ_model.glb"
+  },
+  "q": {
+    "name": "Onna-bugeisha",
+    "mesh": "https://v3b.fal.media/files/b/0aa514cf/gODDtQN3D7HCz0Ra2A54M_model.glb"
+  },
+  "k": {
+    "name": "Daimyo",
+    "mesh": "https://v3b.fal.media/files/b/0aa514cf/AIVfdqRiXh12kg7ck9L7w_model.glb"
+  }
+}

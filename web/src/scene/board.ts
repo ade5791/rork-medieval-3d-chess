@@ -3,6 +3,7 @@ import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeom
 
 import type { SquareId } from "../core/types";
 import type { ArenaLook } from "./arena";
+import { marbleSurface, metalSurface } from "./detail";
 import {
   boardBorderTexture,
   captureMarkerTexture,
@@ -189,6 +190,10 @@ export class BoardView {
   readonly group = new THREE.Group();
   readonly tiles: THREE.Mesh[] = [];
 
+  private marbleSurface!: ReturnType<typeof marbleSurface>;
+
+  private metalSurface!: ReturnType<typeof metalSurface>;
+
   private slots = new Map<SquareId, HighlightSlot>();
   private shrouds = new Map<SquareId, ShroudSlot>();
   private markerMaps: Record<HighlightKind, THREE.Texture | null> = {
@@ -222,6 +227,12 @@ export class BoardView {
 
     const lightMap = this.track(marbleTexture(false));
     const darkMap = this.track(marbleTexture(true));
+    // Authored surface detail. Both tiles were a flat albedo with a single
+    // scalar roughness, which is what made them read as polished plastic at
+    // close camera distance.
+    this.marbleSurface = marbleSurface();
+    this.metalSurface = metalSurface();
+    const marble = this.marbleSurface;
     const lightMaterial = this.track(
       new THREE.MeshPhysicalMaterial({
         map: lightMap,
@@ -231,17 +242,26 @@ export class BoardView {
         clearcoat: 0.7,
         clearcoatRoughness: 0.18,
         envMapIntensity: 0.9,
+        normalMap: marble.normalMap,
+        normalScale: new THREE.Vector2(0.35, 0.35),
+        roughnessMap: marble.roughnessMap,
       }),
     );
     const darkMaterial = this.track(
       new THREE.MeshPhysicalMaterial({
         map: darkMap,
-        color: 0x23252c,
+        // Was 0x23252c (linear luminance 0.0186), just under the 0.02 albedo
+        // floor. A dark slate still has to reflect something.
+        color: 0x2a2d35,
         roughness: 0.3,
-        metalness: 0.12,
+        // Slate is a dielectric: 0.12 was a non-physical blend.
+        metalness: 0,
         clearcoat: 0.6,
         clearcoatRoughness: 0.25,
         envMapIntensity: 0.8,
+        normalMap: marble.normalMap,
+        normalScale: new THREE.Vector2(0.45, 0.45),
+        roughnessMap: marble.roughnessMap,
       }),
     );
 
@@ -296,10 +316,20 @@ export class BoardView {
   }
 
   private buildBase(): void {
+    const marble = this.marbleSurface;
+    const metal = this.metalSurface;
     const size = TILE * 8 + 1.5;
     const geometry = this.track(new RoundedBoxGeometry(size, 0.62, size, 4, 0.09));
     const stone = this.track(
-      new THREE.MeshStandardMaterial({ color: 0x3b342b, roughness: 0.72, metalness: 0.25 }),
+      new THREE.MeshStandardMaterial({
+        color: 0x3b342b,
+        roughness: 0.72,
+        // Carved stone plinth: dielectric, not a 0.25 metal blend.
+        metalness: 0,
+        normalMap: marble.normalMap,
+        normalScale: new THREE.Vector2(0.6, 0.6),
+        roughnessMap: marble.roughnessMap,
+      }),
     );
     this.baseMaterial = stone;
     const top = this.track(
@@ -307,8 +337,13 @@ export class BoardView {
         map: this.track(boardBorderTexture()),
         color: 0xbfae8e,
         roughness: 0.55,
-        metalness: 0.45,
+        // Cast bronze inlay: a real metal, so metalness is 1 rather than a
+        // 0.45 blend that is physically neither.
+        metalness: 1,
         envMapIntensity: 1.1,
+        normalMap: metal.normalMap,
+        normalScale: new THREE.Vector2(0.55, 0.55),
+        roughnessMap: metal.roughnessMap,
       }),
     );
     this.borderMaterial = top;

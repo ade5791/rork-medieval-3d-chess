@@ -11,7 +11,7 @@ export type SquareId = string;
 
 export type Difficulty = "easy" | "medium" | "hard";
 
-export type GameMode = "ai" | "hotseat" | "attract" | "demo";
+export type GameMode = "ai" | "hotseat" | "attract" | "demo" | "online";
 
 /** Computer-vs-computer showcase settings (used for recording demos). */
 export interface DemoOptions {
@@ -109,6 +109,8 @@ export interface GameSnapshot {
   paused: boolean;
   /** 1-based showcase game counter (auto-rematch increments it). */
   demoRound: number;
+  /** Online only: both seats are filled and the relay is accepting moves. */
+  networkReady: boolean;
 }
 
 /** Everything the renderer needs to animate one played move. */

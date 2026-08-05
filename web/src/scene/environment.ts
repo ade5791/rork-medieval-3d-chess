@@ -1,6 +1,7 @@
 import * as THREE from "three";
 
 import { flagstoneTexture, marbleTexture, shaftTexture, sparkTexture } from "./textures";
+import { marbleSurface, stoneSurface } from "./detail";
 import type { ArenaLook } from "./arena";
 import { ARENA_LOOKS, DEFAULT_ARENA } from "./arena";
 import type { QualityPreset } from "./quality";
@@ -84,11 +85,23 @@ export class CastleHall {
   private buildFloor(): void {
     const map = this.track(flagstoneTexture());
     map.repeat.set(8, 8);
+    // Shared authored relief: the flagstones were a flat albedo before.
+    const stone = stoneSurface();
+    stone.normalMap.repeat.set(8, 8);
+    stone.roughnessMap.repeat.set(8, 8);
     // A paved courtyard rather than an endless floor: the war plain takes over
     // past the ruined wall line.
     const geometry = this.track(new THREE.CircleGeometry(20.5, 64));
     const material = this.track(
-      new THREE.MeshStandardMaterial({ map, color: 0x6a6155, roughness: 0.95, metalness: 0.02 }),
+      new THREE.MeshStandardMaterial({
+        map,
+        color: 0x6a6155,
+        roughness: 0.95,
+        metalness: 0.02,
+        normalMap: stone.normalMap,
+        normalScale: new THREE.Vector2(0.85, 0.85),
+        roughnessMap: stone.roughnessMap,
+      }),
     );
     this.floorMaterial = material;
     const floor = new THREE.Mesh(geometry, material);
@@ -97,10 +110,18 @@ export class CastleHall {
     floor.receiveShadow = true;
     this.group.add(floor);
 
+    const marble = marbleSurface();
     // Dais the board rests on.
     const daisGeo = this.track(new THREE.CylinderGeometry(9.4, 10.4, 0.5, 48, 1));
     const daisMat = this.track(
-      new THREE.MeshStandardMaterial({ map: this.track(marbleTexture(true)), color: 0x5b5449, roughness: 0.85 }),
+      new THREE.MeshStandardMaterial({
+        map: this.track(marbleTexture(true)),
+        color: 0x5b5449,
+        roughness: 0.85,
+        normalMap: marble.normalMap,
+        normalScale: new THREE.Vector2(0.5, 0.5),
+        roughnessMap: marble.roughnessMap,
+      }),
     );
     this.daisMaterial = daisMat;
     const dais = new THREE.Mesh(daisGeo, daisMat);
@@ -110,12 +131,16 @@ export class CastleHall {
   }
 
   private buildColonnade(): void {
+    const pillarStone = stoneSurface();
     const stone = this.track(
       new THREE.MeshStandardMaterial({
         map: this.track(flagstoneTexture()),
         color: 0x554e44,
         roughness: 0.92,
         metalness: 0.02,
+        normalMap: pillarStone.normalMap,
+        normalScale: new THREE.Vector2(1.05, 1.05),
+        roughnessMap: pillarStone.roughnessMap,
       }),
     );
     this.pillarMaterial = stone;
@@ -160,9 +185,14 @@ export class CastleHall {
     const wallMat = this.track(
       new THREE.MeshStandardMaterial({
         map: this.track(flagstoneTexture()),
-        color: 0x2e2a26,
+        // Was 0x2e2a26 (linear luminance 0.0167) - under the 0.02 albedo
+        // floor, so it read as a black hole rather than dark stone.
+        color: 0x3a352f,
         roughness: 1,
         side: THREE.DoubleSide,
+        normalMap: pillarStone.normalMap,
+        normalScale: new THREE.Vector2(1.15, 1.15),
+        roughnessMap: pillarStone.roughnessMap,
       }),
     );
     this.wallMaterial = wallMat;
@@ -199,7 +229,15 @@ export class CastleHall {
 
     // Rubble heaped where the wall came down.
     const rubbleGeo = this.track(new THREE.IcosahedronGeometry(0.9, 0));
-    const rubbleMat = this.track(new THREE.MeshStandardMaterial({ color: 0x3b352d, roughness: 1 }));
+    const rubbleMat = this.track(
+      new THREE.MeshStandardMaterial({
+        color: 0x3b352d,
+        roughness: 1,
+        normalMap: pillarStone.normalMap,
+        normalScale: new THREE.Vector2(1.3, 1.3),
+        roughnessMap: pillarStone.roughnessMap,
+      }),
+    );
     this.rubbleMaterial = rubbleMat;
     const rubble = new THREE.InstancedMesh(rubbleGeo, rubbleMat, 54);
     rubble.castShadow = true;
@@ -254,7 +292,13 @@ export class CastleHall {
   }
 
   private buildTorches(): void {
-    const bracketMat = this.track(new THREE.MeshStandardMaterial({ color: 0x2b2118, roughness: 0.7, metalness: 0.6 }));
+    const bracketMat = this.track(new THREE.MeshStandardMaterial({
+        // Wrought iron: metals are binary. 0.6 was a non-physical blend and
+        // the albedo sat under the 0.02 floor.
+        color: 0x3a2f22,
+        roughness: 0.62,
+        metalness: 1,
+      }));
     const bowlGeo = this.track(new THREE.CylinderGeometry(0.42, 0.22, 0.42, 12));
     const stemGeo = this.track(new THREE.CylinderGeometry(0.1, 0.14, 3.4, 8));
     const flameGeo = this.track(new THREE.SphereGeometry(0.3, 12, 12));

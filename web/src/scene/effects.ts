@@ -1,5 +1,11 @@
 import * as THREE from "three";
 
+import { rng } from "../core/rng";
+
+/** Independent streams - see src/core/rng.ts for why these are forked. */
+const burstRng = rng.fork("effects:burst");
+const smokeRng = rng.fork("effects:smoke");
+
 import { radialTexture, smokeTexture, sparkTexture } from "./textures";
 
 interface Burst {
@@ -104,16 +110,16 @@ export class EffectsSystem {
     const positions = new Float32Array(count * 3);
     const velocities = new Float32Array(count * 3);
     for (let i = 0; i < count; i += 1) {
-      const scatterTheta = Math.random() * Math.PI * 2;
-      const scatter = radius * Math.pow(Math.random(), 0.55);
+      const scatterTheta = burstRng.next() * Math.PI * 2;
+      const scatter = radius * Math.pow(burstRng.next(), 0.55);
       positions[i * 3] = position.x + Math.cos(scatterTheta) * scatter;
-      positions[i * 3 + 1] = position.y + (Math.random() - 0.5) * radius * 1.4;
+      positions[i * 3 + 1] = position.y + (burstRng.next() - 0.5) * radius * 1.4;
       positions[i * 3 + 2] = position.z + Math.sin(scatterTheta) * scatter;
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.acos(Math.random() * 0.9);
-      const magnitude = speed * (0.35 + Math.random() * 0.85);
+      const theta = burstRng.next() * Math.PI * 2;
+      const phi = Math.acos(burstRng.next() * 0.9);
+      const magnitude = speed * (0.35 + burstRng.next() * 0.85);
       velocities[i * 3] = Math.sin(phi) * Math.cos(theta) * magnitude;
-      velocities[i * 3 + 1] = Math.abs(Math.cos(phi)) * magnitude * 1.15 + rise * (0.5 + Math.random());
+      velocities[i * 3 + 1] = Math.abs(Math.cos(phi)) * magnitude * 1.15 + rise * (0.5 + burstRng.next());
       velocities[i * 3 + 2] = Math.sin(phi) * Math.sin(theta) * magnitude;
     }
 
@@ -179,11 +185,11 @@ export class EffectsSystem {
 
     for (let i = 0; i < count; i += 1) {
       if (this.puffs.length >= MAX_PUFFS) return;
-      const theta = Math.random() * Math.PI * 2;
-      const spread = Math.pow(Math.random(), 0.6);
+      const theta = smokeRng.next() * Math.PI * 2;
+      const spread = Math.pow(smokeRng.next(), 0.6);
       const offset = new THREE.Vector3(
         Math.cos(theta) * radius * spread,
-        (Math.random() - 0.25) * radius * 0.8,
+        (smokeRng.next() - 0.25) * radius * 0.8,
         Math.sin(theta) * radius * spread,
       );
 
@@ -193,32 +199,32 @@ export class EffectsSystem {
         transparent: true,
         depthWrite: false,
         opacity: 0,
-        rotation: Math.random() * Math.PI * 2,
+        rotation: smokeRng.next() * Math.PI * 2,
       });
       const sprite = new THREE.Sprite(material);
       sprite.position.copy(position).add(offset);
-      const size = scale * (0.7 + Math.random() * 0.6);
+      const size = scale * (0.7 + smokeRng.next() * 0.6);
       sprite.scale.setScalar(size);
       sprite.renderOrder = 2;
       this.group.add(sprite);
 
       const velocity = new THREE.Vector3(offset.x, 0, offset.z)
         .normalize()
-        .multiplyScalar(speed * (0.4 + Math.random() * 0.8));
-      velocity.y = speed * (0.2 + Math.random() * 0.4);
+        .multiplyScalar(speed * (0.4 + smokeRng.next() * 0.8));
+      velocity.y = speed * (0.2 + smokeRng.next() * 0.4);
       if (drift) velocity.add(drift);
 
       this.puffs.push({
         sprite,
         velocity,
-        spin: (Math.random() - 0.5) * 1.5,
-        delay: Math.random() * maxLife * 0.18,
+        spin: (smokeRng.next() - 0.5) * 1.5,
+        delay: smokeRng.next() * maxLife * 0.18,
         life: 0,
-        maxLife: maxLife * (0.75 + Math.random() * 0.5),
+        maxLife: maxLife * (0.75 + smokeRng.next() * 0.5),
         from: size,
         to: size * growth,
-        peak: peak * (0.6 + Math.random() * 0.55),
-        buoyancy: rise * (0.7 + Math.random() * 0.6),
+        peak: peak * (0.6 + smokeRng.next() * 0.55),
+        buoyancy: rise * (0.7 + smokeRng.next() * 0.6),
       });
     }
   }

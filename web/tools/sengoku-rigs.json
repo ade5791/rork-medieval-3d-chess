@@ -1,0 +1,77 @@
+{
+  "note": "Sengoku rig outputs. Vendor/expiring - inputs to build-era-roster only. Clips return IN REQUEST ORDER; the request order was always [idle, attack, death, walk].",
+  "sengoku": {
+    "k": {
+      "name": "Daimyo",
+      "height": 1.899,
+      "rigged": "https://v3b.fal.media/files/b/0aa5151e/vSM99vNX39mQWyltyfCwr_rigged_character.glb",
+      "clips": {
+        "idle": "https://v3b.fal.media/files/b/0aa5150f/tZ1eXbRiDG-lxyymDno4G_animation.glb",
+        "attack": "https://v3b.fal.media/files/b/0aa51520/t6LOL4NgT_SdzJS2ExFqI_animation.glb",
+        "death": "https://v3b.fal.media/files/b/0aa51510/BT0u5YiWiHVJcXvg2thAp_animation.glb",
+        "walk": "https://v3b.fal.media/files/b/0aa51510/ELaAlabG25vHPDX6rYixW_animation.glb"
+      },
+      "actionIds": { "idle": 0, "attack": 102, "death": 8, "walk": 613 }
+    },
+    "q": {
+      "name": "Onna-bugeisha",
+      "height": 1.899,
+      "rigged": "https://v3b.fal.media/files/b/0aa51514/0WKI6_FODPIid_rDSh0PY_rigged_character.glb",
+      "clips": {
+        "idle": "https://v3b.fal.media/files/b/0aa51506/2AuZMfk2XEd2df6ZkYklm_animation.glb",
+        "attack": "https://v3b.fal.media/files/b/0aa51506/aNXF-QWaoyPjA5g1rmjvg_animation.glb",
+        "death": "https://v3b.fal.media/files/b/0aa51506/dRVFq0Uh9T-vgJJVX68cg_animation.glb",
+        "walk": "https://v3b.fal.media/files/b/0aa51506/kFjoMb0sTb5GTgx-3R9cQ_animation.glb"
+      },
+      "actionIds": { "idle": 0, "attack": 125, "death": 189, "walk": 613 }
+    },
+    "b": {
+      "name": "Sohei Monk",
+      "height": 1.899,
+      "rigged": "https://v3b.fal.media/files/b/0aa514f0/dXncsOmyVB19EvKd30QFA_rigged_character.glb",
+      "clips": {
+        "idle": "https://v3b.fal.media/files/b/0aa514f1/Iuo5DHsx198cZrliBt3Ni_animation.glb",
+        "attack": "https://v3b.fal.media/files/b/0aa51502/1rFTS13yEfirjIXs2mhOG_animation.glb",
+        "death": "https://v3b.fal.media/files/b/0aa514f2/VQHEL6ZC957suRhpFzw_T_animation.glb",
+        "walk": "https://v3b.fal.media/files/b/0aa514f1/6X4iJ-6vWYiFZYNMLmiOL_animation.glb"
+      },
+      "actionIds": { "idle": 89, "attack": 102, "death": 8, "walk": 672 }
+    },
+    "r": {
+      "name": "Castle Guard",
+      "height": 1.898,
+      "rigged": "https://v3b.fal.media/files/b/0aa514fa/Lm1c1IRUg453TuF-iAmtY_rigged_character.glb",
+      "clips": {
+        "idle": "https://v3b.fal.media/files/b/0aa514fc/oowE0-mOks7o9Rpbh3t5h_animation.glb",
+        "attack": "https://v3b.fal.media/files/b/0aa514fc/cjuGe_zbqVEOLWrLTjqAU_animation.glb",
+        "death": "https://v3b.fal.media/files/b/0aa514fc/Ol5sMbDuAIfGMd4Pr_Pp3_animation.glb",
+        "walk": "https://v3b.fal.media/files/b/0aa514fd/-ArA2K2C_8rkfohx8T2XZ_animation.glb"
+      },
+      "actionIds": { "idle": 89, "attack": 128, "death": 187, "walk": 611 }
+    },
+    "n": {
+      "name": "Samurai Cavalry",
+      "height": 1.898,
+      "rigged": "https://v3b.fal.media/files/b/0aa514e5/RgwjmPCruu5RePDKA5Q7t_rigged_character.glb",
+      "clips": {
+        "idle": "https://v3b.fal.media/files/b/0aa514e8/ChK9IMta6GgChClpk6tTc_animation.glb",
+        "attack": "https://v3b.fal.media/files/b/0aa514e8/bdqg4hNIrzeMbzT50DCnF_animation.glb",
+        "death": "https://v3b.fal.media/files/b/0aa514e8/HYolHATV-vUx0d9IU11Bk_animation.glb",
+        "walk": "https://v3b.fal.media/files/b/0aa514e8/s-6iJ7njiutFXEKdJC4PA_animation.glb"
+      },
+      "actionIds": { "idle": 89, "attack": 128, "death": 187, "walk": 611 }
+    },
+    "p": {
+      "name": "Ashigaru",
+      "height": 1.894,
+      "rigged": "https://v3b.fal.media/files/b/0aa514ec/HBySTIgJmrrj7XZ-hqi4F_rigged_character.glb",
+      "clips": {
+        "idle": "https://v3b.fal.media/files/b/0aa514de/jBuTiZ11lSMmIYtKkjCNn_animation.glb",
+        "attack": "https://v3b.fal.media/files/b/0aa514df/fK-HtLkCxhvllgo4dr-IC_animation.glb",
+        "death": "https://v3b.fal.media/files/b/0aa514de/JbKhGLs3WfKAslXB4bj9C_animation.glb",
+        "walk": "https://v3b.fal.media/files/b/0aa514ee/jHS26e-qmGYqkG2uvpVYR_animation.glb"
+      },
+      "actionIds": { "idle": 89, "attack": 240, "death": 187, "walk": 672 }
+    }
+  }
+}

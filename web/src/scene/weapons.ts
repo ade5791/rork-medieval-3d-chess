@@ -9,6 +9,8 @@
  */
 
 import * as THREE from "three";
+
+import { metalSurface, wearSurface } from "./detail";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 
 import type { Faction, PieceKind } from "../core/types";
@@ -633,27 +635,27 @@ const PALETTE: Record<Faction, Record<WeaponRole, { color: number; roughness: nu
   w: {
     steel: { color: 0xd8dee8, roughness: 0.21, metalness: 0.98, emissive: 0x101821, emissiveIntensity: 0.2 },
     gold: { color: 0xe0ab48, roughness: 0.28, metalness: 1, emissive: 0x2a1a04, emissiveIntensity: 0.25 },
-    wood: { color: 0x8a6440, roughness: 0.82, metalness: 0.05, emissive: 0x000000, emissiveIntensity: 0 },
-    leather: { color: 0x2f4a86, roughness: 0.72, metalness: 0.1, emissive: 0x081226, emissiveIntensity: 0.2 },
-    cloth: { color: 0x2b4f9c, roughness: 0.78, metalness: 0.08, emissive: 0x0a1738, emissiveIntensity: 0.3 },
-    gem: { color: 0xbcd8ff, roughness: 0.08, metalness: 0.05, emissive: 0x6ea8ff, emissiveIntensity: 2.4 },
-    obsidian: { color: 0x23262e, roughness: 0.14, metalness: 0.4, emissive: 0x0a0f1a, emissiveIntensity: 0.2 },
-    jade: { color: 0x4f9e86, roughness: 0.32, metalness: 0.12, emissive: 0x0d2a24, emissiveIntensity: 0.35 },
-    feather: { color: 0xc4d3f0, roughness: 0.86, metalness: 0.02, emissive: 0x101c34, emissiveIntensity: 0.3 },
-    stone: { color: 0x9d9482, roughness: 0.92, metalness: 0.03, emissive: 0x000000, emissiveIntensity: 0 },
+    wood: { color: 0x8a6440, roughness: 0.82, metalness: 0, emissive: 0x000000, emissiveIntensity: 0 },
+    leather: { color: 0x2f4a86, roughness: 0.72, metalness: 0, emissive: 0x081226, emissiveIntensity: 0.2 },
+    cloth: { color: 0x2b4f9c, roughness: 0.78, metalness: 0, emissive: 0x0a1738, emissiveIntensity: 0.3 },
+    gem: { color: 0xbcd8ff, roughness: 0.08, metalness: 0, emissive: 0x6ea8ff, emissiveIntensity: 2.4 },
+    obsidian: { color: 0x33363f, roughness: 0.22, metalness: 0, emissive: 0x0a0f1a, emissiveIntensity: 0.2 },
+    jade: { color: 0x4f9e86, roughness: 0.32, metalness: 0, emissive: 0x0d2a24, emissiveIntensity: 0.35 },
+    feather: { color: 0xc4d3f0, roughness: 0.86, metalness: 0, emissive: 0x101c34, emissiveIntensity: 0.3 },
+    stone: { color: 0x9d9482, roughness: 0.92, metalness: 0, emissive: 0x000000, emissiveIntensity: 0 },
   },
   b: {
     steel: { color: 0x5a5e66, roughness: 0.3, metalness: 0.96, emissive: 0x140807, emissiveIntensity: 0.2 },
     gold: { color: 0xb0742c, roughness: 0.34, metalness: 1, emissive: 0x2a1204, emissiveIntensity: 0.25 },
-    wood: { color: 0x4a3323, roughness: 0.85, metalness: 0.05, emissive: 0x000000, emissiveIntensity: 0 },
-    leather: { color: 0x5f1d17, roughness: 0.76, metalness: 0.1, emissive: 0x230605, emissiveIntensity: 0.2 },
-    cloth: { color: 0x82201a, roughness: 0.8, metalness: 0.08, emissive: 0x2e0705, emissiveIntensity: 0.3 },
-    gem: { color: 0xffc0a4, roughness: 0.08, metalness: 0.05, emissive: 0xff5a3c, emissiveIntensity: 2.4 },
+    wood: { color: 0x63472f, roughness: 0.85, metalness: 0, emissive: 0x000000, emissiveIntensity: 0 },
+    leather: { color: 0x6d251e, roughness: 0.76, metalness: 0, emissive: 0x230605, emissiveIntensity: 0.2 },
+    cloth: { color: 0x82201a, roughness: 0.8, metalness: 0, emissive: 0x2e0705, emissiveIntensity: 0.3 },
+    gem: { color: 0xffc0a4, roughness: 0.08, metalness: 0, emissive: 0xff5a3c, emissiveIntensity: 2.4 },
     // Volcanic glass: near black, very smooth, catching the torches in streaks.
-    obsidian: { color: 0x0e1015, roughness: 0.08, metalness: 0.42, emissive: 0x1d0705, emissiveIntensity: 0.3 },
-    jade: { color: 0x2fb8a2, roughness: 0.3, metalness: 0.14, emissive: 0x0a4a41, emissiveIntensity: 0.55 },
-    feather: { color: 0xd8452c, roughness: 0.88, metalness: 0.02, emissive: 0x3d0a04, emissiveIntensity: 0.4 },
-    stone: { color: 0x6d6558, roughness: 0.94, metalness: 0.03, emissive: 0x150605, emissiveIntensity: 0.15 },
+    obsidian: { color: 0x2a2d36, roughness: 0.18, metalness: 0, emissive: 0x1d0705, emissiveIntensity: 0.3 },
+    jade: { color: 0x2fb8a2, roughness: 0.3, metalness: 0, emissive: 0x0a4a41, emissiveIntensity: 0.55 },
+    feather: { color: 0xd8452c, roughness: 0.88, metalness: 0, emissive: 0x3d0a04, emissiveIntensity: 0.4 },
+    stone: { color: 0x6d6558, roughness: 0.94, metalness: 0, emissive: 0x150605, emissiveIntensity: 0.15 },
   },
 };
 
@@ -669,7 +671,75 @@ function makeMaterial(role: WeaponRole, color: Faction): THREE.MeshStandardMater
   });
   material.emissiveIntensity = spec.emissiveIntensity;
   material.envMapIntensity = role === "gem" ? 0.6 : 1.3;
+
+  // TF_S2_WEAPON_SURFACE: relief + roughness variation. Gems stay clean (a
+  // polished stone genuinely is smooth); every other role gets an authored
+  // surface so it reads as a material rather than tinted plastic.
+  if (role !== "gem") {
+    const surface = spec.metalness > 0.5 ? metalSurface() : wearSurface();
+    material.normalMap = surface.normalMap;
+    material.roughnessMap = surface.roughnessMap;
+    material.normalScale.set(0.55, 0.55);
+  }
   return material;
+}
+
+// --------------------------------------------------------------- TF_S2 detail
+
+/**
+ * Box-projects a uv set from object space. Each triangle takes the plane its
+ * normal points at most strongly, so a merged hard-surface prop gets coherent,
+ * non-stretched texel density without an authored unwrap.
+ */
+function applyBoxUV(geometry: THREE.BufferGeometry): void {
+  geometry.computeBoundingBox();
+  const box = geometry.boundingBox;
+  if (!box) return;
+  const size = new THREE.Vector3();
+  box.getSize(size);
+  // Guard degenerate axes so a flat plate cannot divide by zero.
+  const sx = size.x > 1e-5 ? size.x : 1;
+  const sy = size.y > 1e-5 ? size.y : 1;
+  const sz = size.z > 1e-5 ? size.z : 1;
+
+  const pos = geometry.getAttribute("position");
+  if (!pos) return;
+  if (!geometry.getAttribute("normal")) geometry.computeVertexNormals();
+  const nrm = geometry.getAttribute("normal");
+
+  // Scale so one uv unit is a fixed world size - texel density stays constant
+  // between a dagger and a greatsword instead of stretching to fit.
+  const DENSITY = 1.6;
+  const uv = new Float32Array(pos.count * 2);
+  for (let i = 0; i < pos.count; i += 1) {
+    const px = pos.getX(i);
+    const py = pos.getY(i);
+    const pz = pos.getZ(i);
+    const ax = Math.abs(nrm.getX(i));
+    const ay = Math.abs(nrm.getY(i));
+    const az = Math.abs(nrm.getZ(i));
+    let u: number;
+    let v: number;
+    if (ax >= ay && ax >= az) {
+      u = (pz - box.min.z) / sz;
+      v = (py - box.min.y) / sy;
+      u *= sz * DENSITY;
+      v *= sy * DENSITY;
+    } else if (ay >= ax && ay >= az) {
+      u = (px - box.min.x) / sx;
+      v = (pz - box.min.z) / sz;
+      u *= sx * DENSITY;
+      v *= sz * DENSITY;
+    } else {
+      u = (px - box.min.x) / sx;
+      v = (py - box.min.y) / sy;
+      u *= sx * DENSITY;
+      v *= sy * DENSITY;
+    }
+    uv[i * 2] = u;
+    uv[i * 2 + 1] = v;
+  }
+  geometry.setAttribute("uv", new THREE.BufferAttribute(uv, 2));
 }
 
 // ------------------------------------------------------------------- caching
@@ -694,8 +764,12 @@ function weaponGeometries(id: WeaponId): Map<WeaponRole, THREE.BufferGeometry> {
     // non-indexed, primitives are indexed), so flatten everything first.
     const flat = list.map((geometry) => {
       const plain = geometry.index ? geometry.toNonIndexed() : geometry.clone();
-      plain.deleteAttribute("uv");
+      // TF_S2_WEAPON_SURFACE: build a box-projected uv set rather than
+      // deleting it. Deleting uv made every weapon material incapable of
+      // binding a normal/roughness map, which is the measured cause of the
+      // flat-plastic read on all 15 weapons.
       plain.deleteAttribute("uv1");
+      applyBoxUV(plain);
       geometry.dispose();
       return plain;
     });

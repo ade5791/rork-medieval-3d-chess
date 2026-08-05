@@ -1,0 +1,157 @@
+[
+  {
+    "era": "classic",
+    "url": "http://127.0.0.1:4178/?era=classic&review=1&probe=1&quality=high&scenario=capture",
+    "ready": true,
+    "stagedEra": "classic",
+    "stagedArena": "jungle",
+    "preset": "high",
+    "pieces": 29,
+    "skinned": 29,
+    "contactsResolved": 1,
+    "beatTimeouts": 1,
+    "animationTimeouts": 0,
+    "frameErrors": 0,
+    "ply": 1,
+    "mean": 0.2951,
+    "p50": 0.2398,
+    "blackPct": 0,
+    "whitePct": 0.02,
+    "triangles": 1,
+    "errors": [],
+    "badRequests": [],
+    "checks": [
+      {
+        "label": "engine ready",
+        "ok": true,
+        "detail": "true"
+      },
+      {
+        "label": "staged requested era",
+        "ok": true,
+        "detail": "classic"
+      },
+      {
+        "label": "board filled",
+        "ok": true,
+        "detail": "29/29"
+      },
+      {
+        "label": "every figure rigged",
+        "ok": true,
+        "detail": "29/29"
+      },
+      {
+        "label": "capture resolved once",
+        "ok": true,
+        "detail": "1"
+      },
+      {
+        "label": "no animation timeouts",
+        "ok": true,
+        "detail": "0"
+      },
+      {
+        "label": "no frame errors",
+        "ok": true,
+        "detail": "0"
+      },
+      {
+        "label": "not a black screen",
+        "ok": true,
+        "detail": "mean=0.2951 black=0%"
+      },
+      {
+        "label": "no console errors",
+        "ok": true,
+        "detail": "0"
+      },
+      {
+        "label": "no failed requests",
+        "ok": true,
+        "detail": "0"
+      }
+    ],
+    "pass": true
+  },
+  {
+    "era": "rome",
+    "url": "http://127.0.0.1:4178/?era=rome&review=1&probe=1&quality=high&scenario=capture",
+    "ready": true,
+    "stagedEra": "rome",
+    "stagedArena": "frost",
+    "preset": "high",
+    "pieces": 29,
+    "skinned": 29,
+    "contactsResolved": 1,
+    "beatTimeouts": 1,
+    "animationTimeouts": 0,
+    "frameErrors": 0,
+    "ply": 1,
+    "mean": 0.3505,
+    "p50": 0.288,
+    "blackPct": 0,
+    "whitePct": 0.19,
+    "triangles": 1,
+    "errors": [],
+    "badRequests": [],
+    "checks": [
+      {
+        "label": "engine ready",
+        "ok": true,
+        "detail": "true"
+      },
+      {
+        "label": "staged requested era",
+        "ok": true,
+        "detail": "rome"
+      },
+      {
+        "label": "board filled",
+        "ok": true,
+        "detail": "29/29"
+      },
+      {
+        "label": "every figure rigged",
+        "ok": true,
+        "detail": "29/29"
+      },
+      {
+        "label": "capture resolved once",
+        "ok": true,
+        "detail": "1"
+      },
+      {
+        "label": "no animation timeouts",
+        "ok": true,
+        "detail": "0"
+      },
+      {
+        "label": "no frame errors",
+        "ok": true,
+        "detail": "0"
+      },
+      {
+        "label": "not a black screen",
+        "ok": true,
+        "detail": "mean=0.3505 black=0%"
+      },
+      {
+        "label": "no console errors",
+        "ok": true,
+        "detail": "0"
+      },
+      {
+        "label": "no failed requests",
+        "ok": true,
+        "detail": "0"
+      },
+      {
+        "label": "beat timeouts no worse than baseline",
+        "ok": true,
+        "detail": "1 vs baseline 1"
+      }
+    ],
+    "pass": true
+  }
+]

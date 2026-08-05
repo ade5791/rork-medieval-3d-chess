@@ -1,0 +1,316 @@
+{
+  "sengoku": {
+    "k": {
+      "name": "Daimyo",
+      "height": 1.899,
+      "files": {
+        "rigged": "/models/sengoku/k-rigged.glb",
+        "idle": "/models/sengoku/k-idle.glb",
+        "attack": "/models/sengoku/k-attack.glb",
+        "death": "/models/sengoku/k-death.glb",
+        "walk": "/models/sengoku/k-walk.glb"
+      },
+      "checks": {
+        "rigged": {
+          "pass": true,
+          "skins": 1,
+          "joints": 24,
+          "bytes": 11756356,
+          "fails": []
+        },
+        "idle_shrink": "11805308 -> 72708",
+        "idle": {
+          "pass": true,
+          "bytes": 72708,
+          "duration": 4.0333333015441895,
+          "channels": 72,
+          "fails": []
+        },
+        "attack_shrink": "11809684 -> 77088",
+        "attack": {
+          "pass": true,
+          "bytes": 77088,
+          "duration": 4.400000095367432,
+          "channels": 72,
+          "fails": []
+        },
+        "death_shrink": "11792848 -> 60244",
+        "death": {
+          "pass": true,
+          "bytes": 60244,
+          "duration": 3,
+          "channels": 72,
+          "fails": []
+        },
+        "walk_shrink": "11803712 -> 71116",
+        "walk": {
+          "pass": true,
+          "bytes": 71116,
+          "duration": 4.233333110809326,
+          "channels": 72,
+          "fails": []
+        }
+      }
+    },
+    "q": {
+      "name": "Onna-bugeisha",
+      "height": 1.899,
+      "files": {
+        "rigged": "/models/sengoku/q-rigged.glb",
+        "idle": "/models/sengoku/q-idle.glb",
+        "attack": "/models/sengoku/q-attack.glb",
+        "death": "/models/sengoku/q-death.glb",
+        "walk": "/models/sengoku/q-walk.glb"
+      },
+      "checks": {
+        "rigged": {
+          "pass": true,
+          "skins": 1,
+          "joints": 24,
+          "bytes": 10621120,
+          "fails": []
+        },
+        "idle_shrink": "10670072 -> 72836",
+        "idle": {
+          "pass": true,
+          "bytes": 72836,
+          "duration": 4.0333333015441895,
+          "channels": 72,
+          "fails": []
+        },
+        "attack_shrink": "10654028 -> 56784",
+        "attack": {
+          "pass": true,
+          "bytes": 56784,
+          "duration": 2.700000047683716,
+          "channels": 72,
+          "fails": []
+        },
+        "death_shrink": "10646744 -> 49496",
+        "death": {
+          "pass": true,
+          "bytes": 49496,
+          "duration": 2.2666666507720947,
+          "channels": 72,
+          "fails": []
+        },
+        "walk_shrink": "10668480 -> 71244",
+        "walk": {
+          "pass": true,
+          "bytes": 71244,
+          "duration": 4.233333110809326,
+          "channels": 72,
+          "fails": []
+        }
+      }
+    },
+    "b": {
+      "name": "Sohei Monk",
+      "height": 1.899,
+      "files": {
+        "rigged": "/models/sengoku/b-rigged.glb",
+        "idle": "/models/sengoku/b-idle.glb",
+        "attack": "/models/sengoku/b-attack.glb",
+        "death": "/models/sengoku/b-death.glb",
+        "walk": "/models/sengoku/b-walk.glb"
+      },
+      "checks": {
+        "rigged": {
+          "pass": true,
+          "skins": 1,
+          "joints": 24,
+          "bytes": 8305448,
+          "fails": []
+        },
+        "idle_shrink": "8324752 -> 43176",
+        "idle": {
+          "pass": true,
+          "bytes": 43176,
+          "duration": 1.7000000476837158,
+          "channels": 72,
+          "fails": []
+        },
+        "attack_shrink": "8360336 -> 78784",
+        "attack": {
+          "pass": true,
+          "bytes": 78784,
+          "duration": 4.400000095367432,
+          "channels": 72,
+          "fails": []
+        },
+        "death_shrink": "8341936 -> 60380",
+        "death": {
+          "pass": true,
+          "bytes": 60380,
+          "duration": 3,
+          "channels": 72,
+          "fails": []
+        },
+        "walk_shrink": "8318528 -> 36936",
+        "walk": {
+          "pass": true,
+          "bytes": 36936,
+          "duration": 1.1333333253860474,
+          "channels": 72,
+          "fails": []
+        }
+      }
+    },
+    "r": {
+      "name": "Castle Guard",
+      "height": 1.898,
+      "files": {
+        "rigged": "/models/sengoku/r-rigged.glb",
+        "idle": "/models/sengoku/r-idle.glb",
+        "attack": "/models/sengoku/r-attack.glb",
+        "death": "/models/sengoku/r-death.glb",
+        "walk": "/models/sengoku/r-walk.glb"
+      },
+      "checks": {
+        "rigged": {
+          "pass": true,
+          "skins": 1,
+          "joints": 24,
+          "bytes": 10226472,
+          "fails": []
+        },
+        "idle_shrink": "10245776 -> 43220",
+        "idle": {
+          "pass": true,
+          "bytes": 43220,
+          "duration": 1.7000000476837158,
+          "channels": 72,
+          "fails": []
+        },
+        "attack_shrink": "10249376 -> 46828",
+        "attack": {
+          "pass": true,
+          "bytes": 46828,
+          "duration": 1.8666666746139526,
+          "channels": 72,
+          "fails": []
+        },
+        "death_shrink": "10261248 -> 58712",
+        "death": {
+          "pass": true,
+          "bytes": 58712,
+          "duration": 2.5333333015441895,
+          "channels": 72,
+          "fails": []
+        },
+        "walk_shrink": "10305444 -> 102916",
+        "walk": {
+          "pass": true,
+          "bytes": 102916,
+          "duration": 6.5333333015441895,
+          "channels": 72,
+          "fails": []
+        }
+      }
+    },
+    "n": {
+      "name": "Samurai Cavalry",
+      "height": 1.898,
+      "files": {
+        "rigged": "/models/sengoku/n-rigged.glb",
+        "idle": "/models/sengoku/n-idle.glb",
+        "attack": "/models/sengoku/n-attack.glb",
+        "death": "/models/sengoku/n-death.glb",
+        "walk": "/models/sengoku/n-walk.glb"
+      },
+      "checks": {
+        "rigged": {
+          "pass": true,
+          "skins": 1,
+          "joints": 24,
+          "bytes": 10984572,
+          "fails": []
+        },
+        "idle_shrink": "11003872 -> 43188",
+        "idle": {
+          "pass": true,
+          "bytes": 43188,
+          "duration": 1.7000000476837158,
+          "channels": 72,
+          "fails": []
+        },
+        "attack_shrink": "11005752 -> 45068",
+        "attack": {
+          "pass": true,
+          "bytes": 45068,
+          "duration": 1.8666666746139526,
+          "channels": 72,
+          "fails": []
+        },
+        "death_shrink": "11021128 -> 60468",
+        "death": {
+          "pass": true,
+          "bytes": 60468,
+          "duration": 2.5333333015441895,
+          "channels": 72,
+          "fails": []
+        },
+        "walk_shrink": "11063544 -> 102888",
+        "walk": {
+          "pass": true,
+          "bytes": 102888,
+          "duration": 6.5333333015441895,
+          "channels": 72,
+          "fails": []
+        }
+      }
+    },
+    "p": {
+      "name": "Ashigaru",
+      "height": 1.894,
+      "files": {
+        "rigged": "/models/sengoku/p-rigged.glb",
+        "idle": "/models/sengoku/p-idle.glb",
+        "attack": "/models/sengoku/p-attack.glb",
+        "death": "/models/sengoku/p-death.glb",
+        "walk": "/models/sengoku/p-walk.glb"
+      },
+      "checks": {
+        "rigged": {
+          "pass": true,
+          "skins": 1,
+          "joints": 24,
+          "bytes": 11153500,
+          "fails": []
+        },
+        "idle_shrink": "11172804 -> 43096",
+        "idle": {
+          "pass": true,
+          "bytes": 43096,
+          "duration": 1.7000000476837158,
+          "channels": 72,
+          "fails": []
+        },
+        "attack_shrink": "11190428 -> 60736",
+        "attack": {
+          "pass": true,
+          "bytes": 60736,
+          "duration": 3.0333333015441895,
+          "channels": 72,
+          "fails": []
+        },
+        "death_shrink": "11192428 -> 62744",
+        "death": {
+          "pass": true,
+          "bytes": 62744,
+          "duration": 2.5333333015441895,
+          "channels": 72,
+          "fails": []
+        },
+        "walk_shrink": "11166592 -> 36864",
+        "walk": {
+          "pass": true,
+          "bytes": 36864,
+          "duration": 1.1333333253860474,
+          "channels": 72,
+          "fails": []
+        }
+      }
+    }
+  }
+}

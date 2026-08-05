@@ -1,0 +1,242 @@
+[
+  {
+    "era": "sengoku",
+    "kind": "k",
+    "clip": "idle",
+    "resolvedPct": 100,
+    "duration": 4.03,
+    "tracks": 72,
+    "driftDeg": 42.8,
+    "pass": true
+  },
+  {
+    "era": "sengoku",
+    "kind": "k",
+    "clip": "attack",
+    "resolvedPct": 100,
+    "duration": 4.4,
+    "tracks": 72,
+    "driftDeg": 95.57,
+    "pass": true
+  },
+  {
+    "era": "sengoku",
+    "kind": "k",
+    "clip": "death",
+    "resolvedPct": 100,
+    "duration": 3,
+    "tracks": 72,
+    "driftDeg": 65.02,
+    "pass": true
+  },
+  {
+    "era": "sengoku",
+    "kind": "k",
+    "clip": "walk",
+    "resolvedPct": 100,
+    "duration": 4.23,
+    "tracks": 72,
+    "driftDeg": 58.92,
+    "pass": true
+  },
+  {
+    "era": "sengoku",
+    "kind": "q",
+    "clip": "idle",
+    "resolvedPct": 100,
+    "duration": 4.03,
+    "tracks": 72,
+    "driftDeg": 42.83,
+    "pass": true
+  },
+  {
+    "era": "sengoku",
+    "kind": "q",
+    "clip": "attack",
+    "resolvedPct": 100,
+    "duration": 2.7,
+    "tracks": 72,
+    "driftDeg": 127.76,
+    "pass": true
+  },
+  {
+    "era": "sengoku",
+    "kind": "q",
+    "clip": "death",
+    "resolvedPct": 100,
+    "duration": 2.27,
+    "tracks": 72,
+    "driftDeg": 49,
+    "pass": true
+  },
+  {
+    "era": "sengoku",
+    "kind": "q",
+    "clip": "walk",
+    "resolvedPct": 100,
+    "duration": 4.23,
+    "tracks": 72,
+    "driftDeg": 54.56,
+    "pass": true
+  },
+  {
+    "era": "sengoku",
+    "kind": "b",
+    "clip": "idle",
+    "resolvedPct": 100,
+    "duration": 1.7,
+    "tracks": 72,
+    "driftDeg": 141.21,
+    "pass": true
+  },
+  {
+    "era": "sengoku",
+    "kind": "b",
+    "clip": "attack",
+    "resolvedPct": 100,
+    "duration": 4.4,
+    "tracks": 72,
+    "driftDeg": 175.21,
+    "pass": true
+  },
+  {
+    "era": "sengoku",
+    "kind": "b",
+    "clip": "death",
+    "resolvedPct": 100,
+    "duration": 3,
+    "tracks": 72,
+    "driftDeg": 122.32,
+    "pass": true
+  },
+  {
+    "era": "sengoku",
+    "kind": "b",
+    "clip": "walk",
+    "resolvedPct": 100,
+    "duration": 1.13,
+    "tracks": 72,
+    "driftDeg": 87.21,
+    "pass": true
+  },
+  {
+    "era": "sengoku",
+    "kind": "r",
+    "clip": "idle",
+    "resolvedPct": 100,
+    "duration": 1.7,
+    "tracks": 72,
+    "driftDeg": 65.51,
+    "pass": true
+  },
+  {
+    "era": "sengoku",
+    "kind": "r",
+    "clip": "attack",
+    "resolvedPct": 100,
+    "duration": 1.87,
+    "tracks": 72,
+    "driftDeg": 73.43,
+    "pass": true
+  },
+  {
+    "era": "sengoku",
+    "kind": "r",
+    "clip": "death",
+    "resolvedPct": 100,
+    "duration": 2.53,
+    "tracks": 72,
+    "driftDeg": 74.12,
+    "pass": true
+  },
+  {
+    "era": "sengoku",
+    "kind": "r",
+    "clip": "walk",
+    "resolvedPct": 100,
+    "duration": 6.53,
+    "tracks": 72,
+    "driftDeg": 62.99,
+    "pass": true
+  },
+  {
+    "era": "sengoku",
+    "kind": "n",
+    "clip": "idle",
+    "resolvedPct": 100,
+    "duration": 1.7,
+    "tracks": 72,
+    "driftDeg": 63.36,
+    "pass": true
+  },
+  {
+    "era": "sengoku",
+    "kind": "n",
+    "clip": "attack",
+    "resolvedPct": 100,
+    "duration": 1.87,
+    "tracks": 72,
+    "driftDeg": 75.8,
+    "pass": true
+  },
+  {
+    "era": "sengoku",
+    "kind": "n",
+    "clip": "death",
+    "resolvedPct": 100,
+    "duration": 2.53,
+    "tracks": 72,
+    "driftDeg": 75.48,
+    "pass": true
+  },
+  {
+    "era": "sengoku",
+    "kind": "n",
+    "clip": "walk",
+    "resolvedPct": 100,
+    "duration": 6.53,
+    "tracks": 72,
+    "driftDeg": 64.67,
+    "pass": true
+  },
+  {
+    "era": "sengoku",
+    "kind": "p",
+    "clip": "idle",
+    "resolvedPct": 100,
+    "duration": 1.7,
+    "tracks": 72,
+    "driftDeg": 82.58,
+    "pass": true
+  },
+  {
+    "era": "sengoku",
+    "kind": "p",
+    "clip": "attack",
+    "resolvedPct": 100,
+    "duration": 3.03,
+    "tracks": 72,
+    "driftDeg": 83.69,
+    "pass": true
+  },
+  {
+    "era": "sengoku",
+    "kind": "p",
+    "clip": "death",
+    "resolvedPct": 100,
+    "duration": 2.53,
+    "tracks": 72,
+    "driftDeg": 73.5,
+    "pass": true
+  },
+  {
+    "era": "sengoku",
+    "kind": "p",
+    "clip": "walk",
+    "resolvedPct": 100,
+    "duration": 1.13,
+    "tracks": 72,
+    "driftDeg": 54.96,
+    "pass": true
+  }
+]

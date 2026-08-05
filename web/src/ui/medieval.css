@@ -963,3 +963,89 @@
   color: #fff4dc;
   border-color: rgba(246, 223, 165, 0.7);
 }
+
+
+/* ------------------------------------------------------ online duel lobby */
+
+/* Parchment-slot input. Matches .mc-chip's border language so the lobby does
+   not read as a browser form dropped on top of the hall. */
+.mc-input {
+  font-family: "Cinzel", Georgia, serif;
+  letter-spacing: 0.08em;
+  border-radius: 2px;
+  border: 1px solid rgba(216, 177, 99, 0.35);
+  background: rgba(12, 11, 9, 0.72);
+  color: #f0dfb6;
+  outline: none;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    background 160ms ease;
+}
+
+.mc-input::placeholder {
+  color: rgba(157, 139, 108, 0.65);
+  letter-spacing: 0.12em;
+}
+
+.mc-input:focus {
+  border-color: rgba(246, 223, 165, 0.75);
+  background: rgba(20, 18, 15, 0.85);
+  box-shadow: 0 0 0 1px rgba(246, 223, 165, 0.18);
+}
+
+/* Connection pill in the HUD. Colour carries the state, the label repeats it
+   in text so it is never colour-only information. */
+.mc-net {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: "Cinzel", Georgia, serif;
+  font-size: 0.58rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  padding: 0.28rem 0.6rem;
+  border-radius: 2px;
+  border: 1px solid rgba(216, 177, 99, 0.28);
+  background: rgba(14, 13, 10, 0.7);
+  color: #c5b28d;
+}
+
+.mc-net-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #6f8f5f;
+  box-shadow: 0 0 6px rgba(111, 143, 95, 0.9);
+}
+
+.mc-net[data-state="reconnecting"] .mc-net-dot,
+.mc-net[data-state="connecting"] .mc-net-dot {
+  background: #d8b163;
+  box-shadow: 0 0 6px rgba(216, 177, 99, 0.9);
+  animation: mc-net-pulse 1.1s ease-in-out infinite;
+}
+
+.mc-net[data-state="closed"] .mc-net-dot,
+.mc-net[data-state="error"] .mc-net-dot {
+  background: #b8654a;
+  box-shadow: 0 0 6px rgba(184, 101, 74, 0.9);
+}
+
+@keyframes mc-net-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* Reduced motion: the pulse is decorative, the colour still carries state. */
+@media (prefers-reduced-motion: reduce) {
+  .mc-net[data-state="reconnecting"] .mc-net-dot,
+  .mc-net[data-state="connecting"] .mc-net-dot {
+    animation: none;
+  }
+}

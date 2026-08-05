@@ -1,5 +1,6 @@
 import { Chess, type Move, type Square } from "chess.js";
 
+import { withWatchdog } from "./combatMachine";
 import { Emitter } from "./emitter";
 import {
   type Animator,
@@ -27,6 +28,11 @@ export interface StartOptions {
   clockMinutes: number | null;
   /** Only read when `mode === "demo"`. */
   demo?: DemoOptions;
+  /**
+   * Staged starting position for deterministic review states. Invalid FEN
+   * falls back to the standard opening rather than throwing.
+   */
+  fen?: string | null;
 }
 
 export const DEFAULT_DEMO: DemoOptions = {
@@ -51,6 +57,15 @@ interface ControllerEvents {
 const CLOCK_TICK_MS = 100;
 
 /**
+ * Ceiling on a single animated move.
+ *
+ * The longest authored beat (a royal execution with the pillar held over the
+ * condemned) runs well under three seconds, so this is generous headroom rather
+ * than a tight budget - it only ever fires on a genuine stall.
+ */
+const ANIMATION_WATCHDOG_MS = 12_000;
+
+/**
  * Owns all chess state. Rendering, audio and UI subscribe to it; it knows
  * nothing about three.js or the DOM.
  */
@@ -64,8 +79,12 @@ export class GameController extends Emitter<ControllerEvents> {
   private generation = 0;
   private paused = false;
   private demoRound = 1;
+  /** Times the animator had to be force-released. Non-zero is a defect signal. */
+  private animationTimeouts = 0;
   /** Resolvers waiting for the showcase to leave the paused state. */
   private resumeWaiters: (() => void)[] = [];
+  /** Online only: both seats are filled and the relay accepts moves. */
+  private networkReady = false;
 
   private status: GameSnapshot["status"] = "idle";
   private options: StartOptions = {
@@ -133,7 +152,73 @@ export class GameController extends Emitter<ControllerEvents> {
     if (this.status !== "playing" || this.busy) return false;
     if (this.options.mode === "attract" || this.options.mode === "demo") return false;
     if (this.options.mode === "hotseat") return true;
+    // ONLINE: the seat colour is playerColor, and the board stays locked until
+    // the relay reports both seats filled. Without that second guard the host
+    // could move into an empty hall before an opponent arrived.
+    if (this.options.mode === "online" && !this.networkReady) return false;
     return this.chess.turn() === this.options.playerColor;
+  }
+
+  // ------------------------------------------------------------ online seams
+  //
+  // In online mode the RELAY is authoritative. The controller keeps its own
+  // chess.js instance purely so the board, ledger and animations have something
+  // local to read - every move still round-trips through the server, and any
+  // disagreement is resolved by `syncToFen`, never by the local copy.
+
+  /** Gates the board until the relay reports two seated players. */
+  setNetworkReady(ready: boolean): void {
+    if (this.networkReady === ready) return;
+    this.networkReady = ready;
+    this.publish();
+  }
+
+  isNetworkReady(): boolean {
+    return this.networkReady;
+  }
+
+  /**
+   * Plays a move the SERVER has already validated. Bypasses the local turn
+   * check on purpose - the mover is the opponent, so `isHumanTurn()` is false
+   * by definition.
+   */
+  async applyRemoteMove(from: SquareId, to: SquareId, promotion?: PieceKind): Promise<boolean> {
+    if (this.status !== "playing") return false;
+    return this.play(from, to, promotion);
+  }
+
+  /**
+   * Divergence recovery. If the relay's FEN is not the position we hold, the
+   * local board is wrong and gets rebuilt from the authoritative one. Returns
+   * true when a correction actually happened, so the renderer can resync.
+   */
+  syncToFen(fen: string): boolean {
+    if (this.chess.fen() === fen) return false;
+    try {
+      const next = new Chess();
+      next.load(fen);
+      this.chess = next;
+    } catch (error) {
+      console.warn("[game] relay sent an unloadable FEN", error);
+      return false;
+    }
+    console.warn("[game] local board diverged from the relay - resynced");
+    this.busy = false;
+    this.publish();
+    return true;
+  }
+
+  /** The relay declared the result (resignation, timeout, abandonment). */
+  applyRemoteResult(result: GameResult): void {
+    if (this.status === "over") return;
+    this.finish(result);
+  }
+
+  /** Mirrors the server clock. The relay owns time in online mode. */
+  applyRemoteClock(clock: ClockState): void {
+    if (this.options.mode !== "online") return;
+    this.clock = { ...clock };
+    this.publish();
   }
 
   start(options: StartOptions): void {
@@ -145,6 +230,14 @@ export class GameController extends Emitter<ControllerEvents> {
     if (options.mode !== "demo" || this.options.mode !== "demo") this.demoRound = 1;
     this.options = options.mode === "demo" ? { ...options, demo: options.demo ?? DEFAULT_DEMO } : options;
     this.chess = new Chess();
+    if (options.fen) {
+      try {
+        this.chess.load(options.fen);
+      } catch (error) {
+        console.warn("[game] ignoring invalid staged FEN", error);
+        this.chess = new Chess();
+      }
+    }
     this.status = "playing";
     this.result = null;
     this.thinking = false;
@@ -156,6 +249,8 @@ export class GameController extends Emitter<ControllerEvents> {
       whiteMs: ms,
       blackMs: ms,
     };
+    this.animationTimeouts = 0;
+    if (options.mode !== "online") this.networkReady = false;
     this.emit("reset", options);
     this.publish();
     this.startClock();
@@ -200,6 +295,11 @@ export class GameController extends Emitter<ControllerEvents> {
 
   isPaused(): boolean {
     return this.paused;
+  }
+
+  /** Diagnostics for the QA gate: how often the animator had to be released. */
+  getAnimationTimeouts(): number {
+    return this.animationTimeouts;
   }
 
   /** Live pacing change — takes effect on the next ply. */
@@ -289,10 +389,25 @@ export class GameController extends Emitter<ControllerEvents> {
     if (inCheck) this.emit("check", this.chess.turn() as Faction);
 
     if (this.animator) {
-      try {
-        await this.animator(event);
-      } catch (error) {
-        console.error("[game] animator failed", error);
+      // WATCHDOG - the structural fix for the queen-freeze class of bug.
+      //
+      // The animator resolves its promises from inside the render loop. If that
+      // loop stops (backgrounded tab, a throwing effect, tweens cancelled
+      // mid-flight) those promises never settle, this await blocks forever, and
+      // `busy` stays true - the game is then permanently unresponsive with no
+      // error anywhere. Bounding it means a broken animation costs a dropped
+      // flourish, never the turn.
+      const finished = await withWatchdog(this.animator(event), ANIMATION_WATCHDOG_MS, () => {
+        this.animationTimeouts += 1;
+        console.warn(
+          `[game] animator exceeded ${ANIMATION_WATCHDOG_MS}ms on ${event.san} - releasing the turn`,
+        );
+      });
+      if (!finished) {
+        // The board state is already authoritative (chess.js applied the move
+        // before the animation started), so play continues from a correct
+        // position even though the flourish was cut short.
+        this.emit("state", this.snapshot);
       }
     }
     if (generation !== this.generation) return;
@@ -382,7 +497,10 @@ export class GameController extends Emitter<ControllerEvents> {
 
   resign(): void {
     if (this.status !== "playing") return;
-    const loser = this.options.mode === "ai" ? this.options.playerColor : (this.chess.turn() as Faction);
+    const loser =
+      this.options.mode === "ai" || this.options.mode === "online"
+        ? this.options.playerColor
+        : (this.chess.turn() as Faction);
     this.finish({ winner: loser === "w" ? "b" : "w", reason: "resignation" });
   }
 
@@ -393,6 +511,9 @@ export class GameController extends Emitter<ControllerEvents> {
       this.result = null;
     }
     if (this.status !== "playing" || this.busy || this.thinking) return false;
+    // Online play has no takebacks: the relay holds the authoritative history
+    // and the opponent never consented to rewinding it.
+    if (this.options.mode === "online") return false;
     if (this.chess.history().length === 0) return false;
     this.generation += 1;
     this.ai.cancel();
@@ -409,7 +530,7 @@ export class GameController extends Emitter<ControllerEvents> {
   private async maybeRunEngine(): Promise<void> {
     if (this.status !== "playing" || this.paused) return;
     const mode = this.options.mode;
-    if (mode === "hotseat") return;
+    if (mode === "hotseat" || mode === "online") return;
     const turn = this.chess.turn() as Faction;
     if (mode === "ai" && turn === this.options.playerColor) return;
     if (this.thinking) return;
@@ -555,10 +676,12 @@ export class GameController extends Emitter<ControllerEvents> {
         !this.thinking &&
         !this.busy &&
         this.options.mode !== "attract" &&
-        this.options.mode !== "demo",
+        this.options.mode !== "demo" &&
+        this.options.mode !== "online",
       demo: this.options.mode === "demo" ? { ...(this.options.demo ?? DEFAULT_DEMO) } : null,
       paused: this.paused,
       demoRound: this.demoRound,
+      networkReady: this.networkReady,
     };
   }
 

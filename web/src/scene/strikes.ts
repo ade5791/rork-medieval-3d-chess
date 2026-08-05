@@ -11,7 +11,10 @@
 
 import * as THREE from "three";
 
+import { rng } from "../core/rng";
 import type { SpellLight } from "./spells";
+
+const strikeRng = rng.fork("scene:strikes");
 import { crescentTexture, pillarTexture, shockwaveTexture } from "./textures";
 import { Ease, type TweenManager } from "./tween";
 
@@ -153,7 +156,7 @@ export async function spawnGroundWave(
   });
   const ring = new THREE.Mesh(sharedWaveGeometry(), material);
   ring.rotation.x = -Math.PI / 2;
-  ring.rotation.z = Math.random() * Math.PI;
+  ring.rotation.z = strikeRng.next() * Math.PI;
   ring.position.set(at.x, options.height, at.z);
   ring.renderOrder = 7;
   ring.scale.setScalar(0.18);

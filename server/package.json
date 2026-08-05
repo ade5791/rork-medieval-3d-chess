@@ -1,0 +1,19 @@
+{
+  "name": "kings-gambit-relay",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Authoritative WebSocket relay for King's Gambit online multiplayer.",
+  "main": "index.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "health": "node -e \"fetch('http://localhost:'+(process.env.PORT||8787)+'/health').then(r=>r.json()).then(j=>console.log(JSON.stringify(j)))\""
+  },
+  "dependencies": {
+    "chess.js": "^1.4.0",
+    "ws": "^8.18.0"
+  }
+}

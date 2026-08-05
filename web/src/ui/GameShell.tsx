@@ -5,16 +5,22 @@ import { GameController } from "../core/gameController";
 import type { LedgerMove } from "../core/types";
 import { Clapperboard } from "lucide-react";
 import { ARENA_LOOKS, DEFAULT_ARENA, type ArenaTheme } from "../scene/arena";
+import { DEFAULT_ERA, ERAS, type EraId } from "../scene/eras";
 import { detectQualityPreset, type QualityPreset } from "../scene/quality";
+import { readReviewState } from "../scene/reviewState";
 import { SceneEngine, type CameraPreset } from "../scene/sceneEngine";
 import { GameOverModal } from "./GameOverModal";
 import { Hud } from "./Hud";
 import { MainMenu, type MatchConfig } from "./MainMenu";
+import { OnlineBridge } from "../net/onlineBridge";
+import type { ConnectionStatus } from "../net/onlineClient";
+import { normaliseRoomCode } from "../net/protocol";
+import { OnlineLobby, type OnlineSession } from "./OnlineLobby";
 import { SettingsPanel, type GameSettings } from "./SettingsPanel";
 import { useGameSnapshot } from "./useGameSnapshot";
 import "./medieval.css";
 
-type Phase = "loading" | "menu" | "playing";
+type Phase = "loading" | "menu" | "lobby" | "playing";
 
 const ATTRACT_DELAY_MS = 30_000;
 
@@ -26,15 +32,41 @@ export function GameShell() {
   const controller = useMemo(() => new GameController(), []);
   const snapshot = useGameSnapshot(controller);
 
-  const detected = useMemo<QualityPreset>(() => detectQualityPreset(), []);
+  const review = useMemo(() => readReviewState(), []);
+  const detected = useMemo<QualityPreset>(
+    () => review.quality ?? detectQualityPreset(),
+    [review.quality],
+  );
   const [settings, setSettings] = useState<GameSettings>(() => ({
     quality: detected,
-    arena: DEFAULT_ARENA,
+    era: review.era ?? DEFAULT_ERA,
+    // The era names its battleground; an explicit ?arena= still wins.
+    arena: review.arena ?? ERAS[review.era ?? DEFAULT_ERA].arena,
     captureCinematics: true,
     rotateBoard: true,
     rankBadges: true,
     muted: false,
   }));
+
+  /**
+   * The era the mounted engine was built with. Era changes the piece roster,
+   * which the factory resolves once at load time, so this drives a full engine
+   * remount rather than a live repaint (unlike arena).
+   */
+  const eraAtBoot: EraId = settings.era;
+
+  /** Shared invite link: ?room=ABCDE opens the lobby straight onto Join. */
+  const invitedRoom = useMemo(() => {
+    if (typeof window === "undefined") return null;
+    try {
+      const code = new URLSearchParams(window.location.search).get("room");
+      if (!code) return null;
+      const clean = normaliseRoomCode(code);
+      return clean.length === 5 ? clean : null;
+    } catch {
+      return null;
+    }
+  }, []);
 
   const [phase, setPhase] = useState<Phase>("loading");
   const [progress, setProgress] = useState(0);
@@ -51,6 +83,15 @@ export function GameShell() {
   const [notice, setNotice] = useState<string | null>(null);
   /** Showcase recording: strips every panel so the capture is board-only. */
   const [cinema, setCinema] = useState(false);
+  /** Pending staged review move - cleared on unmount so it cannot leak. */
+  const stagedTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // ------------------------------------------------------------------ online
+  /** Live online session. Null in every offline mode. */
+  const onlineRef = useRef<OnlineSession | null>(null);
+  const bridgeRef = useRef<OnlineBridge | null>(null);
+  const [online, setOnline] = useState<{ code: string; color: "w" | "b" } | null>(null);
+  const [netStatus, setNetStatus] = useState<ConnectionStatus>("idle");
 
   // ------------------------------------------------------------ boot the scene
   useEffect(() => {
@@ -86,7 +127,8 @@ export function GameShell() {
           onTacticalView: (active) => setTactical(active),
         },
         detected,
-        DEFAULT_ARENA,
+        eraAtBoot === DEFAULT_ERA ? DEFAULT_ARENA : ERAS[eraAtBoot].arena,
+        eraAtBoot,
       );
     } catch (error) {
       console.error("[ui] could not start the renderer", error);
@@ -99,18 +141,51 @@ export function GameShell() {
     engine.start();
 
     void engine.load().then(async () => {
+      // Review capture: no intro, no attract, straight to a staged board so
+      // every screenshot of a build lands on the identical frame.
+      if (review.review || review.fen) {
+        engine.setInteractive(true);
+        engine.setCameraPreset("white");
+        controller.start({
+          mode: "hotseat",
+          difficulty: "medium",
+          playerColor: "w",
+          clockMinutes: null,
+          // Deterministic combat review state. The sculpts are in the scene's
+          // piece map by this point, so a staged move actually animates -
+          // playing it any earlier made animateMove early-return.
+          fen: review.fen,
+        });
+        setPhase("playing");
+        // Play the single move this scenario exists to exercise.
+        if (review.play) {
+          const [from, to] = review.play;
+          stagedTimer.current = setTimeout(() => {
+            void controller.tryMove(from, to);
+          }, 700);
+        }
+        return;
+      }
+      if (invitedRoom) {
+        // Shared invite link - skip the intro and go straight to the lobby.
+        setPhase("lobby");
+        return;
+      }
       setIntroPlaying(true);
       await engine.playIntro();
       setIntroPlaying(false);
     });
 
     return () => {
+      if (stagedTimer.current) clearTimeout(stagedTimer.current);
+      stagedTimer.current = null;
       engineRef.current = null;
       engine.dispose();
     };
-  }, [controller, detected]);
+  }, [controller, detected, eraAtBoot, review.review, review.fen, review.play, invitedRoom]);
 
   useEffect(() => () => controller.dispose(), [controller]);
+
 
   // ----------------------------------------------------- audio unlock on input
   useEffect(() => {
@@ -161,12 +236,15 @@ export function GameShell() {
   }, [controller, phase, showSettings]);
 
   useEffect(() => {
-    if (phase !== "menu" || attract || introPlaying) return;
+    // A staged review session must never be taken over by attract mode - it
+    // called controller.start() and reset the position mid-scenario.
+    if (review.review || review.fen || phase !== "menu" || attract || introPlaying) return;
+    if (onlineRef.current) return;
     scheduleAttract();
     return () => {
       if (attractTimer.current) clearTimeout(attractTimer.current);
     };
-  }, [phase, attract, introPlaying, scheduleAttract]);
+  }, [phase, attract, introPlaying, scheduleAttract, review.review]);
 
   // ------------------------------------------------------------------ actions
   const startMatch = useCallback(
@@ -194,7 +272,71 @@ export function GameShell() {
     [controller, stopAttract],
   );
 
+  /** Tears down the online session. Safe to call when there is none. */
+  const endOnline = useCallback(() => {
+    bridgeRef.current?.dispose();
+    bridgeRef.current = null;
+    engineRef.current?.setMoveSink(null);
+    const session = onlineRef.current;
+    onlineRef.current = null;
+    if (session) {
+      session.client.leave();
+      session.client.dispose();
+    }
+    setOnline(null);
+    setNetStatus("idle");
+  }, []);
+
+  // A live socket must never outlive the shell. Declared after endOnline so
+  // the cleanup closure cannot capture it in its temporal dead zone.
+  useEffect(() => () => endOnline(), [endOnline]);
+
+  /** The lobby confirmed a seat - take ownership and start the match. */
+  const handleSeated = useCallback(
+    (session: OnlineSession) => {
+      stopAttract();
+      void audio.unlock();
+      onlineRef.current = session;
+      setOnline({ code: session.code, color: session.color });
+
+      const engine = engineRef.current;
+      engine?.setAttract(false);
+      engine?.setInteractive(true);
+      engine?.setShowcase(false);
+      engine?.setCameraPreset(session.color === "b" ? "black" : "white");
+
+      const bridge = new OnlineBridge(session.client, controller, {
+        onResync: () => engineRef.current?.resync(),
+        onNotice: (text) => {
+          setNotice(text);
+          setTimeout(() => setNotice(null), 4000);
+        },
+      });
+      bridgeRef.current = bridge;
+
+      // Moves now leave the board and go to the relay; the figure only walks
+      // when the server echoes the move back.
+      engine?.setMoveSink((from, to, promotion) => bridge.submitMove(from, to, promotion));
+
+      // The client is already connected by the time the shell takes it over,
+      // so the initial "status" event has been emitted and missed. Seed from
+      // the live value first, then subscribe for subsequent transitions.
+      setNetStatus(session.client.getStatus());
+      const offStatus = session.client.on("status", ({ status }) => setNetStatus(status));
+      session.client.on("failed", ({ fatal, message }) => {
+        if (!fatal) return;
+        setNotice(message);
+        setTimeout(() => setNotice(null), 5000);
+      });
+      void offStatus;
+
+      setPhase("playing");
+    },
+    [controller, stopAttract],
+  );
+
   const returnToMenu = useCallback(() => {
+    endOnline();
     controller.stop();
     const engine = engineRef.current;
     engine?.setTacticalView(false);
@@ -203,7 +345,7 @@ export function GameShell() {
     engine?.setCameraPreset("cinematic");
     setCinema(false);
     setPhase("menu");
-  }, [controller]);
+  }, [controller, endOnline]);
 
   // -------------------------------------------------------- showcase controls
   const handleTogglePause = useCallback(() => {
@@ -244,10 +386,22 @@ export function GameShell() {
 
   const handleResign = useCallback(() => {
     audio.blip("deny");
+    // Online: only the relay may end the game, so the local controller is not
+    // touched - the authoritative result comes back over the socket.
+    if (bridgeRef.current) {
+      bridgeRef.current.resign();
+      return;
+    }
     controller.resign();
   }, [controller]);
 
   const handleRematch = useCallback(() => {
+    if (bridgeRef.current) {
+      bridgeRef.current.requestRematch();
+      setNotice("Rematch offered - waiting for your opponent.");
+      setTimeout(() => setNotice(null), 4000);
+      return;
+    }
     const current = controller.getSnapshot();
     startMatch({
       mode: current.mode === "hotseat" ? "hotseat" : "ai",
@@ -341,10 +495,36 @@ export function GameShell() {
         {phase === "menu" && !introPlaying ? (
           <MainMenu
             onStart={startMatch}
+            onPlayOnline={() => setPhase("lobby")}
             onOpenSettings={() => setShowSettings(true)}
             attract={attract}
             onInteract={stopAttract}
           />
+        ) : null}
+
+        {phase === "lobby" ? (
+          <OnlineLobby onSeated={handleSeated} onClose={() => setPhase("menu")} />
+        ) : null}
+
+        {phase === "playing" && online ? (
+          <div className="pointer-events-none absolute left-1/2 top-3 z-20 -translate-x-1/2">
+            <span className="mc-net" data-state={netStatus}>
+              <span className="mc-net-dot" />
+              {netStatus === "connected"
+                ? `HALL ${online.code}`
+                : netStatus === "reconnecting"
+                  ? "RECONNECTING"
+                  : netStatus === "connecting"
+                    ? "CONNECTING"
+                    : "OFFLINE"}
+            </span>
+          </div>
+        ) : null}
+
+        {phase === "playing" && online && !snapshot.networkReady && snapshot.status === "playing" ? (
+          <div className="mc-fade mc-slate pointer-events-none absolute bottom-32 left-1/2 -translate-x-1/2 px-4 py-2 text-xs italic text-[#e4d3ac]">
+            Awaiting your opponent...
+          </div>
         ) : null}
 
         {phase === "playing" && !cinema ? (

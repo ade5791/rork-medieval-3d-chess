@@ -1,0 +1,17 @@
+{
+  "note": "Working manifest for the era roster build. mesh = raw Meshy output (EXPIRING fal url). rigged/clips are filled in after the rig step and re-hosted to permanent storage.",
+  "eras": {
+    "rome": {
+      "label": "Legions of Rome",
+      "civ": "Imperial Rome, 117 AD",
+      "pieces": {
+        "k": { "name": "Imperator", "mesh": "https://v3b.fal.media/files/b/0aa51209/KiiaW7UGO_7-NSBul2Zuh_model.glb" },
+        "q": { "name": "Vestal Oracle", "mesh": "https://v3b.fal.media/files/b/0aa51217/RXhY5b8VdvV8TE-0mG9n6_model.glb" },
+        "b": { "name": "Augur", "mesh": "https://v3b.fal.media/files/b/0aa51227/rOnsPaEci4VKZMhbUYsBh_model.glb" },
+        "n": { "name": "Eques", "mesh": "https://v3b.fal.media/files/b/0aa51242/T3IgKRWueVaeIqwEguw3s_model.glb" },
+        "r": { "name": "Praetorian", "mesh": "https://v3b.fal.media/files/b/0aa51257/biCA5rmYStP4Oo2o2Ffkk_model.glb" },
+        "p": { "name": "Legionary", "mesh": "https://v3b.fal.media/files/b/0aa511ea/3d8cnN4GWoM1x5fFJmYwu_model.glb" }
+      }
+    }
+  }
+}

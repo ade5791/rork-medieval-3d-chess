@@ -1,10 +1,13 @@
 import { X } from "lucide-react";
 
 import { ARENA_LOOKS, ARENA_ORDER, type ArenaTheme } from "../scene/arena";
+import { ERAS, ERA_ORDER, type EraId } from "../scene/eras";
 import type { QualityPreset } from "../scene/quality";
 
 export interface GameSettings {
   quality: QualityPreset;
+  /** Historical era - decides the armies and their default battleground. */
+  era: EraId;
   /** Which map the board is staged in. */
   arena: ArenaTheme;
   captureCinematics: boolean;
@@ -41,6 +44,38 @@ export function SettingsPanel({ settings, autoDetected, fps, onChange, onClose }
         </div>
 
         <div className="mc-scroll mc-scroll-shade -mr-2 min-h-0 flex-auto overflow-y-auto pb-1 pr-2">
+        <p className="mc-display mb-2 text-[0.6rem] tracking-[0.3em] text-[#a89268]">Era</p>
+        <div className="grid grid-cols-2 gap-2">
+          {ERA_ORDER.map((era) => (
+            <button
+              key={era}
+              type="button"
+              className="mc-arena-card"
+              data-active={settings.era === era}
+              title={ERAS[era].note}
+              onClick={() =>
+                onChange({
+                  ...settings,
+                  era,
+                  // Each era carries its own battleground, so switching period
+                  // restages the map too instead of stranding legionaries in
+                  // the rainforest.
+                  arena: ERAS[era].arena,
+                })
+              }
+            >
+              <span className="mc-arena-swatch" data-arena={ERAS[era].arena} />
+              <span className="mc-display text-[0.68rem] leading-tight text-[#f0e0be]">{ERAS[era].label}</span>
+              <span className="text-[0.6rem] leading-tight text-[#9c8b6c]">{ERAS[era].period}</span>
+            </button>
+          ))}
+        </div>
+        <p className="mt-2 text-xs italic text-[#9c8b6c]">
+          {ERAS[settings.era].armies.w} vs {ERAS[settings.era].armies.b}
+        </p>
+
+        <div className="mc-rule my-5" />
+
         <p className="mc-display mb-2 text-[0.6rem] tracking-[0.3em] text-[#a89268]">Battleground</p>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
           {ARENA_ORDER.map((theme) => (
