@@ -16,10 +16,15 @@
  *   4. asserts every figure on the board carries a real skinned rig
  *      (a procedural fallback would still fill the board, so a piece count
  *       alone proves nothing about the era's own sculpts)
- *   5. plays the staged capture and asserts the contact resolved exactly once
- *   6. samples the engine's own off-screen histogram - the canvas back buffer
+ *   5. asserts ROSTER PROVENANCE: every loaded sculpt resolved from
+ *      /models/<era>/, and the era declares no missing kinds. This is the
+ *      check that catches a half-dressed era - a classic FALLBACK figure is
+ *      skinned too, so check 4 alone passes while medieval knights quietly
+ *      stand in an Egyptian army.
+ *   6. plays the staged capture and asserts the contact resolved exactly once
+ *   7. samples the engine's own off-screen histogram - the canvas back buffer
  *      is undefined after compositing, so a canvas readback would read black
- *   7. fails on any console error or any >=400 response
+ *   8. fails on any console error or any >=400 response
  *
  * Scenario "capture" stages 30 pieces and plays one capture, so 29 figures
  * standing afterwards is the correct, asserted count.
@@ -31,7 +36,7 @@ import path from "node:path";
 
 const BASE = process.env.GATE_BASE ?? "http://127.0.0.1:4178";
 const OUT = path.resolve(import.meta.dirname, "out", "era-gate");
-const ERAS = (process.env.GATE_ERAS ?? "classic,rome").split(",");
+const ERAS = (process.env.GATE_ERAS ?? "classic,rome,sengoku,egypt").split(",");
 /** Pieces left standing after the staged capture resolves. */
 const EXPECTED_PIECES = 29;
 
@@ -78,6 +83,7 @@ async function measure(era) {
     await page.waitForTimeout(9000);
 
     const census = await page.evaluate(() => window.__kg.roster());
+    const prov = await page.evaluate(() => window.__kg.provenance());
     const combat = await page.evaluate(() => window.__kg.combat());
     const hist = await page.evaluate(() => {
       const h = window.__kg.histogram();
@@ -88,6 +94,12 @@ async function measure(era) {
     Object.assign(row, {
       pieces: census.pieces,
       skinned: census.skinned,
+      // Provenance: which sculpts really loaded, and from where.
+      sculpted: prov.sculpted,
+      missingKinds: prov.missing,
+      rosterComplete: prov.complete,
+      foreignSculpts: prov.foreign,
+      sourceCount: Object.keys(prov.sources ?? {}).length,
       contactsResolved: combat.contactsResolved,
       beatTimeouts: combat.beatTimeouts,
       animationTimeouts: combat.animationTimeouts,
@@ -129,6 +141,17 @@ for (const row of results) {
   need("board filled", row.pieces === EXPECTED_PIECES, `${row.pieces}/${EXPECTED_PIECES}`);
   // The real proof the era's own animated sculpts loaded.
   need("every figure rigged", row.skinned === row.pieces, `${row.skinned}/${row.pieces}`);
+  // PROVENANCE: catches the half-dressed era that check 4 cannot see.
+  need(
+    "no foreign sculpts",
+    (row.foreignSculpts ?? []).length === 0,
+    (row.foreignSculpts ?? []).length ? (row.foreignSculpts ?? []).join(" ") : "all from this era",
+  );
+  need(
+    "roster covers every kind",
+    row.rosterComplete === true,
+    (row.missingKinds ?? []).length ? `missing ${(row.missingKinds ?? []).join(",")}` : "k,q,b,n,r,p",
+  );
   need("capture resolved once", row.contactsResolved === 1, String(row.contactsResolved));
   need("no animation timeouts", row.animationTimeouts === 0, String(row.animationTimeouts));
   need("no frame errors", row.frameErrors === 0, String(row.frameErrors));
@@ -154,7 +177,7 @@ for (const row of results) {
   (row.badRequests ?? []).forEach((e) => console.log(`  http: ${e}`));
   console.log(
     `  info: triangles=${row.triangles} luma p50=${row.p50} clipped=${row.whitePct}% ` +
-      `beatTimeouts=${row.beatTimeouts} (baseline ${baseline?.beatTimeouts})`,
+      `beatTimeouts=${row.beatTimeouts} (baseline ${baseline?.beatTimeouts}) sculpts=${row.sourceCount}`,
   );
 }
 

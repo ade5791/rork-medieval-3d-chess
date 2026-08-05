@@ -1,0 +1,35 @@
+feat(eras): add Sengoku Japan and Egyptian New Kingdom civilisations
+
+Extends the game from 2 to 4 playable historical eras, each with its own
+fully rigged, animated 6-kind roster and matching battleground.
+
+New eras
+- sengoku (Sengoku Japan, dusk battleground): daimyo, onna-bugeisha,
+  sohei, yagura, kiba-musha, ashigaru
+- egypt  (Egyptian New Kingdom, dawn battleground): pharaoh, great royal
+  wife, hem-netjer, pylon, maryannu charioteer, medjay
+
+Every piece ships rigged with 4 clips (idle / attack / death / walk),
+served from public/models/<era>/ instead of expiring vendor URLs.
+Also fills the previously-missing rome knight, which had been silently
+falling back to the classic medieval sculpt.
+
+Provenance gate
+gate-era.mjs gains two checks that the old gate could not express:
+- "roster covers every kind" - a missing kind is a hard failure rather
+  than a silent fallback
+- "no foreign sculpts" - asserts every staged figure's source URL
+  belongs to the requested era
+
+This closes a real blind spot: the fallback figure is itself skinned, so
+"every figure rigged 29/29" passed while the wrong civilisation was on
+the board. Verified by tools/mutate-era-gate.mjs, which deletes the
+egypt knight, confirms the gate FAILS on both provenance checks, then
+restores and confirms it passes.
+
+Evidence
+- 4 eras x 11 checks, 0 failures (tools/out/era-gate2.log)
+- 72/72 clips bind at 100% track resolution, min drift 42.49 deg, no
+  dead clips (tools/out/bind-report.json)
+- beat timeouts 1 vs baseline 1 on every era - no turn-loop regression
+- tsc --noEmit clean, production build green

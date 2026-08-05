@@ -41,6 +41,8 @@ export function terrainHeight(x: number, z: number): number {
 }
 
 interface Campfire {
+  /** Lit at this preset. Replaces the old light.visible test. */
+  active: boolean;
   light: THREE.PointLight;
   flame: THREE.Mesh;
   seed: number;
@@ -704,7 +706,7 @@ export class Battlefield {
       light.position.set(x, y + 1.8, z);
       this.group.add(light);
 
-      this.campfires.push({ light, flame, seed: index * 5.3, base: 34 });
+      this.campfires.push({ light, flame, seed: index * 5.3, base: 34, active: true });
     });
   }
 
@@ -953,8 +955,13 @@ export class Battlefield {
 
     this.campfires.forEach((fire, index) => {
       const active = index < settings.campfires;
-      fire.light.visible = active;
+      // The light stays in the render state at every preset and is darkened
+      // instead - never hidden: hiding one changes the light count baked
+      // into every lit material's program key and recompiles the whole hall.
+      // Intensity 0 contributes 0.0 to irradiance, so this is pixel-identical.
+      fire.light.visible = true;
       fire.light.intensity = active ? fire.base * this.fireScale : 0;
+      fire.active = active;
     });
     for (const glow of this.glows) glow.visible = settings.campfires > 0;
 
@@ -991,7 +998,8 @@ export class Battlefield {
     for (const uniform of this.windUniforms) uniform.value = this.elapsed;
 
     for (const fire of this.campfires) {
-      if (!fire.light.visible) continue;
+      // Darkened fires are skipped by the explicit flag, not by visibility.
+      if (!fire.active) continue;
       const t = this.elapsed * 5.4 + fire.seed;
       const flicker = 0.7 + Math.sin(t) * 0.14 + Math.sin(t * 2.7) * 0.1 + Math.sin(t * 6.3) * 0.05;
       fire.light.intensity = fire.base * flicker * this.fireScale;

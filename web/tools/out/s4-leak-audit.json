@@ -1,0 +1,156 @@
+{
+  "generatedAt": "2026-08-05T08:45:47.121Z",
+  "cycles": 6,
+  "routedCleanly": 6,
+  "idleMs": 20000,
+  "baseline": {
+    "geometries": 145,
+    "textures": 108,
+    "programs": 85,
+    "canvases": 1,
+    "domNodes": 108
+  },
+  "cyclesDetail": [
+    {
+      "i": 1,
+      "entered": true,
+      "inGame": true,
+      "back": true,
+      "onMenu": true,
+      "atGame": {
+        "geometries": 148,
+        "textures": 145,
+        "programs": 80,
+        "canvases": 1,
+        "domNodes": 155
+      },
+      "atMenu": {
+        "geometries": 148,
+        "textures": 145,
+        "programs": 80,
+        "canvases": 1,
+        "domNodes": 108
+      }
+    },
+    {
+      "i": 2,
+      "entered": true,
+      "inGame": true,
+      "back": true,
+      "onMenu": true,
+      "atGame": {
+        "geometries": 148,
+        "textures": 177,
+        "programs": 80,
+        "canvases": 1,
+        "domNodes": 155
+      },
+      "atMenu": {
+        "geometries": 148,
+        "textures": 177,
+        "programs": 80,
+        "canvases": 1,
+        "domNodes": 108
+      }
+    },
+    {
+      "i": 3,
+      "entered": true,
+      "inGame": true,
+      "back": true,
+      "onMenu": true,
+      "atGame": {
+        "geometries": 149,
+        "textures": 209,
+        "programs": 80,
+        "canvases": 1,
+        "domNodes": 154
+      },
+      "atMenu": {
+        "geometries": 148,
+        "textures": 209,
+        "programs": 80,
+        "canvases": 1,
+        "domNodes": 108
+      }
+    },
+    {
+      "i": 4,
+      "entered": true,
+      "inGame": true,
+      "back": true,
+      "onMenu": true,
+      "atGame": {
+        "geometries": 148,
+        "textures": 241,
+        "programs": 80,
+        "canvases": 1,
+        "domNodes": 155
+      },
+      "atMenu": {
+        "geometries": 148,
+        "textures": 241,
+        "programs": 80,
+        "canvases": 1,
+        "domNodes": 108
+      }
+    },
+    {
+      "i": 5,
+      "entered": true,
+      "inGame": true,
+      "back": true,
+      "onMenu": true,
+      "atGame": {
+        "geometries": 148,
+        "textures": 273,
+        "programs": 80,
+        "canvases": 1,
+        "domNodes": 155
+      },
+      "atMenu": {
+        "geometries": 148,
+        "textures": 273,
+        "programs": 80,
+        "canvases": 1,
+        "domNodes": 108
+      }
+    },
+    {
+      "i": 6,
+      "entered": true,
+      "inGame": true,
+      "back": true,
+      "onMenu": true,
+      "atGame": {
+        "geometries": 148,
+        "textures": 305,
+        "programs": 80,
+        "canvases": 1,
+        "domNodes": 155
+      },
+      "atMenu": {
+        "geometries": 148,
+        "textures": 305,
+        "programs": 80,
+        "canvases": 1,
+        "domNodes": 108
+      }
+    }
+  ],
+  "afterIdle": {
+    "geometries": 148,
+    "textures": 305,
+    "programs": 80,
+    "canvases": 1,
+    "domNodes": 108
+  },
+  "delta": {
+    "geometries": 3,
+    "textures": 197,
+    "programs": -5,
+    "canvases": 0,
+    "domNodes": 0
+  },
+  "consoleErrors": []
+}

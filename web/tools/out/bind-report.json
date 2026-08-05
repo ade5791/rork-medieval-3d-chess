@@ -1,5 +1,245 @@
 [
   {
+    "era": "rome",
+    "kind": "k",
+    "clip": "idle",
+    "resolvedPct": 100,
+    "duration": 4.03,
+    "tracks": 72,
+    "driftDeg": 42.87,
+    "pass": true
+  },
+  {
+    "era": "rome",
+    "kind": "k",
+    "clip": "attack",
+    "resolvedPct": 100,
+    "duration": 4.4,
+    "tracks": 72,
+    "driftDeg": 84.16,
+    "pass": true
+  },
+  {
+    "era": "rome",
+    "kind": "k",
+    "clip": "death",
+    "resolvedPct": 100,
+    "duration": 3,
+    "tracks": 72,
+    "driftDeg": 65.33,
+    "pass": true
+  },
+  {
+    "era": "rome",
+    "kind": "k",
+    "clip": "walk",
+    "resolvedPct": 100,
+    "duration": 4.23,
+    "tracks": 72,
+    "driftDeg": 53.3,
+    "pass": true
+  },
+  {
+    "era": "rome",
+    "kind": "q",
+    "clip": "idle",
+    "resolvedPct": 100,
+    "duration": 4.03,
+    "tracks": 72,
+    "driftDeg": 42.53,
+    "pass": true
+  },
+  {
+    "era": "rome",
+    "kind": "q",
+    "clip": "attack",
+    "resolvedPct": 100,
+    "duration": 2.7,
+    "tracks": 72,
+    "driftDeg": 129.23,
+    "pass": true
+  },
+  {
+    "era": "rome",
+    "kind": "q",
+    "clip": "death",
+    "resolvedPct": 100,
+    "duration": 2.27,
+    "tracks": 72,
+    "driftDeg": 49.99,
+    "pass": true
+  },
+  {
+    "era": "rome",
+    "kind": "q",
+    "clip": "walk",
+    "resolvedPct": 100,
+    "duration": 4.23,
+    "tracks": 72,
+    "driftDeg": 54.31,
+    "pass": true
+  },
+  {
+    "era": "rome",
+    "kind": "b",
+    "clip": "idle",
+    "resolvedPct": 100,
+    "duration": 1.7,
+    "tracks": 66,
+    "driftDeg": 85.14,
+    "pass": true
+  },
+  {
+    "era": "rome",
+    "kind": "b",
+    "clip": "attack",
+    "resolvedPct": 100,
+    "duration": 4.4,
+    "tracks": 66,
+    "driftDeg": 118.74,
+    "pass": true
+  },
+  {
+    "era": "rome",
+    "kind": "b",
+    "clip": "death",
+    "resolvedPct": 100,
+    "duration": 3,
+    "tracks": 66,
+    "driftDeg": 62.4,
+    "pass": true
+  },
+  {
+    "era": "rome",
+    "kind": "b",
+    "clip": "walk",
+    "resolvedPct": 100,
+    "duration": 1.13,
+    "tracks": 66,
+    "driftDeg": 56.5,
+    "pass": true
+  },
+  {
+    "era": "rome",
+    "kind": "r",
+    "clip": "idle",
+    "resolvedPct": 100,
+    "duration": 1.7,
+    "tracks": 72,
+    "driftDeg": 82.85,
+    "pass": true
+  },
+  {
+    "era": "rome",
+    "kind": "r",
+    "clip": "attack",
+    "resolvedPct": 100,
+    "duration": 1.87,
+    "tracks": 72,
+    "driftDeg": 76.98,
+    "pass": true
+  },
+  {
+    "era": "rome",
+    "kind": "r",
+    "clip": "death",
+    "resolvedPct": 100,
+    "duration": 2.53,
+    "tracks": 72,
+    "driftDeg": 73.58,
+    "pass": true
+  },
+  {
+    "era": "rome",
+    "kind": "r",
+    "clip": "walk",
+    "resolvedPct": 100,
+    "duration": 6.53,
+    "tracks": 72,
+    "driftDeg": 55.06,
+    "pass": true
+  },
+  {
+    "era": "rome",
+    "kind": "p",
+    "clip": "idle",
+    "resolvedPct": 100,
+    "duration": 1.7,
+    "tracks": 72,
+    "driftDeg": 98.03,
+    "pass": true
+  },
+  {
+    "era": "rome",
+    "kind": "p",
+    "clip": "attack",
+    "resolvedPct": 100,
+    "duration": 3.03,
+    "tracks": 72,
+    "driftDeg": 99.05,
+    "pass": true
+  },
+  {
+    "era": "rome",
+    "kind": "p",
+    "clip": "death",
+    "resolvedPct": 100,
+    "duration": 2.53,
+    "tracks": 72,
+    "driftDeg": 78.33,
+    "pass": true
+  },
+  {
+    "era": "rome",
+    "kind": "p",
+    "clip": "walk",
+    "resolvedPct": 100,
+    "duration": 1.13,
+    "tracks": 72,
+    "driftDeg": 58.55,
+    "pass": true
+  },
+  {
+    "era": "rome",
+    "kind": "n",
+    "clip": "idle",
+    "resolvedPct": 100,
+    "duration": 1.7,
+    "tracks": 72,
+    "driftDeg": 102.67,
+    "pass": true
+  },
+  {
+    "era": "rome",
+    "kind": "n",
+    "clip": "attack",
+    "resolvedPct": 100,
+    "duration": 1.87,
+    "tracks": 72,
+    "driftDeg": 90.03,
+    "pass": true
+  },
+  {
+    "era": "rome",
+    "kind": "n",
+    "clip": "death",
+    "resolvedPct": 100,
+    "duration": 2.53,
+    "tracks": 72,
+    "driftDeg": 83.61,
+    "pass": true
+  },
+  {
+    "era": "rome",
+    "kind": "n",
+    "clip": "walk",
+    "resolvedPct": 100,
+    "duration": 6.53,
+    "tracks": 72,
+    "driftDeg": 59.59,
+    "pass": true
+  },
+  {
     "era": "sengoku",
     "kind": "k",
     "clip": "idle",
@@ -237,6 +477,246 @@
     "duration": 1.13,
     "tracks": 72,
     "driftDeg": 54.96,
+    "pass": true
+  },
+  {
+    "era": "egypt",
+    "kind": "k",
+    "clip": "idle",
+    "resolvedPct": 100,
+    "duration": 4.03,
+    "tracks": 72,
+    "driftDeg": 42.49,
+    "pass": true
+  },
+  {
+    "era": "egypt",
+    "kind": "k",
+    "clip": "attack",
+    "resolvedPct": 100,
+    "duration": 4.4,
+    "tracks": 72,
+    "driftDeg": 90.7,
+    "pass": true
+  },
+  {
+    "era": "egypt",
+    "kind": "k",
+    "clip": "death",
+    "resolvedPct": 100,
+    "duration": 3,
+    "tracks": 72,
+    "driftDeg": 65.88,
+    "pass": true
+  },
+  {
+    "era": "egypt",
+    "kind": "k",
+    "clip": "walk",
+    "resolvedPct": 100,
+    "duration": 4.23,
+    "tracks": 72,
+    "driftDeg": 57.53,
+    "pass": true
+  },
+  {
+    "era": "egypt",
+    "kind": "q",
+    "clip": "idle",
+    "resolvedPct": 100,
+    "duration": 4.03,
+    "tracks": 72,
+    "driftDeg": 43.23,
+    "pass": true
+  },
+  {
+    "era": "egypt",
+    "kind": "q",
+    "clip": "attack",
+    "resolvedPct": 100,
+    "duration": 2.7,
+    "tracks": 72,
+    "driftDeg": 114.1,
+    "pass": true
+  },
+  {
+    "era": "egypt",
+    "kind": "q",
+    "clip": "death",
+    "resolvedPct": 100,
+    "duration": 2.27,
+    "tracks": 72,
+    "driftDeg": 47.91,
+    "pass": true
+  },
+  {
+    "era": "egypt",
+    "kind": "q",
+    "clip": "walk",
+    "resolvedPct": 100,
+    "duration": 4.23,
+    "tracks": 72,
+    "driftDeg": 46.23,
+    "pass": true
+  },
+  {
+    "era": "egypt",
+    "kind": "b",
+    "clip": "idle",
+    "resolvedPct": 100,
+    "duration": 1.7,
+    "tracks": 72,
+    "driftDeg": 61.21,
+    "pass": true
+  },
+  {
+    "era": "egypt",
+    "kind": "b",
+    "clip": "attack",
+    "resolvedPct": 100,
+    "duration": 4.4,
+    "tracks": 72,
+    "driftDeg": 89.77,
+    "pass": true
+  },
+  {
+    "era": "egypt",
+    "kind": "b",
+    "clip": "death",
+    "resolvedPct": 100,
+    "duration": 3,
+    "tracks": 72,
+    "driftDeg": 63.24,
+    "pass": true
+  },
+  {
+    "era": "egypt",
+    "kind": "b",
+    "clip": "walk",
+    "resolvedPct": 100,
+    "duration": 1.13,
+    "tracks": 72,
+    "driftDeg": 66.98,
+    "pass": true
+  },
+  {
+    "era": "egypt",
+    "kind": "r",
+    "clip": "idle",
+    "resolvedPct": 100,
+    "duration": 1.7,
+    "tracks": 72,
+    "driftDeg": 62.14,
+    "pass": true
+  },
+  {
+    "era": "egypt",
+    "kind": "r",
+    "clip": "attack",
+    "resolvedPct": 100,
+    "duration": 1.87,
+    "tracks": 72,
+    "driftDeg": 76.57,
+    "pass": true
+  },
+  {
+    "era": "egypt",
+    "kind": "r",
+    "clip": "death",
+    "resolvedPct": 100,
+    "duration": 2.53,
+    "tracks": 72,
+    "driftDeg": 73.36,
+    "pass": true
+  },
+  {
+    "era": "egypt",
+    "kind": "r",
+    "clip": "walk",
+    "resolvedPct": 100,
+    "duration": 6.53,
+    "tracks": 72,
+    "driftDeg": 64.18,
+    "pass": true
+  },
+  {
+    "era": "egypt",
+    "kind": "n",
+    "clip": "idle",
+    "resolvedPct": 100,
+    "duration": 1.7,
+    "tracks": 72,
+    "driftDeg": 80.9,
+    "pass": true
+  },
+  {
+    "era": "egypt",
+    "kind": "n",
+    "clip": "attack",
+    "resolvedPct": 100,
+    "duration": 1.87,
+    "tracks": 72,
+    "driftDeg": 80.45,
+    "pass": true
+  },
+  {
+    "era": "egypt",
+    "kind": "n",
+    "clip": "death",
+    "resolvedPct": 100,
+    "duration": 2.53,
+    "tracks": 72,
+    "driftDeg": 73.64,
+    "pass": true
+  },
+  {
+    "era": "egypt",
+    "kind": "n",
+    "clip": "walk",
+    "resolvedPct": 100,
+    "duration": 6.53,
+    "tracks": 72,
+    "driftDeg": 64.16,
+    "pass": true
+  },
+  {
+    "era": "egypt",
+    "kind": "p",
+    "clip": "idle",
+    "resolvedPct": 100,
+    "duration": 1.7,
+    "tracks": 72,
+    "driftDeg": 65.13,
+    "pass": true
+  },
+  {
+    "era": "egypt",
+    "kind": "p",
+    "clip": "attack",
+    "resolvedPct": 100,
+    "duration": 3.03,
+    "tracks": 72,
+    "driftDeg": 80.12,
+    "pass": true
+  },
+  {
+    "era": "egypt",
+    "kind": "p",
+    "clip": "death",
+    "resolvedPct": 100,
+    "duration": 2.53,
+    "tracks": 72,
+    "driftDeg": 74.94,
+    "pass": true
+  },
+  {
+    "era": "egypt",
+    "kind": "p",
+    "clip": "walk",
+    "resolvedPct": 100,
+    "duration": 1.13,
+    "tracks": 72,
+    "driftDeg": 68.18,
     "pass": true
   }
 ]

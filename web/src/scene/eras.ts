@@ -14,13 +14,19 @@
  * Assets are LOCAL (`/models/...`) rather than vendor URLs on purpose: the
  * generator's URLs are signed and expiring, and an expiring URL must never
  * become the project's asset reference.
+ *
+ * ROSTER COVERAGE IS DELIBERATE, NOT ACCIDENTAL. A missing kind silently falls
+ * back to the classic sculpt, which is how a "new era" ships looking half
+ * medieval. `rosterCoverage()` below makes that measurable, and the era gate
+ * asserts every figure on the board is a real skinned rig - so a gap is caught
+ * by a failing check rather than noticed later in a screenshot.
  */
 
 import type { PieceKind } from "../core/types";
 import type { ArenaTheme } from "./arena";
 import type { PieceAnimationSet } from "../assets/generated";
 
-export type EraId = "classic" | "rome";
+export type EraId = "classic" | "rome" | "sengoku" | "egypt";
 
 /** Per-kind roster. A missing kind falls back to the classic army's sculpt. */
 export type EraRoster = Partial<Record<PieceKind, PieceAnimationSet>>;
@@ -49,55 +55,64 @@ export interface EraDefinition {
   titles: Partial<Record<PieceKind, string>>;
 }
 
-const ROME_BASE = "/models/rome";
+/** Every kind a full roster must sculpt. */
+export const ROSTER_KINDS: PieceKind[] = ["k", "q", "b", "n", "r", "p"];
+
+/** The four clips the opening needs from every sculpt. */
+const CLIP_NAMES = ["idle", "attack", "death", "walk"] as const;
+
+/**
+ * Builds a roster from a flat kind list, so adding an era is one line rather
+ * than sixty of copy-pasted paths. Every entry resolves to
+ * `/models/<era>/<kind>-<clip>.glb`, which is exactly what
+ * `tools/build-era-roster.mjs` writes after it has gated the bytes.
+ */
+function roster(era: string, kinds: PieceKind[]): EraRoster {
+  const out: EraRoster = {};
+  for (const kind of kinds) {
+    const base = `/models/${era}/${kind}`;
+    const set = { rigged: `${base}-rigged.glb` } as PieceAnimationSet;
+    for (const clip of CLIP_NAMES) set[clip] = `${base}-${clip}.glb`;
+    out[kind] = set;
+  }
+  return out;
+}
 
 /**
  * Imperial Rome. One sculpted roster fields both armies - the loader's livery
  * pass tints the two sides apart (ivory/steel vs blackened bronze), which is the
  * same mechanism the shipped game already uses when a faction borrows a sculpt.
  *
+ * Rome originally shipped WITHOUT a knight, so every Roman cavalry square
+ * silently fielded a medieval figure through the classic fallback. The Eques
+ * closes that gap, and the provenance gate now fails if any such gap returns.
+ *
  * Every entry below was gated before it was written here: structural rig check
  * (single skin, joint count, non-zero clip duration) plus a runtime bind proof
  * with a real AnimationMixer asserting 100% track resolution and measurable
  * joint drift. See `tools/out/bind-report.json`.
  */
-const ROME_ROSTER: EraRoster = {
-  k: {
-    rigged: `${ROME_BASE}/k-rigged.glb`,
-    idle: `${ROME_BASE}/k-idle.glb`,
-    attack: `${ROME_BASE}/k-attack.glb`,
-    death: `${ROME_BASE}/k-death.glb`,
-    walk: `${ROME_BASE}/k-walk.glb`,
-  },
-  q: {
-    rigged: `${ROME_BASE}/q-rigged.glb`,
-    idle: `${ROME_BASE}/q-idle.glb`,
-    attack: `${ROME_BASE}/q-attack.glb`,
-    death: `${ROME_BASE}/q-death.glb`,
-    walk: `${ROME_BASE}/q-walk.glb`,
-  },
-  b: {
-    rigged: `${ROME_BASE}/b-rigged.glb`,
-    idle: `${ROME_BASE}/b-idle.glb`,
-    attack: `${ROME_BASE}/b-attack.glb`,
-    death: `${ROME_BASE}/b-death.glb`,
-    walk: `${ROME_BASE}/b-walk.glb`,
-  },
-  r: {
-    rigged: `${ROME_BASE}/r-rigged.glb`,
-    idle: `${ROME_BASE}/r-idle.glb`,
-    attack: `${ROME_BASE}/r-attack.glb`,
-    death: `${ROME_BASE}/r-death.glb`,
-    walk: `${ROME_BASE}/r-walk.glb`,
-  },
-  p: {
-    rigged: `${ROME_BASE}/p-rigged.glb`,
-    idle: `${ROME_BASE}/p-idle.glb`,
-    attack: `${ROME_BASE}/p-attack.glb`,
-    death: `${ROME_BASE}/p-death.glb`,
-    walk: `${ROME_BASE}/p-walk.glb`,
-  },
-};
+const ROME_ROSTER: EraRoster = roster("rome", ROSTER_KINDS);
+
+/**
+ * Sengoku Japan. A COMPLETE six-kind roster - including the mounted kind that
+ * Rome lacks - so no figure on the board falls back to a medieval sculpt.
+ *
+ * Staged at dusk: the torch-lit hall is the one map whose warm key light and
+ * deep shadow read lacquered armour the way the period's own screens do, and
+ * it separates a red-lacquer army from a black-lacquer one far better than
+ * flat daylight.
+ */
+const SENGOKU_ROSTER: EraRoster = roster("sengoku", ROSTER_KINDS);
+
+/**
+ * New Kingdom Egypt. Also a complete six-kind roster.
+ *
+ * Staged at dawn: low golden light is what makes gold leaf, lapis and white
+ * pleated linen legible, and it is the only map whose horizon tint matches
+ * the period's own palette without fighting the crimson/gold armies.
+ */
+const EGYPT_ROSTER: EraRoster = roster("egypt", ROSTER_KINDS);
 
 export const ERAS: Record<EraId, EraDefinition> = {
   classic: {
@@ -129,12 +144,68 @@ export const ERAS: Record<EraId, EraDefinition> = {
       k: "Imperator",
     },
   },
+  sengoku: {
+    id: "sengoku",
+    label: "Sengoku Japan",
+    period: "Feudal - 16th century",
+    note: "Two warring clans by torchlight - lacquered armour, naginata and the daisho",
+    arena: "dusk",
+    armies: { w: "Shirahata Clan", b: "Kurogane Clan" },
+    roster: SENGOKU_ROSTER,
+    titles: {
+      p: "Ashigaru",
+      n: "Samurai Cavalry",
+      b: "Sohei Monk",
+      r: "Castle Guard",
+      q: "Onna-bugeisha",
+      k: "Daimyo",
+    },
+  },
+  egypt: {
+    id: "egypt",
+    label: "New Kingdom Egypt",
+    period: "Bronze Age - 14th century BC",
+    note: "Two dynasties at sunrise - gold, lapis and linen under the Aten",
+    arena: "dawn",
+    armies: { w: "House of Ra", b: "House of Set" },
+    roster: EGYPT_ROSTER,
+    titles: {
+      p: "Medjay",
+      n: "Charioteer",
+      b: "High Priest",
+      r: "Temple Guardian",
+      q: "Great Royal Wife",
+      k: "Pharaoh",
+    },
+  },
 };
 
-export const ERA_ORDER: EraId[] = ["classic", "rome"];
+export const ERA_ORDER: EraId[] = ["classic", "rome", "sengoku", "egypt"];
 
 export const DEFAULT_ERA: EraId = "classic";
 
 export function isEraId(value: unknown): value is EraId {
   return typeof value === "string" && Object.prototype.hasOwnProperty.call(ERAS, value);
+}
+
+/**
+ * Which kinds an era actually sculpts, and which fall back to a classic
+ * figure. Consumed by the era gate so a half-dressed roster fails a check
+ * instead of shipping as a visual surprise.
+ */
+export function rosterCoverage(era: EraId): {
+  era: EraId;
+  sculpted: PieceKind[];
+  missing: PieceKind[];
+  complete: boolean;
+} {
+  const roster = ERAS[era]?.roster;
+  if (!roster) {
+    // Classic uses the built-in per-faction rosters, which are complete by
+    // definition - it is the content every other era falls back TO.
+    return { era, sculpted: [...ROSTER_KINDS], missing: [], complete: true };
+  }
+  const sculpted = ROSTER_KINDS.filter((kind) => Boolean(roster[kind]));
+  const missing = ROSTER_KINDS.filter((kind) => !roster[kind]);
+  return { era, sculpted, missing, complete: missing.length === 0 };
 }

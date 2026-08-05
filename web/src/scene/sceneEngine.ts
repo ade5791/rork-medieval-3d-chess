@@ -6,7 +6,7 @@ import type { Faction, GameSnapshot, MoveEvent, PieceKind, SquareId } from "../c
 import { audio, type FootstepTimbre } from "../audio/audioManager";
 import type { ArenaTheme } from "./arena";
 import { ARENA_LOOKS, DEFAULT_ARENA } from "./arena";
-import { DEFAULT_ERA, ERAS, type EraId } from "./eras";
+import { DEFAULT_ERA, ERAS, rosterCoverage, type EraId } from "./eras";
 import { Battlefield } from "./battlefield";
 import { JungleOverlay } from "./jungle";
 import { BOARD_TOP, BoardView, type HighlightKind, TILE, squareToWorld, worldToSquare } from "./board";
@@ -376,6 +376,16 @@ export class SceneEngine {
   /** Deterministic review-state flags parsed from the query string. */
   private review = readReviewState();
   private probeFrameTimes: number[] = [];
+  /** S4: when on, renderer.info accumulates across every pass of a frame. */
+  private drawProbe = false;
+  /** S4: shader prewarm bookkeeping, reported by the probe. */
+  private prewarmReport: {
+    ran: boolean;
+    ms: number;
+    programsBefore: number;
+    programsAfter: number;
+    compiled: number;
+  } = { ran: false, ms: 0, programsBefore: 0, programsAfter: 0, compiled: 0 };
   private frameId = 0;
   private running = false;
   private disposed = false;
@@ -826,6 +836,148 @@ export class SceneEngine {
         }
         return { pieces, skinned, kinds };
       },
+      /**
+       * Roster PROVENANCE + coverage - the check that actually catches a
+       * half-dressed era. `sources` is the resolved rigged-GLB URL per
+       * template key; `foreign` lists any key whose sculpt did NOT come
+       * from this era's own folder (i.e. it fell back to classic).
+       */
+      provenance: () => {
+        const sources = this.factory.provenance();
+        const era = this.era;
+        const prefix = `/models/${era}/`;
+        const coverage = rosterCoverage(era);
+        const foreign = Object.entries(sources)
+          .filter(([, url]) => era !== "classic" && !url.startsWith(prefix))
+          .map(([key, url]) => `${key}=${url}`);
+        return {
+          era,
+          sources,
+          foreign,
+          sculpted: coverage.sculpted,
+          missing: coverage.missing,
+          complete: coverage.complete,
+        };
+      },
+      /**
+       * S4 performance matrix instrumentation.
+       *
+       * Reports the whole distribution rather than an average: a scene that
+       * averages 90fps while stalling 400ms on a shader compile is not a
+       * 90fps scene. Frame times are the raw unclamped wall deltas recorded
+       * in frame(), so a hitch shows up at its true length.
+       */
+      perf: () => {
+        const raw = this.probeFrameTimes.slice();
+        const sorted = raw.slice().sort((a, b) => a - b);
+        const q = (p: number): number =>
+          sorted.length ? sorted[Math.min(sorted.length - 1, Math.floor(sorted.length * p))] : 0;
+        const sum = raw.reduce((a, b) => a + b, 0);
+        const p50 = q(0.5);
+        const p95 = q(0.95);
+        const p99 = q(0.99);
+        return {
+          frames: raw.length,
+          p50,
+          p95,
+          p99,
+          max: sorted.length ? sorted[sorted.length - 1] : 0,
+          mean: raw.length ? sum / raw.length : 0,
+          fps50: p50 > 0 ? 1000 / p50 : 0,
+          fps95: p95 > 0 ? 1000 / p95 : 0,
+          fps99: p99 > 0 ? 1000 / p99 : 0,
+          hitches50: raw.filter((v) => v > 50).length,
+          hitches100: raw.filter((v) => v > 100).length,
+          worst: sorted.slice(-5),
+          frameErrors: this.frameErrors,
+        };
+      },
+      /**
+       * Program cache census. A count that grows DURING play is a late shader
+       * compile - the single largest cause of multi-second stalls - so the
+       * harness samples this before and after the measurement window.
+       */
+      programs: () => {
+        const list = this.renderer.info.programs ?? [];
+        return {
+          count: list.length,
+          keys: list.map((p) => String((p as unknown as { cacheKey?: string }).cacheKey ?? "")),
+        };
+      },
+      /**
+       * Lights in the graph and lights the renderer will actually key its
+       * programs on. These two numbers must never diverge mid-game: hiding a
+       * light changes the program key exactly as removing it would.
+       */
+      lightCensus: () => {
+        let total = 0;
+        let visible = 0;
+        let lit = 0;
+        this.scene.traverse((node) => {
+          const light = node as THREE.Light;
+          if (!light.isLight) return;
+          total += 1;
+          if (light.visible) visible += 1;
+          if (light.visible && light.intensity > 0) lit += 1;
+        });
+        return { total, visible, lit };
+      },
+      /**
+       * True per-frame draw statistics. Must be enabled for at least one
+       * full frame before reading, because it works by accumulating.
+       */
+      setDrawProbe: (on: boolean) => {
+        this.drawProbe = on;
+        this.renderer.info.autoReset = !on;
+      },
+      draw: () => ({
+        calls: this.renderer.info.render.calls,
+        triangles: this.renderer.info.render.triangles,
+        lines: this.renderer.info.render.lines,
+        points: this.renderer.info.render.points,
+      }),
+      /** Raw graph, for draw-call attribution by group. */
+      scene: () => this.scene,
+      /** Shadow configuration - the dominant draw-call multiplier. */
+      shadow: () => ({
+        enabled: this.renderer.shadowMap.enabled,
+        type: this.renderer.shadowMap.type,
+        autoUpdate: this.renderer.shadowMap.autoUpdate,
+        needsUpdate: this.renderer.shadowMap.needsUpdate,
+      }),
+      /** Live scene-object census for the teardown/leak audit. */
+      census: () => {
+        let meshes = 0;
+        let skinned = 0;
+        let objects = 0;
+        this.scene.traverse((node) => {
+          objects += 1;
+          const mesh = node as THREE.Mesh;
+          if (mesh.isMesh) meshes += 1;
+          if ((node as THREE.SkinnedMesh).isSkinnedMesh) skinned += 1;
+        });
+        return {
+          objects,
+          meshes,
+          skinned,
+          pieces: this.pieces.size,
+          captured: this.captured.length,
+          geometries: this.renderer.info.memory.geometries,
+          textures: this.renderer.info.memory.textures,
+          programs: this.renderer.info.programs?.length ?? 0,
+          calls: this.renderer.info.render.calls,
+          triangles: this.renderer.info.render.triangles,
+        };
+      },
+      /** Drive the cinematic auto-orbit - never measure a static camera. */
+      showcase: (active: boolean, speed = 0.32) => this.setShowcase(active, speed),
+      /** Clear the manual-camera suspension so auto-orbit resumes at once. */
+      releaseCamera: () => {
+        this.lastManualCameraAt = -1e9;
+      },
+      /** Compile every program permutation now, behind the loading screen. */
+      prewarm: () => this.prewarmShaders(),
+      prewarmStats: () => ({ ...this.prewarmReport }),
       /** Combat diagnostics for the S3 gate. */
       combat: () => ({
         // Distinct captures that have resolved damage. Must equal the number
@@ -851,6 +1003,9 @@ export class SceneEngine {
     await this.factory.load((done, total) => this.callbacks.onLoadProgress(done / total));
     if (this.disposed) return;
     this.rebuildPieces();
+    // Every permutation the standing board needs is compiled here, while
+    // the loading screen is still covering the canvas.
+    this.prewarmShaders();
     this.callbacks.onReady();
     // The rigs and their stances are in; the strikes, deaths and strides come
     // down behind the game so the first move never waits on seventy GLBs.
@@ -893,6 +1048,9 @@ export class SceneEngine {
   }
 
   private frame(): void {
+    // With autoReset off, one reset here makes renderer.info sum every
+    // pass this frame instead of reporting only the last one.
+    if (this.drawProbe) this.renderer.info.reset();
     const now = performance.now();
     // Raw, unclamped wall time for measurement. The simulation still uses the
     // clamped delta below - but recording the clamped value made every frame
@@ -3281,6 +3439,73 @@ export class SceneEngine {
     this.start();
   };
 
+  /**
+   * Compile every shader permutation the hall will need BEFORE the first
+   * playable frame, while the loading screen is still up.
+   *
+   * Lazy compilation mid-play is the number one cause of multi-second
+   * stalls in a Three.js game - the frame that first draws a dissolving
+   * figure or a spell billboard pays for the whole program build.
+   *
+   * Three folds outputColorSpace AND toneMapping into the program cache
+   * key and reads both off the CURRENTLY BOUND target, so compiling
+   * against the canvas can produce the wrong variant. We bind a scratch
+   * target that mirrors the real one first.
+   *
+   * Prewarm must also be simulation-transparent: the clock, the elapsed
+   * accumulator and the frame-time buffer are snapshotted and restored, so
+   * a capture taken after prewarm is identical to one taken without it.
+   */
+  private prewarmShaders(): number {
+    const started = performance.now();
+    const before = this.renderer.info.programs?.length ?? 0;
+
+    // Snapshot simulation state - prewarm must not advance the game.
+    const snapElapsed = this.elapsed;
+    const snapLastFrame = this.lastFrameTime;
+    const snapFrames = this.probeFrameTimes.slice();
+    const prevTarget = this.renderer.getRenderTarget();
+
+    try {
+      // Forward lit pass for everything currently in the graph.
+      this.renderer.compile(this.scene, this.camera);
+
+      // Shadow/depth variants are a different program key and compile()
+      // does not reach them, so render one throwaway frame into a scratch
+      // target that carries the same colour space and tone mapping.
+      const size = this.renderer.getSize(new THREE.Vector2());
+      const w = Math.max(2, Math.floor(size.x / 4));
+      const h = Math.max(2, Math.floor(size.y / 4));
+      const scratch = new THREE.WebGLRenderTarget(w, h, {
+        type: THREE.HalfFloatType,
+        colorSpace: THREE.SRGBColorSpace,
+      });
+      this.renderer.setRenderTarget(scratch);
+      this.renderer.render(this.scene, this.camera);
+      this.renderer.setRenderTarget(prevTarget);
+      scratch.dispose();
+    } catch (error) {
+      console.warn("[scene] prewarm skipped", error);
+      this.renderer.setRenderTarget(prevTarget);
+    }
+
+    // Restore simulation state so nothing downstream drifted.
+    this.elapsed = snapElapsed;
+    this.lastFrameTime = snapLastFrame;
+    this.probeFrameTimes = snapFrames;
+
+    const after = this.renderer.info.programs?.length ?? 0;
+    const ms = performance.now() - started;
+    this.prewarmReport = {
+      ran: true,
+      ms,
+      programsBefore: before,
+      programsAfter: after,
+      compiled: Math.max(0, after - before),
+    };
+    return ms;
+  }
+
   dispose(): void {
     // Shared surface-detail maps are module-cached across the scene, so
     // they are not owned by any one subsystem's disposable list.
@@ -3314,5 +3539,13 @@ export class SceneEngine {
     this.postfx.dispose();
     this.controls.dispose();
     this.renderer.dispose();
+    // Hand the GPU context back. Browsers cap the number of live WebGL
+    // contexts, so repeated menu<->game routing without this eventually
+    // evicts a live context and blacks out the scene.
+    try {
+      this.renderer.forceContextLoss();
+    } catch {
+      /* context already gone */
+    }
   }
 }

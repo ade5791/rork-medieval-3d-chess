@@ -1,0 +1,865 @@
+{
+  "perf": {
+    "frames": 453,
+    "p50": 17.100000023841858,
+    "p95": 23.19999998807907,
+    "p99": 27.299999952316284,
+    "max": 30.400000035762787,
+    "mean": 17.966445916141105,
+    "fps50": 58.47953208220698,
+    "fps95": 43.10344829801005,
+    "fps99": 36.63003669401671,
+    "hitches50": 0,
+    "hitches100": 0,
+    "worst": [
+      27.299999952316284,
+      28.80000001192093,
+      29.5,
+      30,
+      30.400000035762787
+    ],
+    "frameErrors": 0
+  },
+  "rows": [
+    {
+      "name": "(program)",
+      "file": "",
+      "line": -1,
+      "hits": 459,
+      "pct": 3.353792196405086
+    },
+    {
+      "name": "h",
+      "file": "index-D3wPzqIy.js",
+      "line": 4078,
+      "hits": 377,
+      "pct": 2.754639777875201
+    },
+    {
+      "name": "ot",
+      "file": "index-D3wPzqIy.js",
+      "line": 4129,
+      "hits": 355,
+      "pct": 2.59389156802572
+    },
+    {
+      "name": "TS.renderBufferDirect",
+      "file": "index-D3wPzqIy.js",
+      "line": 4129,
+      "hits": 329,
+      "pct": 2.4039164109308784
+    },
+    {
+      "name": "a",
+      "file": "index-D3wPzqIy.js",
+      "line": 4129,
+      "hits": 290,
+      "pct": 2.118953675288616
+    },
+    {
+      "name": "nt",
+      "file": "index-D3wPzqIy.js",
+      "line": 4129,
+      "hits": 279,
+      "pct": 2.0385795703638756
+    },
+    {
+      "name": "upload",
+      "file": "index-D3wPzqIy.js",
+      "line": 4027,
+      "hits": 210,
+      "pct": 1.5344147303814117
+    },
+    {
+      "name": "apply",
+      "file": "index-D3wPzqIy.js",
+      "line": 26,
+      "hits": 193,
+      "pct": 1.4102002045886308
+    },
+    {
+      "name": "h",
+      "file": "index-D3wPzqIy.js",
+      "line": 4078,
+      "hits": 187,
+      "pct": 1.3663597837205903
+    },
+    {
+      "name": "h",
+      "file": "index-D3wPzqIy.js",
+      "line": 4078,
+      "hits": 183,
+      "pct": 1.3371328364752302
+    },
+    {
+      "name": "h",
+      "file": "index-D3wPzqIy.js",
+      "line": 4078,
+      "hits": 179,
+      "pct": 1.30790588922987
+    },
+    {
+      "name": "TS.renderBufferDirect",
+      "file": "index-D3wPzqIy.js",
+      "line": 4129,
+      "hits": 177,
+      "pct": 1.2932924156071899
+    },
+    {
+      "name": "evaluate",
+      "file": "index-D3wPzqIy.js",
+      "line": 26,
+      "hits": 157,
+      "pct": 1.1471576793803888
+    },
+    {
+      "name": "h",
+      "file": "index-D3wPzqIy.js",
+      "line": 4078,
+      "hits": 156,
+      "pct": 1.1398509425690488
+    },
+    {
+      "name": "nt",
+      "file": "index-D3wPzqIy.js",
+      "line": 4129,
+      "hits": 143,
+      "pct": 1.044863364021628
+    },
+    {
+      "name": "nt",
+      "file": "index-D3wPzqIy.js",
+      "line": 4129,
+      "hits": 142,
+      "pct": 1.0375566272102879
+    },
+    {
+      "name": "multiplyMatrices",
+      "file": "index-D3wPzqIy.js",
+      "line": 22,
+      "hits": 131,
+      "pct": 0.9571825222855472
+    },
+    {
+      "name": "multiplyMatrices",
+      "file": "index-D3wPzqIy.js",
+      "line": 22,
+      "hits": 131,
+      "pct": 0.9571825222855472
+    },
+    {
+      "name": "st",
+      "file": "index-D3wPzqIy.js",
+      "line": 4129,
+      "hits": 131,
+      "pct": 0.9571825222855472
+    },
+    {
+      "name": "nt",
+      "file": "index-D3wPzqIy.js",
+      "line": 4129,
+      "hits": 127,
+      "pct": 0.9279555750401871
+    },
+    {
+      "name": "nt",
+      "file": "index-D3wPzqIy.js",
+      "line": 4129,
+      "hits": 125,
+      "pct": 0.913342101417507
+    },
+    {
+      "name": "updateMatrixWorld",
+      "file": "index-D3wPzqIy.js",
+      "line": 22,
+      "hits": 124,
+      "pct": 0.906035364606167
+    },
+    {
+      "name": "updateMatrixWorld",
+      "file": "index-D3wPzqIy.js",
+      "line": 22,
+      "hits": 120,
+      "pct": 0.8768084173608066
+    },
+    {
+      "name": "tt",
+      "file": "index-D3wPzqIy.js",
+      "line": 4129,
+      "hits": 116,
+      "pct": 0.8475814701154464
+    },
+    {
+      "name": "ot",
+      "file": "index-D3wPzqIy.js",
+      "line": 4129,
+      "hits": 113,
+      "pct": 0.8256612596814263
+    },
+    {
+      "name": "pb",
+      "file": "index-D3wPzqIy.js",
+      "line": 4027,
+      "hits": 109,
+      "pct": 0.7964343124360661
+    },
+    {
+      "name": "multiplyMatrices",
+      "file": "index-D3wPzqIy.js",
+      "line": 22,
+      "hits": 106,
+      "pct": 0.7745141020020458
+    },
+    {
+      "name": "setValue",
+      "file": "index-D3wPzqIy.js",
+      "line": 4027,
+      "hits": 104,
+      "pct": 0.7599006283793658
+    },
+    {
+      "name": "i",
+      "file": "index-D3wPzqIy.js",
+      "line": 4129,
+      "hits": 101,
+      "pct": 0.7379804179453455
+    },
+    {
+      "name": "b",
+      "file": "index-D3wPzqIy.js",
+      "line": 4105,
+      "hits": 100,
+      "pct": 0.7306736811340055
+    },
+    {
+      "name": "multiplyMatrices",
+      "file": "index-D3wPzqIy.js",
+      "line": 22,
+      "hits": 99,
+      "pct": 0.7233669443226655
+    },
+    {
+      "name": "h",
+      "file": "index-D3wPzqIy.js",
+      "line": 4078,
+      "hits": 97,
+      "pct": 0.7087534706999854
+    },
+    {
+      "name": "tt",
+      "file": "index-D3wPzqIy.js",
+      "line": 4129,
+      "hits": 88,
+      "pct": 0.642992839397925
+    },
+    {
+      "name": "_b",
+      "file": "index-D3wPzqIy.js",
+      "line": 4027,
+      "hits": 86,
+      "pct": 0.6283793657752448
+    },
+    {
+      "name": "setValue",
+      "file": "index-D3wPzqIy.js",
+      "line": 4027,
+      "hits": 85,
+      "pct": 0.6210726289639047
+    },
+    {
+      "name": "G",
+      "file": "index-D3wPzqIy.js",
+      "line": 4129,
+      "hits": 84,
+      "pct": 0.6137658921525646
+    },
+    {
+      "name": "TS.renderBufferDirect",
+      "file": "index-D3wPzqIy.js",
+      "line": 4129,
+      "hits": 83,
+      "pct": 0.6064591553412246
+    },
+    {
+      "name": "r",
+      "file": "index-D3wPzqIy.js",
+      "line": 4129,
+      "hits": 83,
+      "pct": 0.6064591553412246
+    },
+    {
+      "name": "et",
+      "file": "index-D3wPzqIy.js",
+      "line": 4129,
+      "hits": 80,
+      "pct": 0.5845389449072045
+    },
+    {
+      "name": "nt",
+      "file": "index-D3wPzqIy.js",
+      "line": 4129,
+      "hits": 80,
+      "pct": 0.5845389449072045
+    },
+    {
+      "name": "sb",
+      "file": "index-D3wPzqIy.js",
+      "line": 4027,
+      "hits": 75,
+      "pct": 0.5480052608505042
+    },
+    {
+      "name": "multiplyMatrices",
+      "file": "index-D3wPzqIy.js",
+      "line": 22,
+      "hits": 73,
+      "pct": 0.5333917872278241
+    },
+    {
+      "name": "b",
+      "file": "index-D3wPzqIy.js",
+      "line": 4105,
+      "hits": 73,
+      "pct": 0.5333917872278241
+    },
+    {
+      "name": "bindVertexArray",
+      "file": "",
+      "line": -1,
+      "hits": 71,
+      "pct": 0.5187783136051439
+    },
+    {
+      "name": "TS.renderBufferDirect",
+      "file": "index-D3wPzqIy.js",
+      "line": 4129,
+      "hits": 70,
+      "pct": 0.511471576793804
+    },
+    {
+      "name": "G",
+      "file": "index-D3wPzqIy.js",
+      "line": 4129,
+      "hits": 69,
+      "pct": 0.5041648399824638
+    },
+    {
+      "name": "Qe",
+      "file": "index-D3wPzqIy.js",
+      "line": 4129,
+      "hits": 68,
+      "pct": 0.4968581031711238
+    },
+    {
+      "name": "G",
+      "file": "index-D3wPzqIy.js",
+      "line": 4129,
+      "hits": 68,
+      "pct": 0.4968581031711238
+    },
+    {
+      "name": "setValue",
+      "file": "index-D3wPzqIy.js",
+      "line": 4027,
+      "hits": 66,
+      "pct": 0.48224462954844366
+    },
+    {
+      "name": "u",
+      "file": "index-D3wPzqIy.js",
+      "line": 4078,
+      "hits": 65,
+      "pct": 0.47493789273710363
+    },
+    {
+      "name": "update",
+      "file": "index-D3wPzqIy.js",
+      "line": 26,
+      "hits": 62,
+      "pct": 0.4530176823030835
+    },
+    {
+      "name": "G",
+      "file": "index-D3wPzqIy.js",
+      "line": 4129,
+      "hits": 62,
+      "pct": 0.4530176823030835
+    },
+    {
+      "name": "updateMatrixWorld",
+      "file": "index-D3wPzqIy.js",
+      "line": 22,
+      "hits": 62,
+      "pct": 0.4530176823030835
+    },
+    {
+      "name": "multiplyMatrices",
+      "file": "index-D3wPzqIy.js",
+      "line": 22,
+      "hits": 62,
+      "pct": 0.4530176823030835
+    },
+    {
+      "name": "updateMatrixWorld",
+      "file": "index-D3wPzqIy.js",
+      "line": 22,
+      "hits": 61,
+      "pct": 0.44571094549174334
+    },
+    {
+      "name": "slerpFlat",
+      "file": "index-D3wPzqIy.js",
+      "line": 22,
+      "hits": 57,
+      "pct": 0.41648399824638316
+    },
+    {
+      "name": "bindVertexArray",
+      "file": "",
+      "line": -1,
+      "hits": 57,
+      "pct": 0.41648399824638316
+    },
+    {
+      "name": "uniformMatrix4fv",
+      "file": "",
+      "line": -1,
+      "hits": 57,
+      "pct": 0.41648399824638316
+    },
+    {
+      "name": "intersectsObject",
+      "file": "index-D3wPzqIy.js",
+      "line": 22,
+      "hits": 56,
+      "pct": 0.4091772614350431
+    },
+    {
+      "name": "u",
+      "file": "index-D3wPzqIy.js",
+      "line": 4078,
+      "hits": 55,
+      "pct": 0.4018705246237031
+    },
+    {
+      "name": "update",
+      "file": "index-D3wPzqIy.js",
+      "line": 22,
+      "hits": 54,
+      "pct": 0.394563787812363
+    },
+    {
+      "name": "ot",
+      "file": "index-D3wPzqIy.js",
+      "line": 4129,
+      "hits": 54,
+      "pct": 0.394563787812363
+    },
+    {
+      "name": "texSubImage2D",
+      "file": "",
+      "line": -1,
+      "hits": 54,
+      "pct": 0.394563787812363
+    },
+    {
+      "name": "texSubImage2D",
+      "file": "",
+      "line": -1,
+      "hits": 50,
+      "pct": 0.3653368405670028
+    },
+    {
+      "name": "pb",
+      "file": "index-D3wPzqIy.js",
+      "line": 4027,
+      "hits": 50,
+      "pct": 0.3653368405670028
+    },
+    {
+      "name": "G",
+      "file": "index-D3wPzqIy.js",
+      "line": 4129,
+      "hits": 50,
+      "pct": 0.3653368405670028
+    },
+    {
+      "name": "b",
+      "file": "index-D3wPzqIy.js",
+      "line": 4105,
+      "hits": 50,
+      "pct": 0.3653368405670028
+    },
+    {
+      "name": "update",
+      "file": "index-D3wPzqIy.js",
+      "line": 4240,
+      "hits": 50,
+      "pct": 0.3653368405670028
+    },
+    {
+      "name": "d",
+      "file": "index-D3wPzqIy.js",
+      "line": 3692,
+      "hits": 50,
+      "pct": 0.3653368405670028
+    },
+    {
+      "name": "ot",
+      "file": "index-D3wPzqIy.js",
+      "line": 4129,
+      "hits": 50,
+      "pct": 0.3653368405670028
+    },
+    {
+      "name": "G",
+      "file": "index-D3wPzqIy.js",
+      "line": 4129,
+      "hits": 49,
+      "pct": 0.35803010375566274
+    },
+    {
+      "name": "b",
+      "file": "index-D3wPzqIy.js",
+      "line": 4105,
+      "hits": 48,
+      "pct": 0.35072336694432266
+    },
+    {
+      "name": "intersectsObject",
+      "file": "index-D3wPzqIy.js",
+      "line": 22,
+      "hits": 47,
+      "pct": 0.34341663013298257
+    },
+    {
+      "name": "et",
+      "file": "index-D3wPzqIy.js",
+      "line": 4129,
+      "hits": 47,
+      "pct": 0.34341663013298257
+    },
+    {
+      "name": "cb",
+      "file": "index-D3wPzqIy.js",
+      "line": 4027,
+      "hits": 46,
+      "pct": 0.33610989332164254
+    },
+    {
+      "name": "update",
+      "file": "index-D3wPzqIy.js",
+      "line": 22,
+      "hits": 46,
+      "pct": 0.33610989332164254
+    },
+    {
+      "name": "updateMatrixWorld",
+      "file": "index-D3wPzqIy.js",
+      "line": 22,
+      "hits": 46,
+      "pct": 0.33610989332164254
+    },
+    {
+      "name": "update",
+      "file": "index-D3wPzqIy.js",
+      "line": 22,
+      "hits": 46,
+      "pct": 0.33610989332164254
+    },
+    {
+      "name": "bindTexture",
+      "file": "",
+      "line": -1,
+      "hits": 44,
+      "pct": 0.3214964196989625
+    },
+    {
+      "name": "Qe",
+      "file": "index-D3wPzqIy.js",
+      "line": 4129,
+      "hits": 43,
+      "pct": 0.3141896828876224
+    },
+    {
+      "name": "bindVertexArray",
+      "file": "",
+      "line": -1,
+      "hits": 43,
+      "pct": 0.3141896828876224
+    },
+    {
+      "name": "multiplyMatrices",
+      "file": "index-D3wPzqIy.js",
+      "line": 22,
+      "hits": 43,
+      "pct": 0.3141896828876224
+    },
+    {
+      "name": "update",
+      "file": "index-D3wPzqIy.js",
+      "line": 22,
+      "hits": 43,
+      "pct": 0.3141896828876224
+    },
+    {
+      "name": "p",
+      "file": "index-D3wPzqIy.js",
+      "line": 3692,
+      "hits": 43,
+      "pct": 0.3141896828876224
+    },
+    {
+      "name": "updateMatrixWorld",
+      "file": "index-D3wPzqIy.js",
+      "line": 22,
+      "hits": 42,
+      "pct": 0.3068829460762823
+    },
+    {
+      "name": "b",
+      "file": "index-D3wPzqIy.js",
+      "line": 4105,
+      "hits": 39,
+      "pct": 0.2849627356422622
+    },
+    {
+      "name": "G",
+      "file": "index-D3wPzqIy.js",
+      "line": 4129,
+      "hits": 37,
+      "pct": 0.27034926201958204
+    },
+    {
+      "name": "b",
+      "file": "index-D3wPzqIy.js",
+      "line": 4105,
+      "hits": 37,
+      "pct": 0.27034926201958204
+    },
+    {
+      "name": "_b",
+      "file": "index-D3wPzqIy.js",
+      "line": 4027,
+      "hits": 36,
+      "pct": 0.263042525208242
+    },
+    {
+      "name": "uniformMatrix4fv",
+      "file": "",
+      "line": -1,
+      "hits": 35,
+      "pct": 0.255735788396902
+    },
+    {
+      "name": "d",
+      "file": "index-D3wPzqIy.js",
+      "line": 3692,
+      "hits": 34,
+      "pct": 0.2484290515855619
+    },
+    {
+      "name": "updateMatrixWorld",
+      "file": "index-D3wPzqIy.js",
+      "line": 22,
+      "hits": 34,
+      "pct": 0.2484290515855619
+    },
+    {
+      "name": "G",
+      "file": "index-D3wPzqIy.js",
+      "line": 4129,
+      "hits": 34,
+      "pct": 0.2484290515855619
+    },
+    {
+      "name": "b",
+      "file": "index-D3wPzqIy.js",
+      "line": 4105,
+      "hits": 34,
+      "pct": 0.2484290515855619
+    },
+    {
+      "name": "h",
+      "file": "index-D3wPzqIy.js",
+      "line": 4078,
+      "hits": 33,
+      "pct": 0.24112231477422183
+    },
+    {
+      "name": "uniform3f",
+      "file": "",
+      "line": -1,
+      "hits": 33,
+      "pct": 0.24112231477422183
+    },
+    {
+      "name": "be",
+      "file": "index-D3wPzqIy.js",
+      "line": 4105,
+      "hits": 32,
+      "pct": 0.23381557796288177
+    },
+    {
+      "name": "updateMatrixWorld",
+      "file": "index-D3wPzqIy.js",
+      "line": 22,
+      "hits": 32,
+      "pct": 0.23381557796288177
+    },
+    {
+      "name": "TS.renderBufferDirect",
+      "file": "index-D3wPzqIy.js",
+      "line": 4129,
+      "hits": 32,
+      "pct": 0.23381557796288177
+    },
+    {
+      "name": "updateMatrixWorld",
+      "file": "index-D3wPzqIy.js",
+      "line": 22,
+      "hits": 31,
+      "pct": 0.22650884115154174
+    },
+    {
+      "name": "ot",
+      "file": "index-D3wPzqIy.js",
+      "line": 4129,
+      "hits": 31,
+      "pct": 0.22650884115154174
+    },
+    {
+      "name": "update",
+      "file": "index-D3wPzqIy.js",
+      "line": 4180,
+      "hits": 30,
+      "pct": 0.21920210434020165
+    },
+    {
+      "name": "uniformMatrix4fv",
+      "file": "",
+      "line": -1,
+      "hits": 30,
+      "pct": 0.21920210434020165
+    },
+    {
+      "name": "h",
+      "file": "index-D3wPzqIy.js",
+      "line": 4078,
+      "hits": 30,
+      "pct": 0.21920210434020165
+    },
+    {
+      "name": "nt",
+      "file": "index-D3wPzqIy.js",
+      "line": 4129,
+      "hits": 30,
+      "pct": 0.21920210434020165
+    },
+    {
+      "name": "b",
+      "file": "index-D3wPzqIy.js",
+      "line": 4105,
+      "hits": 29,
+      "pct": 0.2118953675288616
+    },
+    {
+      "name": "o",
+      "file": "index-D3wPzqIy.js",
+      "line": 3981,
+      "hits": 29,
+      "pct": 0.2118953675288616
+    },
+    {
+      "name": "db",
+      "file": "index-D3wPzqIy.js",
+      "line": 4027,
+      "hits": 28,
+      "pct": 0.20458863071752156
+    },
+    {
+      "name": "nt",
+      "file": "index-D3wPzqIy.js",
+      "line": 4129,
+      "hits": 28,
+      "pct": 0.20458863071752156
+    },
+    {
+      "name": "bindVertexArray",
+      "file": "",
+      "line": -1,
+      "hits": 28,
+      "pct": 0.20458863071752156
+    },
+    {
+      "name": "v",
+      "file": "index-D3wPzqIy.js",
+      "line": 4078,
+      "hits": 27,
+      "pct": 0.1972818939061815
+    },
+    {
+      "name": "setFromRotationMatrix",
+      "file": "index-D3wPzqIy.js",
+      "line": 22,
+      "hits": 27,
+      "pct": 0.1972818939061815
+    },
+    {
+      "name": "updateMatrixWorld",
+      "file": "index-D3wPzqIy.js",
+      "line": 22,
+      "hits": 27,
+      "pct": 0.1972818939061815
+    },
+    {
+      "name": "TS.renderBufferDirect",
+      "file": "index-D3wPzqIy.js",
+      "line": 4129,
+      "hits": 27,
+      "pct": 0.1972818939061815
+    },
+    {
+      "name": "updateMatrixWorld",
+      "file": "index-D3wPzqIy.js",
+      "line": 22,
+      "hits": 27,
+      "pct": 0.1972818939061815
+    },
+    {
+      "name": "b",
+      "file": "index-D3wPzqIy.js",
+      "line": 4105,
+      "hits": 26,
+      "pct": 0.18997515709484145
+    },
+    {
+      "name": "_",
+      "file": "index-D3wPzqIy.js",
+      "line": 4078,
+      "hits": 26,
+      "pct": 0.18997515709484145
+    },
+    {
+      "name": "Kx",
+      "file": "index-D3wPzqIy.js",
+      "line": 4078,
+      "hits": 26,
+      "pct": 0.18997515709484145
+    },
+    {
+      "name": "G",
+      "file": "index-D3wPzqIy.js",
+      "line": 4129,
+      "hits": 26,
+      "pct": 0.18997515709484145
+    },
+    {
+      "name": "updateMatrixWorld",
+      "file": "index-D3wPzqIy.js",
+      "line": 22,
+      "hits": 26,
+      "pct": 0.18997515709484145
+    }
+  ]
+}

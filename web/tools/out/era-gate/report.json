@@ -8,13 +8,25 @@
     "preset": "high",
     "pieces": 29,
     "skinned": 29,
+    "sculpted": [
+      "k",
+      "q",
+      "b",
+      "n",
+      "r",
+      "p"
+    ],
+    "missingKinds": [],
+    "rosterComplete": true,
+    "foreignSculpts": [],
+    "sourceCount": 12,
     "contactsResolved": 1,
     "beatTimeouts": 1,
     "animationTimeouts": 0,
     "frameErrors": 0,
     "ply": 1,
-    "mean": 0.2951,
-    "p50": 0.2398,
+    "mean": 0.2974,
+    "p50": 0.2404,
     "blackPct": 0,
     "whitePct": 0.02,
     "triangles": 1,
@@ -42,6 +54,16 @@
         "detail": "29/29"
       },
       {
+        "label": "no foreign sculpts",
+        "ok": true,
+        "detail": "all from this era"
+      },
+      {
+        "label": "roster covers every kind",
+        "ok": true,
+        "detail": "k,q,b,n,r,p"
+      },
+      {
         "label": "capture resolved once",
         "ok": true,
         "detail": "1"
@@ -59,7 +81,7 @@
       {
         "label": "not a black screen",
         "ok": true,
-        "detail": "mean=0.2951 black=0%"
+        "detail": "mean=0.2974 black=0%"
       },
       {
         "label": "no console errors",
@@ -75,23 +97,35 @@
     "pass": true
   },
   {
-    "era": "rome",
-    "url": "http://127.0.0.1:4178/?era=rome&review=1&probe=1&quality=high&scenario=capture",
+    "era": "egypt",
+    "url": "http://127.0.0.1:4178/?era=egypt&review=1&probe=1&quality=high&scenario=capture",
     "ready": true,
-    "stagedEra": "rome",
-    "stagedArena": "frost",
+    "stagedEra": "egypt",
+    "stagedArena": "dawn",
     "preset": "high",
     "pieces": 29,
     "skinned": 29,
+    "sculpted": [
+      "k",
+      "q",
+      "b",
+      "n",
+      "r",
+      "p"
+    ],
+    "missingKinds": [],
+    "rosterComplete": true,
+    "foreignSculpts": [],
+    "sourceCount": 12,
     "contactsResolved": 1,
     "beatTimeouts": 1,
     "animationTimeouts": 0,
     "frameErrors": 0,
     "ply": 1,
-    "mean": 0.3505,
-    "p50": 0.288,
+    "mean": 0.289,
+    "p50": 0.2384,
     "blackPct": 0,
-    "whitePct": 0.19,
+    "whitePct": 0,
     "triangles": 1,
     "errors": [],
     "badRequests": [],
@@ -104,7 +138,7 @@
       {
         "label": "staged requested era",
         "ok": true,
-        "detail": "rome"
+        "detail": "egypt"
       },
       {
         "label": "board filled",
@@ -115,6 +149,16 @@
         "label": "every figure rigged",
         "ok": true,
         "detail": "29/29"
+      },
+      {
+        "label": "no foreign sculpts",
+        "ok": true,
+        "detail": "all from this era"
+      },
+      {
+        "label": "roster covers every kind",
+        "ok": true,
+        "detail": "k,q,b,n,r,p"
       },
       {
         "label": "capture resolved once",
@@ -134,7 +178,7 @@
       {
         "label": "not a black screen",
         "ok": true,
-        "detail": "mean=0.3505 black=0%"
+        "detail": "mean=0.289 black=0%"
       },
       {
         "label": "no console errors",

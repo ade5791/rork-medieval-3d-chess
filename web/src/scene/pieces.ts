@@ -16,6 +16,18 @@ import { wearSurface } from "./detail";
 import { Ease, type TweenManager } from "./tween";
 import { attachWeapons, type AttachedArms } from "./weapons";
 
+/**
+ * Minimum WORLD-space radius for a rigid sub-mesh of a figure to be worth a
+ * shadow-pass submission. Skinned bodies bypass this entirely.
+ *
+ * Measured on this board: figures span ~0.8 world units, so anything under
+ * ~0.14 is a buckle, a strap or a trim ring that falls entirely inside the
+ * silhouette the body already casts - it costs a draw call and moves no
+ * shadow pixels.
+ */
+
+
+
 /** Rendered height (world units, 1 unit = 1 board square) per piece kind. */
 export const PIECE_HEIGHT: Record<PieceKind, number> = {
   p: 0.7,
@@ -937,7 +949,11 @@ export class PieceView {
     // keep casting a whole one. Drop the cast the moment it starts to go.
     const solid = value <= 0.02;
     if (solid !== wasSolid) {
-      for (const mesh of this.meshes) mesh.castShadow = solid;
+      // Restoring the cast must never promote a part that was never
+      // eligible in the first place.
+      for (const mesh of this.meshes) {
+        mesh.castShadow = solid && mesh.userData.shadowEligible !== false;
+      }
     }
   }
 
@@ -1417,6 +1433,22 @@ export class PieceFactory {
   warmClips(): Promise<void> {
     if (!this.warming) this.warming = this.runWarm();
     return this.warming;
+  }
+
+  /**
+   * Where every loaded figure's sculpt ACTUALLY came from.
+   *
+   * A skinned-mesh count alone cannot prove an era dressed its own board:
+   * the classic fallback armies are rigged too, so a half-authored roster
+   * still reports "every figure rigged" while quietly fielding medieval
+   * knights in Egypt. This reports the resolved rigged-GLB URL per template
+   * key, which is the only claim that separates an era's own sculpt from a
+   * fallback. The era gate asserts every entry lives under /models/<era>/.
+   */
+  provenance(): Record<string, string> {
+    const out: Record<string, string> = {};
+    for (const [key, set] of this.clipSources.entries()) out[key] = set.rigged;
+    return out;
   }
 
   private async runWarm(): Promise<void> {

@@ -85,6 +85,23 @@
         "death": 187,
         "walk": 672
       }
+    },
+    "n": {
+      "name": "Eques",
+      "height": 1.898,
+      "rigged": "https://v3b.fal.media/files/b/0aa518a4/rqny2ydmiLPWlyQcQCxBG_rigged_character.glb",
+      "clips": {
+        "idle": "https://v3b.fal.media/files/b/0aa518a6/PUWm8vWpA2fksPBFL5Vss_animation.glb",
+        "attack": "https://v3b.fal.media/files/b/0aa518a7/OusmzjtN69YbiICB9VM9q_animation.glb",
+        "death": "https://v3b.fal.media/files/b/0aa518a6/r07HWYMlavqEPC2BtIB0t_animation.glb",
+        "walk": "https://v3b.fal.media/files/b/0aa518a7/JhvAX_iwLIsSTm758aD5f_animation.glb"
+      },
+      "actionIds": {
+        "idle": 89,
+        "attack": 128,
+        "death": 187,
+        "walk": 611
+      }
     }
   },
   "sengoku": {
@@ -182,6 +199,110 @@
         "attack": "https://v3b.fal.media/files/b/0aa514df/fK-HtLkCxhvllgo4dr-IC_animation.glb",
         "death": "https://v3b.fal.media/files/b/0aa514de/JbKhGLs3WfKAslXB4bj9C_animation.glb",
         "walk": "https://v3b.fal.media/files/b/0aa514ee/jHS26e-qmGYqkG2uvpVYR_animation.glb"
+      },
+      "actionIds": {
+        "idle": 89,
+        "attack": 240,
+        "death": 187,
+        "walk": 672
+      }
+    }
+  },
+  "egypt": {
+    "k": {
+      "name": "Pharaoh",
+      "height": 1.899,
+      "rigged": "https://v3b.fal.media/files/b/0aa51833/hKAy_yGQlv5r7VY0Y4Huu_rigged_character.glb",
+      "clips": {
+        "idle": "https://v3b.fal.media/files/b/0aa51825/PAIcAWx-TmVWJvtF6WuUR_animation.glb",
+        "attack": "https://v3b.fal.media/files/b/0aa51836/_mWlR6ELl9s8J2YkDyPDa_animation.glb",
+        "death": "https://v3b.fal.media/files/b/0aa51826/v4ImQgp-nAwgbstnSfkIZ_animation.glb",
+        "walk": "https://v3b.fal.media/files/b/0aa51825/zvddkwtl4KEhSSARoqks3_animation.glb"
+      },
+      "actionIds": {
+        "idle": 0,
+        "attack": 102,
+        "death": 8,
+        "walk": 613
+      }
+    },
+    "q": {
+      "name": "Great Royal Wife",
+      "height": 1.898,
+      "rigged": "https://v3b.fal.media/files/b/0aa5182f/lYgA8_vEVLgMrtedjxAH5_rigged_character.glb",
+      "clips": {
+        "idle": "https://v3b.fal.media/files/b/0aa51832/skFJ0ztT9OhRq0w-F8R3F_animation.glb",
+        "attack": "https://v3b.fal.media/files/b/0aa51842/i4iqjDjldCvwqONBn_lr-_animation.glb",
+        "death": "https://v3b.fal.media/files/b/0aa51830/Q-8uL8j28ChL_BmTm3-FV_animation.glb",
+        "walk": "https://v3b.fal.media/files/b/0aa51831/f86nn231MY8Oda6iZqU3c_animation.glb"
+      },
+      "actionIds": {
+        "idle": 0,
+        "attack": 125,
+        "death": 189,
+        "walk": 613
+      }
+    },
+    "b": {
+      "name": "High Priest of Amun",
+      "height": 1.899,
+      "rigged": "https://v3b.fal.media/files/b/0aa51837/Vsgun5XukQoomo8M-VLoN_rigged_character.glb",
+      "clips": {
+        "idle": "https://v3b.fal.media/files/b/0aa5184a/jfPzd-yp2u5QkqtpOXeXG_animation.glb",
+        "attack": "https://v3b.fal.media/files/b/0aa5183a/khJkQL3UvTILgx9giYwYQ_animation.glb",
+        "death": "https://v3b.fal.media/files/b/0aa5183b/0b7-og3Zko8MlS36gZdwv_animation.glb",
+        "walk": "https://v3b.fal.media/files/b/0aa51839/8XvV6ZQ5TbIwcRP07G2Cn_animation.glb"
+      },
+      "actionIds": {
+        "idle": 89,
+        "attack": 102,
+        "death": 8,
+        "walk": 672
+      }
+    },
+    "r": {
+      "name": "Temple Guardian",
+      "height": 1.898,
+      "rigged": "https://v3b.fal.media/files/b/0aa51841/IMg6mlLXFvbmXjPjdxfr7_rigged_character.glb",
+      "clips": {
+        "idle": "https://v3b.fal.media/files/b/0aa51844/2W0iAgOqK_39KQI3Biu94_animation.glb",
+        "attack": "https://v3b.fal.media/files/b/0aa51844/YdiT6EQtsRF0vxa6afGYX_animation.glb",
+        "death": "https://v3b.fal.media/files/b/0aa51854/jsriXboPJeIiII6bUPcw5_animation.glb",
+        "walk": "https://v3b.fal.media/files/b/0aa51844/UTsAGmPQYHXu-jyZ_1vTg_animation.glb"
+      },
+      "actionIds": {
+        "idle": 89,
+        "attack": 128,
+        "death": 187,
+        "walk": 611
+      }
+    },
+    "n": {
+      "name": "Charioteer",
+      "height": 1.898,
+      "rigged": "https://v3b.fal.media/files/b/0aa5185b/rtMCIuz43s_85mdCIG0oD_rigged_character.glb",
+      "clips": {
+        "idle": "https://v3b.fal.media/files/b/0aa5184c/lpiAe0XOuz4r1G3aq60pl_animation.glb",
+        "attack": "https://v3b.fal.media/files/b/0aa5185e/VgManz-qZ3vh8SWuDCF_O_animation.glb",
+        "death": "https://v3b.fal.media/files/b/0aa5184c/6yFlA-PYFAktl2e5-BMV4_animation.glb",
+        "walk": "https://v3b.fal.media/files/b/0aa5184e/cMywIuQxJTTSP9cJ1eBx5_animation.glb"
+      },
+      "actionIds": {
+        "idle": 89,
+        "attack": 128,
+        "death": 187,
+        "walk": 611
+      }
+    },
+    "p": {
+      "name": "Medjay Infantry",
+      "height": 1.897,
+      "rigged": "https://v3b.fal.media/files/b/0aa51854/GwWdNBOVm5vK9EyDAUwlu_rigged_character.glb",
+      "clips": {
+        "idle": "https://v3b.fal.media/files/b/0aa51867/zXxbCElYgWTDcekVY3LQ0_animation.glb",
+        "attack": "https://v3b.fal.media/files/b/0aa51867/Vt6i4AL850Cobo4BrgKJ3_animation.glb",
+        "death": "https://v3b.fal.media/files/b/0aa51856/qZ5cyNdsm5XDueSxQqZ62_animation.glb",
+        "walk": "https://v3b.fal.media/files/b/0aa51868/FlT8GhtrvTfu8pBojRlnw_animation.glb"
       },
       "actionIds": {
         "idle": 89,

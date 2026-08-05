@@ -1,0 +1,23 @@
+node:events:487
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::4173
+    at Server.setupListenHandle [as _listen2] (node:net:2009:16)
+    at listenInCluster (node:net:2066:12)
+    at Server.listen (node:net:2171:7)
+    at file:///C:/Users/Tks_Toledo/clawd/projects/rork-medieval-3d-chess/web/serve-dist.mjs:43:4
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:2045:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -4091,
+  syscall: 'listen',
+  address: '::',
+  port: 4173
+}
+
+Node.js v24.18.0
