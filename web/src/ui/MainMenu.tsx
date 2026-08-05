@@ -71,7 +71,7 @@ export function MainMenu({ onStart, onPlayOnline, onOpenSettings, attract, onInt
       onPointerDown={onInteract}
       onPointerMove={onInteract}
     >
-      <div className="mc-unfurl mc-menu-hero mb-6 shrink-0 text-center">
+      <div className="mc-unfurl mc-menu-hero mb-6 min-h-0 shrink text-center">
         <p className="mc-display text-[0.68rem] tracking-[0.55em] text-[#c8ab74]">Anno Domini MCDXCII</p>
         <h1 className="mc-display mc-title-glow mt-2 text-5xl font-bold text-[#f4e3bd] sm:text-6xl">
           KING&apos;S GAMBIT
@@ -82,7 +82,7 @@ export function MainMenu({ onStart, onPlayOnline, onOpenSettings, attract, onInt
         </p>
       </div>
 
-      <div className="mc-slate mc-goldleaf mc-rise flex w-full min-h-0 max-w-md flex-col p-5 sm:p-6">
+      <div className="mc-slate mc-goldleaf mc-rise flex max-h-full w-full min-h-0 max-w-md flex-col p-5 sm:p-6">
         <div className="mb-5 grid shrink-0 grid-cols-2 gap-2 sm:grid-cols-4">
           <button
             type="button"

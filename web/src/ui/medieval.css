@@ -1049,3 +1049,93 @@
     animation: none;
   }
 }
+
+/* -------------------------------------------------------------------- */
+/* S5 touch-target floor.                                                */
+/* Every interactive control presents at least a 44x44 CSS px target on   */
+/* a touch surface. Applied to the controls themselves so the size is     */
+/* measurable (and therefore testable) from a bounding rect. Scoped to    */
+/* coarse pointers and narrow viewports; the dense desktop HUD keeps its  */
+/* authored sizing.                                                       */
+/* -------------------------------------------------------------------- */
+@media (pointer: coarse), (max-width: 900px) {
+  button,
+  [role='button'],
+  .mc-btn,
+  .mc-chip,
+  .mc-icon-btn,
+  .mc-arena-card,
+  .mc-demo-play,
+  .mc-chronicle-fab {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  /* Round controls stay round at the enlarged size. */
+  .mc-icon-btn,
+  .mc-demo-play,
+  .mc-chronicle-fab {
+    width: 44px;
+    height: 44px;
+  }
+
+  /* A control row that now exceeds its container wraps instead of
+     overlapping a neighbouring action zone. */
+  .mc-demo-bar,
+  .mc-panel-foot {
+    flex-wrap: wrap;
+  }
+
+  /* Keep the board canvas free of browser gesture interception so drag
+     moves are delivered to the engine rather than scrolling the page. */
+  .mc-canvas-wrap {
+    touch-action: none;
+  }
+}
+
+/* -------------------------------------------------------------------- */
+/* S5 reduced-motion contract.                                           */
+/*                                                                       */
+/* Entrance animations collapse to 1ms rather than `none` so their        */
+/* fill-mode:both end state still applies - `animation:none` would leave  */
+/* those elements stuck at opacity 0. Infinite decorative loops are       */
+/* cancelled outright. Colour/border/shadow are never touched, so every   */
+/* animation that carries game state (danger, check, network status)      */
+/* still reads statically. Reduced motion removes movement, not meaning.  */
+/* -------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  /* Entrance / one-shot transitions: keep the end state, drop the travel. */
+  .mc-rise,
+  .mc-fade,
+  .mc-unfurl,
+  .mc-cam-menu,
+  .mc-chronicle-panel,
+  .mc-chronicle-badge,
+  .mc-demo-bar,
+  .mc-ledger-move,
+  .mc-ledger-flare {
+    animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+  }
+
+  /* Infinite decorative loops: cancelled. The colour still carries state. */
+  .mc-pulse,
+  .mc-danger-flash,
+  .mc-arena-dot,
+  .mc-net-dot,
+  .mc-net[data-state='reconnecting'] .mc-net-dot,
+  .mc-net[data-state='connecting'] .mc-net-dot {
+    animation: none !important;
+  }
+
+  /* Ambient background motion serves no informational purpose. */
+  .mc-goldleaf::after,
+  .mc-goldleaf::before {
+    animation: none !important;
+  }
+}

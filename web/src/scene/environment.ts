@@ -580,6 +580,10 @@ export function buildEnvironmentMap(
   }
 
   const target = pmrem.fromScene(scene, 0.04);
+  // The PMREM render target owns GPU storage in addition to its texture.
+  // Returning only target.texture used to strand the RT permanently, so
+  // hang it off the texture and let the owner dispose both together.
+  (target.texture as THREE.Texture & { __rt?: THREE.WebGLRenderTarget }).__rt = target;
   domeGeometry.dispose();
   domeMaterial.dispose();
   panelGeometry.dispose();
@@ -587,4 +591,16 @@ export function buildEnvironmentMap(
   cool.dispose();
   pmrem.dispose();
   return target.texture;
+}
+
+/**
+ * Free an environment map produced by buildEnvironmentMap, including the
+ * PMREM render target it was rendered into. Disposing only the texture
+ * leaves the RT's GPU storage allocated.
+ */
+export function disposeEnvironment(texture: THREE.Texture | null | undefined): void {
+  if (!texture) return;
+  const rt = (texture as THREE.Texture & { __rt?: THREE.WebGLRenderTarget }).__rt;
+  if (rt) rt.dispose();
+  texture.dispose();
 }

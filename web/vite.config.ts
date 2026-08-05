@@ -7,7 +7,15 @@ import { defineConfig } from "vite";
 const RELAY_TARGET = process.env.MULTIPLAYER_TARGET ?? "http://localhost:8787";
 
 // https://vitejs.dev/config/
+/**
+ * Public base path. Vite's default "/" only works at a domain root; a GitHub
+ * Pages PROJECT site lives under /<repo>/. Set PUBLIC_BASE at build time so
+ * the identical source ships to both without a second config.
+ */
+const PUBLIC_BASE = process.env.PUBLIC_BASE ?? "/";
+
 export default defineConfig(({ mode }) => ({
+  base: PUBLIC_BASE,
   server: {
     host: "::",
     port: 8080,

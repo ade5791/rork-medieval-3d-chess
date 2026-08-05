@@ -1099,11 +1099,27 @@ export class PieceView {
       this.mixer = null;
     }
     this.actions.clear();
-    for (const material of this.materials) material.dispose();
+    // Every skinned piece owns its own Skeleton (SkeletonUtils.clone gives
+    // each instance a private one, which is required - sharing would make
+    // all pieces animate identically). A Skeleton allocates a bone DataTexture
+    // for GPU skinning that NO material references, so disposing materials
+    // and their maps cannot free it. Measured: 32 stranded textures per
+    // rebuilt board, one per piece, never reclaimed.
+    this.container.traverse((node) => {
+      const skinned = node as THREE.SkinnedMesh;
+      if (skinned.isSkinnedMesh && skinned.skeleton) skinned.skeleton.dispose();
+    });
+    for (const material of this.materials) {
+      disposeOwnedTextures(material);
+      material.dispose();
+    }
     this.materials = [];
     if (this.arms) {
       // Weapon geometry is shared across the army; only the materials are ours.
-      for (const material of this.arms.materials) material.dispose();
+      for (const material of this.arms.materials) {
+        disposeOwnedTextures(material);
+        material.dispose();
+      }
       this.arms = null;
     }
     (this.glow.material as THREE.Material).dispose();
@@ -1165,8 +1181,43 @@ function applyFactionLook(
 // Edge wear + cavity grime. Without this the pieces have one uniform
 // roughness across the whole sculpt, which is what reads as untextured at
 // close camera distance regardless of how good the albedo is.
+/**
+ * Dispose the textures a cloned piece material owns.
+ *
+ * three.js deliberately does NOT free textures in Material.dispose(),
+ * because textures are normally shared. Piece materials are cloned per
+ * instance, so their maps leak unless freed explicitly - measured at +32
+ * textures per menu->game->menu cycle, never reclaimed.
+ *
+ * Shared module-level maps (wear, glow, shadow, badge, token) are tagged
+ * with __shared and skipped: disposing those would blank every other piece
+ * still on the board.
+ */
+const OWNED_MAP_SLOTS = [
+  "map",
+  "normalMap",
+  "roughnessMap",
+  "metalnessMap",
+  "aoMap",
+  "emissiveMap",
+  "alphaMap",
+] as const;
+
+function disposeOwnedTextures(material: THREE.Material): void {
+  const m = material as unknown as Record<string, unknown>;
+  for (const slot of OWNED_MAP_SLOTS) {
+    const texture = m[slot] as (THREE.Texture & { __shared?: boolean }) | null | undefined;
+    if (!texture || typeof texture.dispose !== "function") continue;
+    if (texture.__shared) continue;
+    texture.dispose();
+    m[slot] = null;
+  }
+}
 function applyWear(material: THREE.MeshStandardMaterial): void {
   const wear = wearSurface();
+  // Shared across every piece - must never be disposed with one instance.
+  (wear.roughnessMap as THREE.Texture & { __shared?: boolean }).__shared = true;
+  (wear.normalMap as THREE.Texture & { __shared?: boolean }).__shared = true;
   if (!material.roughnessMap) {
     material.roughnessMap = wear.roughnessMap;
   }
@@ -1209,13 +1260,19 @@ function sharedTokenGeometry(): THREE.PlaneGeometry {
 
 let glowTexture: THREE.Texture | null = null;
 function sharedGlowTexture(): THREE.Texture {
-  if (!glowTexture) glowTexture = radialTexture("rgba(255,255,255,0.9)", "rgba(255,255,255,0)");
+  if (!glowTexture) {
+    glowTexture = radialTexture("rgba(255,255,255,0.9)", "rgba(255,255,255,0)");
+    (glowTexture as THREE.Texture & { __shared?: boolean }).__shared = true;
+  }
   return glowTexture;
 }
 
 let shadowTexture: THREE.Texture | null = null;
 function sharedShadowTexture(): THREE.Texture {
-  if (!shadowTexture) shadowTexture = radialTexture("rgba(0,0,0,0.85)", "rgba(0,0,0,0)");
+  if (!shadowTexture) {
+    shadowTexture = radialTexture("rgba(0,0,0,0.85)", "rgba(0,0,0,0)");
+    (shadowTexture as THREE.Texture & { __shared?: boolean }).__shared = true;
+  }
   return shadowTexture;
 }
 
@@ -1451,6 +1508,19 @@ export class PieceFactory {
     return out;
   }
 
+  /**
+   * Hands the main thread back between clip binds. Parsing a rigged GLB and
+   * uploading its skinned geometry is synchronous work; several of them
+   * resolving inside one task is what produced the single 384ms stall seen in
+   * the S4 matrix. One bind per frame keeps each parse inside its own task.
+   */
+  private nextFrame(): Promise<void> {
+    return new Promise((resolve) => {
+      if (typeof requestAnimationFrame === "function") requestAnimationFrame(() => resolve());
+      else setTimeout(resolve, 16);
+    });
+  }
+
   private async runWarm(): Promise<void> {
     const keys = [...this.clipSources.keys()];
     for (const name of CLIP_ORDER) {
@@ -1461,9 +1531,13 @@ export class PieceFactory {
           const key = keys[next];
           next += 1;
           await this.requestClip(key, name);
+          // Never let two parses share a frame.
+          await this.nextFrame();
         }
       };
-      await Promise.all(Array.from({ length: Math.min(2, keys.length) }, lane));
+      // One lane, not two: concurrent lanes were what allowed two parses to
+      // resolve into the same task in the first place.
+      await Promise.all(Array.from({ length: 1 }, lane));
     }
   }
 
@@ -1581,8 +1655,11 @@ export class PieceFactory {
         if (!mesh.isMesh) return;
         mesh.geometry.dispose();
         const material = mesh.material as THREE.Material | THREE.Material[];
-        if (Array.isArray(material)) material.forEach((entry) => entry.dispose());
-        else material.dispose();
+        const entries = Array.isArray(material) ? material : [material];
+        for (const entry of entries) {
+          disposeOwnedTextures(entry);
+          entry.dispose();
+        }
       });
     }
     this.templates.clear();

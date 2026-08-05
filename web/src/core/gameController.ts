@@ -205,6 +205,8 @@ export class GameController extends Emitter<ControllerEvents> {
     console.warn("[game] local board diverged from the relay - resynced");
     this.busy = false;
     this.publish();
+    // The authoritative position may be the one that ended the game.
+    this.checkEnd();
     return true;
   }
 
@@ -253,6 +255,9 @@ export class GameController extends Emitter<ControllerEvents> {
     if (options.mode !== "online") this.networkReady = false;
     this.emit("reset", options);
     this.publish();
+    // A staged FEN may already be terminal (review states, shared positions).
+    // Evaluate before starting a clock or dispatching an engine search.
+    if (this.checkEnd()) return;
     this.startClock();
     void this.maybeRunEngine();
   }

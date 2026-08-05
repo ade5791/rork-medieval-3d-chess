@@ -1,0 +1,12 @@
+# Byte fidelity for the publish gate.
+#
+# The S6 gate hashes the EXACT dist bytes, commits them, and then re-hashes what
+# GitHub Pages actually serves. Any line-ending normalisation between those two
+# points silently changes the hash of every text asset, so the live byte-identity
+# check would fail on files that are in fact correct - or worse, pass locally and
+# ship subtly different bytes.
+#
+# `* -text` disables ALL text conversion: git stores and checks out exactly the
+# bytes it was given. Combined with `core.autocrlf false` this makes the hash
+# recorded in docs/publish/PUBLISH.md meaningful.
+* -text

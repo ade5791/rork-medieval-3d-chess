@@ -1,0 +1,1018 @@
+{
+  "origin": "https://ade5791.github.io/kings-gambit-medieval-chess/",
+  "manifest": "tools/out/s6run-manifest-staged.json",
+  "treeHash": "4ddc9aca375e6186f6e176aea6cdbcbca7df462a2402cfd36d44a74c7a0bdea2",
+  "checkedAt": "2026-08-05T20:38:04.852Z",
+  "fileCount": 100,
+  "pass": 100,
+  "fail": 0,
+  "allServedIdentical": true,
+  "subpathIsolation": {
+    "url": "https://ade5791.github.io/models/egypt/b-attack.glb",
+    "status": 404,
+    "ok": true
+  },
+  "failures": [],
+  "results": [
+    {
+      "path": ".nojekyll",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 0,
+      "servedBytes": 0,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 113
+    },
+    {
+      "path": "favicon.png",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 2883,
+      "servedBytes": 2883,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 83
+    },
+    {
+      "path": "assets/engine.worker-DtzmaMi6.js",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 40722,
+      "servedBytes": 40722,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 87
+    },
+    {
+      "path": "assets/index-S5VucsrH.css",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 78168,
+      "servedBytes": 78168,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 86
+    },
+    {
+      "path": "index.html",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 1400,
+      "servedBytes": 1400,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 33
+    },
+    {
+      "path": "landing.html",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 9553,
+      "servedBytes": 9553,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 38
+    },
+    {
+      "path": "models/egypt/b-death.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 58876,
+      "servedBytes": 58876,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 141
+    },
+    {
+      "path": "models/egypt/b-idle.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 43080,
+      "servedBytes": 43080,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 138
+    },
+    {
+      "path": "models/egypt/b-attack.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 77132,
+      "servedBytes": 77132,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 189
+    },
+    {
+      "path": "models/egypt/b-walk.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 36848,
+      "servedBytes": 36848,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 57
+    },
+    {
+      "path": "assets/index-CB_HvDwC.js",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 1426061,
+      "servedBytes": 1426061,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 325
+    },
+    {
+      "path": "models/egypt/k-death.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 57472,
+      "servedBytes": 57472,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 53
+    },
+    {
+      "path": "models/egypt/k-attack.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 77136,
+      "servedBytes": 77136,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 89
+    },
+    {
+      "path": "models/egypt/k-idle.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 70848,
+      "servedBytes": 70848,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 58
+    },
+    {
+      "path": "models/egypt/n-attack.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 46028,
+      "servedBytes": 46028,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 82
+    },
+    {
+      "path": "models/egypt/k-walk.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 75676,
+      "servedBytes": 75676,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 94
+    },
+    {
+      "path": "models/egypt/n-death.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 65884,
+      "servedBytes": 65884,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 79
+    },
+    {
+      "path": "models/egypt/n-idle.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 43268,
+      "servedBytes": 43268,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 36
+    },
+    {
+      "path": "models/egypt/n-walk.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 105308,
+      "servedBytes": 105308,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 110
+    },
+    {
+      "path": "models/egypt/p-attack.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 57936,
+      "servedBytes": 57936,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 90
+    },
+    {
+      "path": "models/egypt/p-death.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 59536,
+      "servedBytes": 59536,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 60
+    },
+    {
+      "path": "models/egypt/p-idle.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 43148,
+      "servedBytes": 43148,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 62
+    },
+    {
+      "path": "models/egypt/p-walk.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 36912,
+      "servedBytes": 36912,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 55
+    },
+    {
+      "path": "models/egypt/q-attack.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 56852,
+      "servedBytes": 56852,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 68
+    },
+    {
+      "path": "models/egypt/q-death.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 49552,
+      "servedBytes": 49552,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 63
+    },
+    {
+      "path": "models/egypt/q-idle.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 72888,
+      "servedBytes": 72888,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 50
+    },
+    {
+      "path": "icon.png",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 2499540,
+      "servedBytes": 2499540,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 4020
+    },
+    {
+      "path": "models/egypt/q-walk.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 71304,
+      "servedBytes": 71304,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 388
+    },
+    {
+      "path": "models/egypt/r-attack.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 45964,
+      "servedBytes": 45964,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 145
+    },
+    {
+      "path": "models/egypt/r-death.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 63156,
+      "servedBytes": 63156,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 140
+    },
+    {
+      "path": "models/egypt/r-idle.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 43212,
+      "servedBytes": 43212,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 111
+    },
+    {
+      "path": "models/egypt/k-rigged.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 11040708,
+      "servedBytes": 11040708,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 7891
+    },
+    {
+      "path": "models/egypt/r-walk.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 102912,
+      "servedBytes": 102912,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 159
+    },
+    {
+      "path": "models/egypt/b-rigged.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 9134776,
+      "servedBytes": 9134776,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 8381
+    },
+    {
+      "path": "models/rome/b-attack.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 72612,
+      "servedBytes": 72612,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 131
+    },
+    {
+      "path": "models/rome/b-death.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 55536,
+      "servedBytes": 55536,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 96
+    },
+    {
+      "path": "models/rome/b-idle.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 41160,
+      "servedBytes": 41160,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 112
+    },
+    {
+      "path": "models/rome/b-walk.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 34928,
+      "servedBytes": 34928,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 97
+    },
+    {
+      "path": "models/rome/k-attack.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 77076,
+      "servedBytes": 77076,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 116
+    },
+    {
+      "path": "models/rome/k-death.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 60232,
+      "servedBytes": 60232,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 180
+    },
+    {
+      "path": "models/rome/k-idle.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 72692,
+      "servedBytes": 72692,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 145
+    },
+    {
+      "path": "models/egypt/p-rigged.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 10489632,
+      "servedBytes": 10489632,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 9800
+    },
+    {
+      "path": "models/rome/k-walk.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 71100,
+      "servedBytes": 71100,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 179
+    },
+    {
+      "path": "models/egypt/q-rigged.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 11424368,
+      "servedBytes": 11424368,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 9774
+    },
+    {
+      "path": "models/rome/n-attack.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 46672,
+      "servedBytes": 46672,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 108
+    },
+    {
+      "path": "models/rome/n-death.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 59432,
+      "servedBytes": 59432,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 114
+    },
+    {
+      "path": "models/rome/n-idle.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 43048,
+      "servedBytes": 43048,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 96
+    },
+    {
+      "path": "models/rome/n-walk.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 102752,
+      "servedBytes": 102752,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 194
+    },
+    {
+      "path": "models/rome/p-attack.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 60652,
+      "servedBytes": 60652,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 125
+    },
+    {
+      "path": "models/rome/p-death.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 55828,
+      "servedBytes": 55828,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 186
+    },
+    {
+      "path": "models/rome/p-idle.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 43008,
+      "servedBytes": 43008,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 185
+    },
+    {
+      "path": "models/egypt/n-rigged.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 11328668,
+      "servedBytes": 11328668,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 11893
+    },
+    {
+      "path": "models/rome/p-walk.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 36768,
+      "servedBytes": 36768,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 99
+    },
+    {
+      "path": "models/rome/q-attack.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 56868,
+      "servedBytes": 56868,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 132
+    },
+    {
+      "path": "models/rome/q-death.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 51700,
+      "servedBytes": 51700,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 155
+    },
+    {
+      "path": "models/rome/q-idle.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 71024,
+      "servedBytes": 71024,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 172
+    },
+    {
+      "path": "models/rome/k-rigged.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 9355652,
+      "servedBytes": 9355652,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 7447
+    },
+    {
+      "path": "models/rome/q-walk.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 72836,
+      "servedBytes": 72836,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 204
+    },
+    {
+      "path": "models/rome/r-attack.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 45180,
+      "servedBytes": 45180,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 126
+    },
+    {
+      "path": "models/rome/r-death.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 59684,
+      "servedBytes": 59684,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 252
+    },
+    {
+      "path": "models/rome/r-idle.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 43312,
+      "servedBytes": 43312,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 151
+    },
+    {
+      "path": "models/egypt/r-rigged.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 11283032,
+      "servedBytes": 11283032,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 14010
+    },
+    {
+      "path": "models/rome/r-walk.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 103000,
+      "servedBytes": 103000,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 256
+    },
+    {
+      "path": "models/sengoku/b-attack.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 78784,
+      "servedBytes": 78784,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 234
+    },
+    {
+      "path": "models/sengoku/b-death.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 60380,
+      "servedBytes": 60380,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 230
+    },
+    {
+      "path": "models/rome/n-rigged.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 9777696,
+      "servedBytes": 9777696,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 8983
+    },
+    {
+      "path": "models/sengoku/b-idle.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 43176,
+      "servedBytes": 43176,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 181
+    },
+    {
+      "path": "models/rome/p-rigged.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 11348996,
+      "servedBytes": 11348996,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 8318
+    },
+    {
+      "path": "models/sengoku/b-walk.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 36936,
+      "servedBytes": 36936,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 79
+    },
+    {
+      "path": "models/sengoku/k-attack.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 77088,
+      "servedBytes": 77088,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 110
+    },
+    {
+      "path": "models/sengoku/k-death.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 60244,
+      "servedBytes": 60244,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 98
+    },
+    {
+      "path": "models/sengoku/k-idle.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 72708,
+      "servedBytes": 72708,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 101
+    },
+    {
+      "path": "models/sengoku/k-walk.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 71116,
+      "servedBytes": 71116,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 104
+    },
+    {
+      "path": "models/sengoku/n-attack.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 45068,
+      "servedBytes": 45068,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 118
+    },
+    {
+      "path": "models/sengoku/n-death.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 60468,
+      "servedBytes": 60468,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 105
+    },
+    {
+      "path": "models/sengoku/n-idle.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 43188,
+      "servedBytes": 43188,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 122
+    },
+    {
+      "path": "models/rome/b-rigged.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 10911164,
+      "servedBytes": 10911164,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 12307
+    },
+    {
+      "path": "models/sengoku/n-walk.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 102888,
+      "servedBytes": 102888,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 230
+    },
+    {
+      "path": "models/sengoku/p-attack.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 60736,
+      "servedBytes": 60736,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 191
+    },
+    {
+      "path": "models/sengoku/p-death.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 62744,
+      "servedBytes": 62744,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 206
+    },
+    {
+      "path": "models/sengoku/p-idle.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 43096,
+      "servedBytes": 43096,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 192
+    },
+    {
+      "path": "models/rome/q-rigged.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 9946288,
+      "servedBytes": 9946288,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 9512
+    },
+    {
+      "path": "models/sengoku/p-walk.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 36864,
+      "servedBytes": 36864,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 264
+    },
+    {
+      "path": "models/sengoku/q-attack.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 56784,
+      "servedBytes": 56784,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 198
+    },
+    {
+      "path": "models/sengoku/q-death.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 49496,
+      "servedBytes": 49496,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 238
+    },
+    {
+      "path": "models/sengoku/q-idle.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 72836,
+      "servedBytes": 72836,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 311
+    },
+    {
+      "path": "models/sengoku/n-rigged.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 10984572,
+      "servedBytes": 10984572,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 3921
+    },
+    {
+      "path": "models/sengoku/q-walk.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 71244,
+      "servedBytes": 71244,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 105
+    },
+    {
+      "path": "models/sengoku/r-attack.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 46828,
+      "servedBytes": 46828,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 107
+    },
+    {
+      "path": "models/sengoku/r-death.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 58712,
+      "servedBytes": 58712,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 130
+    },
+    {
+      "path": "models/sengoku/r-idle.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 43220,
+      "servedBytes": 43220,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 103
+    },
+    {
+      "path": "models/sengoku/r-rigged.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 10226472,
+      "servedBytes": 10226472,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 2975
+    },
+    {
+      "path": "models/sengoku/r-walk.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 102916,
+      "servedBytes": 102916,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 158
+    },
+    {
+      "path": "placeholder.svg",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 1305,
+      "servedBytes": 1305,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 144
+    },
+    {
+      "path": "robots.txt",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 174,
+      "servedBytes": 174,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 204
+    },
+    {
+      "path": "models/rome/r-rigged.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 10818436,
+      "servedBytes": 10818436,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 13299
+    },
+    {
+      "path": "models/sengoku/b-rigged.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 8305448,
+      "servedBytes": 8305448,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 11571
+    },
+    {
+      "path": "models/sengoku/k-rigged.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 11756356,
+      "servedBytes": 11756356,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 12942
+    },
+    {
+      "path": "models/sengoku/p-rigged.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 11153500,
+      "servedBytes": 11153500,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 13779
+    },
+    {
+      "path": "models/sengoku/q-rigged.glb",
+      "mode": "get",
+      "status": 200,
+      "expectedBytes": 10621120,
+      "servedBytes": 10621120,
+      "hashMatch": true,
+      "ok": true,
+      "ms": 12526
+    }
+  ]
+}

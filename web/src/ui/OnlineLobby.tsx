@@ -169,7 +169,7 @@ export function OnlineLobby({ onSeated, onClose }: OnlineLobbyProps) {
 
   return (
     <div className="mc-menu pointer-events-auto absolute inset-0 z-30 flex flex-col items-center justify-center overflow-hidden px-5 py-6">
-      <div className="mc-slate mc-goldleaf mc-rise flex w-full min-h-0 max-w-md flex-col p-5 sm:p-6">
+      <div className="mc-slate mc-goldleaf mc-rise flex max-h-full w-full min-h-0 max-w-md flex-col p-5 sm:p-6">
         <div className="mb-4 flex shrink-0 items-center justify-between">
           <h2 className="mc-display flex items-center gap-2 text-sm tracking-[0.28em] text-[#f0dfb6]">
             <Globe size={15} /> ONLINE DUEL

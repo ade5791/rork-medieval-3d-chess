@@ -1,0 +1,16 @@
+{
+  "base": "http://127.0.0.1:8155/kings-gambit-medieval-chess",
+  "generatedAt": "2026-08-05T20:37:10.707Z",
+  "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+  "bootMs": 5687,
+  "frames": 400,
+  "p50Ms": 16.7,
+  "p95Ms": 18.1,
+  "p99Ms": 18.9,
+  "maxMs": 78,
+  "p50Fps": 60,
+  "p95Fps": 55,
+  "consoleErrors": 0,
+  "consoleErrorSamples": [],
+  "note": "Headless ANGLE in CI-style Chromium. Treat as a regression tripwire, not a handset or bare-metal GPU number."
+}

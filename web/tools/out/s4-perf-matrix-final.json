@@ -1,0 +1,4668 @@
+{
+  "generatedAt": "2026-08-05T09:24:38.863Z",
+  "base": "http://127.0.0.1:4173",
+  "viewport": {
+    "width": 1600,
+    "height": 900
+  },
+  "warmupMs": 6000,
+  "measureMs": 12000,
+  "cells": [
+    {
+      "cell": "classic-jungle/low/opening",
+      "battleground": "classic-jungle",
+      "era": "classic",
+      "arena": "jungle",
+      "preset": "low",
+      "phase": "opening",
+      "phaseNote": "all 32 pieces standing",
+      "fen": null,
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 12955,
+      "prewarm": {
+        "ran": true,
+        "ms": 5096,
+        "programsBefore": 16,
+        "programsAfter": 54,
+        "compiled": 38
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "low",
+      "arenaActual": "jungle",
+      "eraActual": "classic",
+      "postEnabled": false,
+      "perf": {
+        "frames": 1781,
+        "p50": 6.600000023841858,
+        "p95": 9.599999964237213,
+        "p99": 11.300000011920929,
+        "max": 14.100000023841858,
+        "mean": 6.818753509257765,
+        "fps50": 151.51515096781776,
+        "fps95": 104.16666705471773,
+        "fps99": 88.49557512788058,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          13,
+          13.300000011920929,
+          13.5,
+          13.699999988079071,
+          14.100000023841858
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 1984,
+        "meshes": 875,
+        "skinned": 32,
+        "pieces": 32,
+        "captured": 0,
+        "geometries": 127,
+        "textures": 80,
+        "programs": 48,
+        "calls": 463,
+        "triangles": 535605
+      },
+      "censusBefore": {
+        "objects": 1984,
+        "meshes": 875,
+        "skinned": 32,
+        "pieces": 32,
+        "captured": 0,
+        "geometries": 125,
+        "textures": 80,
+        "programs": 48,
+        "calls": 460,
+        "triangles": 535415
+      },
+      "lights": {
+        "total": 12,
+        "visible": 12,
+        "lit": 8
+      },
+      "lightsBefore": {
+        "total": 12,
+        "visible": 12,
+        "lit": 8
+      },
+      "programs": {
+        "atStart": 48,
+        "beforeWindow": 48,
+        "after": 48,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 31628
+    },
+    {
+      "cell": "classic-jungle/low/midgame",
+      "battleground": "classic-jungle",
+      "era": "classic",
+      "arena": "jungle",
+      "preset": "low",
+      "phase": "midgame",
+      "phaseNote": "24 pieces, effects firing",
+      "fen": "r2q1rk1/pp2ppbp/2np1np1/2p5/2P1P3/2NP1N2/PP2BPPP/R1BQ1RK1 w - - 0 9",
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 12904,
+      "prewarm": {
+        "ran": true,
+        "ms": 5125.399999976158,
+        "programsBefore": 16,
+        "programsAfter": 54,
+        "compiled": 38
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "low",
+      "arenaActual": "jungle",
+      "eraActual": "classic",
+      "postEnabled": false,
+      "perf": {
+        "frames": 1740,
+        "p50": 6.800000011920929,
+        "p95": 9.800000011920929,
+        "p99": 11.799999952316284,
+        "max": 15,
+        "mean": 7.007758620689655,
+        "fps50": 147.0588232716062,
+        "fps95": 102.04081620240599,
+        "fps99": 84.74576305432143,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          13.399999976158142,
+          13.699999988079071,
+          14,
+          14.800000011920929,
+          15
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 1941,
+        "meshes": 865,
+        "skinned": 31,
+        "pieces": 31,
+        "captured": 0,
+        "geometries": 127,
+        "textures": 79,
+        "programs": 48,
+        "calls": 453,
+        "triangles": 521317
+      },
+      "censusBefore": {
+        "objects": 1941,
+        "meshes": 865,
+        "skinned": 31,
+        "pieces": 31,
+        "captured": 0,
+        "geometries": 125,
+        "textures": 79,
+        "programs": 48,
+        "calls": 449,
+        "triangles": 521063
+      },
+      "lights": {
+        "total": 12,
+        "visible": 12,
+        "lit": 8
+      },
+      "lightsBefore": {
+        "total": 12,
+        "visible": 12,
+        "lit": 8
+      },
+      "programs": {
+        "atStart": 48,
+        "beforeWindow": 48,
+        "after": 48,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 31601
+    },
+    {
+      "cell": "classic-jungle/low/endgame",
+      "battleground": "classic-jungle",
+      "era": "classic",
+      "arena": "jungle",
+      "preset": "low",
+      "phase": "endgame",
+      "phaseNote": "6 pieces",
+      "fen": "8/5pk1/6p1/8/8/6P1/5PK1/3R4 w - - 0 40",
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 12779,
+      "prewarm": {
+        "ran": true,
+        "ms": 5069.300000011921,
+        "programsBefore": 16,
+        "programsAfter": 54,
+        "compiled": 38
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "low",
+      "arenaActual": "jungle",
+      "eraActual": "classic",
+      "postEnabled": false,
+      "perf": {
+        "frames": 2000,
+        "p50": 2.699999988079071,
+        "p95": 4.900000035762787,
+        "p99": 6.199999988079071,
+        "max": 9.5,
+        "mean": 3.0275499999821185,
+        "fps50": 370.3703720056144,
+        "fps95": 204.08163116356573,
+        "fps99": 161.29032289076298,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          7.199999988079071,
+          7.200000047683716,
+          7.5,
+          8.200000047683716,
+          9.5
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 877,
+        "meshes": 612,
+        "skinned": 7,
+        "pieces": 7,
+        "captured": 0,
+        "geometries": 157,
+        "textures": 48,
+        "programs": 48,
+        "calls": 218,
+        "triangles": 224108
+      },
+      "censusBefore": {
+        "objects": 877,
+        "meshes": 612,
+        "skinned": 7,
+        "pieces": 7,
+        "captured": 0,
+        "geometries": 125,
+        "textures": 48,
+        "programs": 48,
+        "calls": 189,
+        "triangles": 223268
+      },
+      "lights": {
+        "total": 12,
+        "visible": 12,
+        "lit": 8
+      },
+      "lightsBefore": {
+        "total": 12,
+        "visible": 12,
+        "lit": 8
+      },
+      "programs": {
+        "atStart": 48,
+        "beforeWindow": 48,
+        "after": 48,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 31374
+    },
+    {
+      "cell": "classic-jungle/medium/opening",
+      "battleground": "classic-jungle",
+      "era": "classic",
+      "arena": "jungle",
+      "preset": "medium",
+      "phase": "opening",
+      "phaseNote": "all 32 pieces standing",
+      "fen": null,
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 12673,
+      "prewarm": {
+        "ran": true,
+        "ms": 3566.899999976158,
+        "programsBefore": 40,
+        "programsAfter": 79,
+        "compiled": 39
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "medium",
+      "arenaActual": "jungle",
+      "eraActual": "classic",
+      "postEnabled": true,
+      "perf": {
+        "frames": 1193,
+        "p50": 10.099999964237213,
+        "p95": 13.400000035762787,
+        "p99": 15.899999976158142,
+        "max": 18.099999964237213,
+        "mean": 10.265465213736864,
+        "fps50": 99.0099013406802,
+        "fps95": 74.62686547247279,
+        "fps99": 62.8930818553137,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          16.900000035762787,
+          17.399999976158142,
+          17.600000023841858,
+          17.600000023841858,
+          18.099999964237213
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 1989,
+        "meshes": 875,
+        "skinned": 32,
+        "pieces": 32,
+        "captured": 0,
+        "geometries": 143,
+        "textures": 107,
+        "programs": 75,
+        "calls": 1,
+        "triangles": 1
+      },
+      "censusBefore": {
+        "objects": 1989,
+        "meshes": 875,
+        "skinned": 32,
+        "pieces": 32,
+        "captured": 0,
+        "geometries": 143,
+        "textures": 107,
+        "programs": 75,
+        "calls": 1,
+        "triangles": 1
+      },
+      "lights": {
+        "total": 15,
+        "visible": 15,
+        "lit": 10
+      },
+      "lightsBefore": {
+        "total": 15,
+        "visible": 15,
+        "lit": 10
+      },
+      "programs": {
+        "atStart": 74,
+        "beforeWindow": 75,
+        "after": 75,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 31462
+    },
+    {
+      "cell": "classic-jungle/medium/midgame",
+      "battleground": "classic-jungle",
+      "era": "classic",
+      "arena": "jungle",
+      "preset": "medium",
+      "phase": "midgame",
+      "phaseNote": "24 pieces, effects firing",
+      "fen": "r2q1rk1/pp2ppbp/2np1np1/2p5/2P1P3/2NP1N2/PP2BPPP/R1BQ1RK1 w - - 0 9",
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 12792,
+      "prewarm": {
+        "ran": true,
+        "ms": 3680.800000011921,
+        "programsBefore": 40,
+        "programsAfter": 79,
+        "compiled": 39
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "medium",
+      "arenaActual": "jungle",
+      "eraActual": "classic",
+      "postEnabled": true,
+      "perf": {
+        "frames": 1191,
+        "p50": 10.099999964237213,
+        "p95": 12.900000035762787,
+        "p99": 15.399999976158142,
+        "max": 17.899999976158142,
+        "mean": 10.25331654076212,
+        "fps50": 99.0099013406802,
+        "fps95": 77.51937963005356,
+        "fps99": 64.93506503559563,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          16.69999998807907,
+          16.700000047683716,
+          17,
+          17.80000001192093,
+          17.899999976158142
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 1946,
+        "meshes": 865,
+        "skinned": 31,
+        "pieces": 31,
+        "captured": 0,
+        "geometries": 143,
+        "textures": 106,
+        "programs": 75,
+        "calls": 1,
+        "triangles": 1
+      },
+      "censusBefore": {
+        "objects": 1946,
+        "meshes": 865,
+        "skinned": 31,
+        "pieces": 31,
+        "captured": 0,
+        "geometries": 143,
+        "textures": 106,
+        "programs": 75,
+        "calls": 1,
+        "triangles": 1
+      },
+      "lights": {
+        "total": 15,
+        "visible": 15,
+        "lit": 10
+      },
+      "lightsBefore": {
+        "total": 15,
+        "visible": 15,
+        "lit": 10
+      },
+      "programs": {
+        "atStart": 74,
+        "beforeWindow": 75,
+        "after": 75,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 31542
+    },
+    {
+      "cell": "classic-jungle/medium/endgame",
+      "battleground": "classic-jungle",
+      "era": "classic",
+      "arena": "jungle",
+      "preset": "medium",
+      "phase": "endgame",
+      "phaseNote": "6 pieces",
+      "fen": "8/5pk1/6p1/8/8/6P1/5PK1/3R4 w - - 0 40",
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 12762,
+      "prewarm": {
+        "ran": true,
+        "ms": 3663.099999964237,
+        "programsBefore": 40,
+        "programsAfter": 79,
+        "compiled": 39
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "medium",
+      "arenaActual": "jungle",
+      "eraActual": "classic",
+      "postEnabled": true,
+      "perf": {
+        "frames": 2000,
+        "p50": 4.600000023841858,
+        "p95": 7.399999976158142,
+        "p99": 8.800000011920929,
+        "max": 396.5999999642372,
+        "mean": 5.124799999982119,
+        "fps50": 217.39130322108423,
+        "fps95": 135.13513557052335,
+        "fps99": 113.63636348242602,
+        "hitches50": 1,
+        "hitches100": 1,
+        "worst": [
+          10,
+          10.599999964237213,
+          11.699999988079071,
+          13.600000023841858,
+          396.5999999642372
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 882,
+        "meshes": 612,
+        "skinned": 7,
+        "pieces": 7,
+        "captured": 0,
+        "geometries": 159,
+        "textures": 75,
+        "programs": 76,
+        "calls": 1,
+        "triangles": 1
+      },
+      "censusBefore": {
+        "objects": 882,
+        "meshes": 612,
+        "skinned": 7,
+        "pieces": 7,
+        "captured": 0,
+        "geometries": 143,
+        "textures": 75,
+        "programs": 75,
+        "calls": 1,
+        "triangles": 1
+      },
+      "lights": {
+        "total": 15,
+        "visible": 15,
+        "lit": 10
+      },
+      "lightsBefore": {
+        "total": 15,
+        "visible": 15,
+        "lit": 10
+      },
+      "programs": {
+        "atStart": 74,
+        "beforeWindow": 75,
+        "after": 76,
+        "lateCompiles": 1
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 31423
+    },
+    {
+      "cell": "classic-jungle/high/opening",
+      "battleground": "classic-jungle",
+      "era": "classic",
+      "arena": "jungle",
+      "preset": "high",
+      "phase": "opening",
+      "phaseNote": "all 32 pieces standing",
+      "fen": null,
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 12653,
+      "prewarm": {
+        "ran": true,
+        "ms": 3643.199999988079,
+        "programsBefore": 40,
+        "programsAfter": 79,
+        "compiled": 39
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "high",
+      "arenaActual": "jungle",
+      "eraActual": "classic",
+      "postEnabled": true,
+      "perf": {
+        "frames": 743,
+        "p50": 15.799999952316284,
+        "p95": 21,
+        "p99": 24,
+        "max": 26.30000001192093,
+        "mean": 16.52893674293405,
+        "fps50": 63.29113943151625,
+        "fps95": 47.61904761904762,
+        "fps99": 41.666666666666664,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          25.100000023841858,
+          25.5,
+          25.80000001192093,
+          25.900000035762787,
+          26.30000001192093
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 1989,
+        "meshes": 875,
+        "skinned": 32,
+        "pieces": 32,
+        "captured": 0,
+        "geometries": 143,
+        "textures": 108,
+        "programs": 79,
+        "calls": 1,
+        "triangles": 1
+      },
+      "censusBefore": {
+        "objects": 1989,
+        "meshes": 875,
+        "skinned": 32,
+        "pieces": 32,
+        "captured": 0,
+        "geometries": 143,
+        "textures": 108,
+        "programs": 79,
+        "calls": 1,
+        "triangles": 1
+      },
+      "lights": {
+        "total": 15,
+        "visible": 15,
+        "lit": 11
+      },
+      "lightsBefore": {
+        "total": 15,
+        "visible": 15,
+        "lit": 11
+      },
+      "programs": {
+        "atStart": 74,
+        "beforeWindow": 79,
+        "after": 79,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 31522
+    },
+    {
+      "cell": "classic-jungle/high/midgame",
+      "battleground": "classic-jungle",
+      "era": "classic",
+      "arena": "jungle",
+      "preset": "high",
+      "phase": "midgame",
+      "phaseNote": "24 pieces, effects firing",
+      "fen": "r2q1rk1/pp2ppbp/2np1np1/2p5/2P1P3/2NP1N2/PP2BPPP/R1BQ1RK1 w - - 0 9",
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 12768,
+      "prewarm": {
+        "ran": true,
+        "ms": 3671.600000023842,
+        "programsBefore": 40,
+        "programsAfter": 79,
+        "compiled": 39
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "high",
+      "arenaActual": "jungle",
+      "eraActual": "classic",
+      "postEnabled": true,
+      "perf": {
+        "frames": 749,
+        "p50": 15.699999988079071,
+        "p95": 20.600000023841858,
+        "p99": 23.700000047683716,
+        "max": 29.899999976158142,
+        "mean": 16.415620827706697,
+        "fps50": 63.69426756428629,
+        "fps95": 48.543689264205256,
+        "fps99": 42.194092742110925,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          25.19999998807907,
+          25.399999976158142,
+          25.600000023841858,
+          26.30000001192093,
+          29.899999976158142
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 1946,
+        "meshes": 865,
+        "skinned": 31,
+        "pieces": 31,
+        "captured": 0,
+        "geometries": 143,
+        "textures": 107,
+        "programs": 79,
+        "calls": 1,
+        "triangles": 1
+      },
+      "censusBefore": {
+        "objects": 1946,
+        "meshes": 865,
+        "skinned": 31,
+        "pieces": 31,
+        "captured": 0,
+        "geometries": 143,
+        "textures": 107,
+        "programs": 79,
+        "calls": 1,
+        "triangles": 1
+      },
+      "lights": {
+        "total": 15,
+        "visible": 15,
+        "lit": 11
+      },
+      "lightsBefore": {
+        "total": 15,
+        "visible": 15,
+        "lit": 11
+      },
+      "programs": {
+        "atStart": 74,
+        "beforeWindow": 79,
+        "after": 79,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 31651
+    },
+    {
+      "cell": "classic-jungle/high/endgame",
+      "battleground": "classic-jungle",
+      "era": "classic",
+      "arena": "jungle",
+      "preset": "high",
+      "phase": "endgame",
+      "phaseNote": "6 pieces",
+      "fen": "8/5pk1/6p1/8/8/6P1/5PK1/3R4 w - - 0 40",
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 12816,
+      "prewarm": {
+        "ran": true,
+        "ms": 3656,
+        "programsBefore": 40,
+        "programsAfter": 79,
+        "compiled": 39
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "high",
+      "arenaActual": "jungle",
+      "eraActual": "classic",
+      "postEnabled": true,
+      "perf": {
+        "frames": 1779,
+        "p50": 6.600000023841858,
+        "p95": 9.599999964237213,
+        "p99": 11.200000047683716,
+        "max": 16.69999998807907,
+        "mean": 6.846149522210186,
+        "fps50": 151.51515096781776,
+        "fps95": 104.16666705471773,
+        "fps99": 89.28571390558263,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          13.100000023841858,
+          13.199999988079071,
+          14.199999988079071,
+          14.5,
+          16.69999998807907
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 882,
+        "meshes": 612,
+        "skinned": 7,
+        "pieces": 7,
+        "captured": 0,
+        "geometries": 146,
+        "textures": 76,
+        "programs": 79,
+        "calls": 1,
+        "triangles": 1
+      },
+      "censusBefore": {
+        "objects": 882,
+        "meshes": 612,
+        "skinned": 7,
+        "pieces": 7,
+        "captured": 0,
+        "geometries": 143,
+        "textures": 76,
+        "programs": 79,
+        "calls": 1,
+        "triangles": 1
+      },
+      "lights": {
+        "total": 15,
+        "visible": 15,
+        "lit": 11
+      },
+      "lightsBefore": {
+        "total": 15,
+        "visible": 15,
+        "lit": 11
+      },
+      "programs": {
+        "atStart": 74,
+        "beforeWindow": 79,
+        "after": 79,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 31497
+    },
+    {
+      "cell": "classic-jungle/ultra/opening",
+      "battleground": "classic-jungle",
+      "era": "classic",
+      "arena": "jungle",
+      "preset": "ultra",
+      "phase": "opening",
+      "phaseNote": "all 32 pieces standing",
+      "fen": null,
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 13178,
+      "prewarm": {
+        "ran": true,
+        "ms": 3722.899999976158,
+        "programsBefore": 45,
+        "programsAfter": 84,
+        "compiled": 39
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "ultra",
+      "arenaActual": "jungle",
+      "eraActual": "classic",
+      "postEnabled": true,
+      "perf": {
+        "frames": 520,
+        "p50": 23,
+        "p95": 30.69999998807907,
+        "p99": 34,
+        "max": 38.10000002384186,
+        "mean": 23.796346153777378,
+        "fps50": 43.47826086956522,
+        "fps95": 32.573289914928466,
+        "fps99": 29.41176470588235,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          34.5,
+          35,
+          37,
+          37.80000001192093,
+          38.10000002384186
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 1989,
+        "meshes": 875,
+        "skinned": 32,
+        "pieces": 32,
+        "captured": 0,
+        "geometries": 143,
+        "textures": 113,
+        "programs": 85,
+        "calls": 1,
+        "triangles": 1
+      },
+      "censusBefore": {
+        "objects": 1989,
+        "meshes": 875,
+        "skinned": 32,
+        "pieces": 32,
+        "captured": 0,
+        "geometries": 143,
+        "textures": 113,
+        "programs": 85,
+        "calls": 1,
+        "triangles": 1
+      },
+      "lights": {
+        "total": 15,
+        "visible": 15,
+        "lit": 12
+      },
+      "lightsBefore": {
+        "total": 15,
+        "visible": 15,
+        "lit": 12
+      },
+      "programs": {
+        "atStart": 80,
+        "beforeWindow": 85,
+        "after": 85,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 32215
+    },
+    {
+      "cell": "classic-jungle/ultra/midgame",
+      "battleground": "classic-jungle",
+      "era": "classic",
+      "arena": "jungle",
+      "preset": "ultra",
+      "phase": "midgame",
+      "phaseNote": "24 pieces, effects firing",
+      "fen": "r2q1rk1/pp2ppbp/2np1np1/2p5/2P1P3/2NP1N2/PP2BPPP/R1BQ1RK1 w - - 0 9",
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 13043,
+      "prewarm": {
+        "ran": true,
+        "ms": 3694.699999988079,
+        "programsBefore": 45,
+        "programsAfter": 84,
+        "compiled": 39
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "ultra",
+      "arenaActual": "jungle",
+      "eraActual": "classic",
+      "postEnabled": true,
+      "perf": {
+        "frames": 548,
+        "p50": 21.899999976158142,
+        "p95": 28.5,
+        "p99": 33,
+        "max": 35.799999952316284,
+        "mean": 22.556751824861024,
+        "fps50": 45.66210050633193,
+        "fps95": 35.08771929824562,
+        "fps99": 30.303030303030305,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          33.10000002384186,
+          33.299999952316284,
+          34,
+          34.60000002384186,
+          35.799999952316284
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 1946,
+        "meshes": 865,
+        "skinned": 31,
+        "pieces": 31,
+        "captured": 0,
+        "geometries": 143,
+        "textures": 112,
+        "programs": 85,
+        "calls": 1,
+        "triangles": 1
+      },
+      "censusBefore": {
+        "objects": 1946,
+        "meshes": 865,
+        "skinned": 31,
+        "pieces": 31,
+        "captured": 0,
+        "geometries": 143,
+        "textures": 112,
+        "programs": 85,
+        "calls": 1,
+        "triangles": 1
+      },
+      "lights": {
+        "total": 15,
+        "visible": 15,
+        "lit": 12
+      },
+      "lightsBefore": {
+        "total": 15,
+        "visible": 15,
+        "lit": 12
+      },
+      "programs": {
+        "atStart": 80,
+        "beforeWindow": 85,
+        "after": 85,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 32117
+    },
+    {
+      "cell": "classic-jungle/ultra/endgame",
+      "battleground": "classic-jungle",
+      "era": "classic",
+      "arena": "jungle",
+      "preset": "ultra",
+      "phase": "endgame",
+      "phaseNote": "6 pieces",
+      "fen": "8/5pk1/6p1/8/8/6P1/5PK1/3R4 w - - 0 40",
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 12862,
+      "prewarm": {
+        "ran": true,
+        "ms": 3638.899999976158,
+        "programsBefore": 45,
+        "programsAfter": 84,
+        "compiled": 39
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "ultra",
+      "arenaActual": "jungle",
+      "eraActual": "classic",
+      "postEnabled": true,
+      "perf": {
+        "frames": 1313,
+        "p50": 9.199999988079071,
+        "p95": 12.300000011920929,
+        "p99": 15.300000011920929,
+        "max": 17.100000023841858,
+        "mean": 9.321934501133343,
+        "fps50": 108.69565231475578,
+        "fps95": 81.30081292933487,
+        "fps99": 65.35947707325845,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          16.599999964237213,
+          16.799999952316284,
+          16.80000001192093,
+          16.899999976158142,
+          17.100000023841858
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 882,
+        "meshes": 612,
+        "skinned": 7,
+        "pieces": 7,
+        "captured": 0,
+        "geometries": 144,
+        "textures": 81,
+        "programs": 85,
+        "calls": 1,
+        "triangles": 1
+      },
+      "censusBefore": {
+        "objects": 882,
+        "meshes": 612,
+        "skinned": 7,
+        "pieces": 7,
+        "captured": 0,
+        "geometries": 143,
+        "textures": 81,
+        "programs": 85,
+        "calls": 1,
+        "triangles": 1
+      },
+      "lights": {
+        "total": 15,
+        "visible": 15,
+        "lit": 12
+      },
+      "lightsBefore": {
+        "total": 15,
+        "visible": 15,
+        "lit": 12
+      },
+      "programs": {
+        "atStart": 80,
+        "beforeWindow": 85,
+        "after": 85,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 31666
+    },
+    {
+      "cell": "classic-dawn/low/opening",
+      "battleground": "classic-dawn",
+      "era": "classic",
+      "arena": "dawn",
+      "preset": "low",
+      "phase": "opening",
+      "phaseNote": "all 32 pieces standing",
+      "fen": null,
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 11433,
+      "prewarm": {
+        "ran": true,
+        "ms": 4452.400000035763,
+        "programsBefore": 13,
+        "programsAfter": 51,
+        "compiled": 38
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "low",
+      "arenaActual": "dawn",
+      "eraActual": "classic",
+      "postEnabled": false,
+      "perf": {
+        "frames": 1862,
+        "p50": 6.399999976158142,
+        "p95": 9.199999988079071,
+        "p99": 10.899999976158142,
+        "max": 14,
+        "mean": 6.536305048347928,
+        "fps50": 156.2500005820766,
+        "fps95": 108.69565231475578,
+        "fps99": 91.7431194667272,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          11.800000011920929,
+          12.300000011920929,
+          12.399999976158142,
+          13.300000011920929,
+          14
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 1984,
+        "meshes": 875,
+        "skinned": 32,
+        "pieces": 32,
+        "captured": 0,
+        "geometries": 123,
+        "textures": 80,
+        "programs": 45,
+        "calls": 457,
+        "triangles": 474617
+      },
+      "censusBefore": {
+        "objects": 1984,
+        "meshes": 875,
+        "skinned": 32,
+        "pieces": 32,
+        "captured": 0,
+        "geometries": 121,
+        "textures": 80,
+        "programs": 45,
+        "calls": 455,
+        "triangles": 474439
+      },
+      "lights": {
+        "total": 12,
+        "visible": 12,
+        "lit": 8
+      },
+      "lightsBefore": {
+        "total": 12,
+        "visible": 12,
+        "lit": 8
+      },
+      "programs": {
+        "atStart": 45,
+        "beforeWindow": 45,
+        "after": 45,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 30097
+    },
+    {
+      "cell": "classic-dawn/low/midgame",
+      "battleground": "classic-dawn",
+      "era": "classic",
+      "arena": "dawn",
+      "preset": "low",
+      "phase": "midgame",
+      "phaseNote": "24 pieces, effects firing",
+      "fen": "r2q1rk1/pp2ppbp/2np1np1/2p5/2P1P3/2NP1N2/PP2BPPP/R1BQ1RK1 w - - 0 9",
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 11407,
+      "prewarm": {
+        "ran": true,
+        "ms": 4389.600000023842,
+        "programsBefore": 13,
+        "programsAfter": 51,
+        "compiled": 38
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "low",
+      "arenaActual": "dawn",
+      "eraActual": "classic",
+      "postEnabled": false,
+      "perf": {
+        "frames": 1887,
+        "p50": 6.299999952316284,
+        "p95": 9.300000011920929,
+        "p99": 11.100000023841858,
+        "max": 14,
+        "mean": 6.472072072078389,
+        "fps50": 158.73015993156253,
+        "fps95": 107.52688158259997,
+        "fps99": 90.09008989658422,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          11.899999976158142,
+          12,
+          12.100000023841858,
+          12.199999988079071,
+          14
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 1941,
+        "meshes": 865,
+        "skinned": 31,
+        "pieces": 31,
+        "captured": 0,
+        "geometries": 123,
+        "textures": 79,
+        "programs": 45,
+        "calls": 447,
+        "triangles": 460321
+      },
+      "censusBefore": {
+        "objects": 1941,
+        "meshes": 865,
+        "skinned": 31,
+        "pieces": 31,
+        "captured": 0,
+        "geometries": 121,
+        "textures": 79,
+        "programs": 45,
+        "calls": 445,
+        "triangles": 460143
+      },
+      "lights": {
+        "total": 12,
+        "visible": 12,
+        "lit": 8
+      },
+      "lightsBefore": {
+        "total": 12,
+        "visible": 12,
+        "lit": 8
+      },
+      "programs": {
+        "atStart": 45,
+        "beforeWindow": 45,
+        "after": 45,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 30089
+    },
+    {
+      "cell": "classic-dawn/low/endgame",
+      "battleground": "classic-dawn",
+      "era": "classic",
+      "arena": "dawn",
+      "preset": "low",
+      "phase": "endgame",
+      "phaseNote": "6 pieces",
+      "fen": "8/5pk1/6p1/8/8/6P1/5PK1/3R4 w - - 0 40",
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 10963,
+      "prewarm": {
+        "ran": true,
+        "ms": 4367,
+        "programsBefore": 13,
+        "programsAfter": 51,
+        "compiled": 38
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "low",
+      "arenaActual": "dawn",
+      "eraActual": "classic",
+      "postEnabled": false,
+      "perf": {
+        "frames": 2000,
+        "p50": 2.5,
+        "p95": 4.699999988079071,
+        "p99": 5.899999976158142,
+        "max": 9.300000011920929,
+        "mean": 2.8780499999821187,
+        "fps50": 400,
+        "fps95": 212.76595798646125,
+        "fps99": 169.49152610864286,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          7.600000023841858,
+          7.600000023841858,
+          8.5,
+          8.600000023841858,
+          9.300000011920929
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 877,
+        "meshes": 612,
+        "skinned": 7,
+        "pieces": 7,
+        "captured": 0,
+        "geometries": 126,
+        "textures": 48,
+        "programs": 45,
+        "calls": 193,
+        "triangles": 162832
+      },
+      "censusBefore": {
+        "objects": 877,
+        "meshes": 612,
+        "skinned": 7,
+        "pieces": 7,
+        "captured": 0,
+        "geometries": 121,
+        "textures": 48,
+        "programs": 45,
+        "calls": 184,
+        "triangles": 162292
+      },
+      "lights": {
+        "total": 12,
+        "visible": 12,
+        "lit": 8
+      },
+      "lightsBefore": {
+        "total": 12,
+        "visible": 12,
+        "lit": 8
+      },
+      "programs": {
+        "atStart": 45,
+        "beforeWindow": 45,
+        "after": 45,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 29521
+    },
+    {
+      "cell": "classic-dawn/medium/opening",
+      "battleground": "classic-dawn",
+      "era": "classic",
+      "arena": "dawn",
+      "preset": "medium",
+      "phase": "opening",
+      "phaseNote": "all 32 pieces standing",
+      "fen": null,
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 11627,
+      "prewarm": {
+        "ran": true,
+        "ms": 3600.899999976158,
+        "programsBefore": 36,
+        "programsAfter": 75,
+        "compiled": 39
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "medium",
+      "arenaActual": "dawn",
+      "eraActual": "classic",
+      "postEnabled": true,
+      "perf": {
+        "frames": 1194,
+        "p50": 10,
+        "p95": 13.100000023841858,
+        "p99": 15.800000011920929,
+        "max": 24.30000001192093,
+        "mean": 10.225460636505929,
+        "fps50": 100,
+        "fps95": 76.33587772366495,
+        "fps99": 63.29113919275385,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          16.69999998807907,
+          16.900000035762787,
+          18.299999952316284,
+          20.69999998807907,
+          24.30000001192093
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 1989,
+        "meshes": 875,
+        "skinned": 32,
+        "pieces": 32,
+        "captured": 0,
+        "geometries": 139,
+        "textures": 105,
+        "programs": 71,
+        "calls": 1,
+        "triangles": 1
+      },
+      "censusBefore": {
+        "objects": 1989,
+        "meshes": 875,
+        "skinned": 32,
+        "pieces": 32,
+        "captured": 0,
+        "geometries": 139,
+        "textures": 105,
+        "programs": 71,
+        "calls": 1,
+        "triangles": 1
+      },
+      "lights": {
+        "total": 15,
+        "visible": 15,
+        "lit": 10
+      },
+      "lightsBefore": {
+        "total": 15,
+        "visible": 15,
+        "lit": 10
+      },
+      "programs": {
+        "atStart": 70,
+        "beforeWindow": 71,
+        "after": 71,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 30393
+    },
+    {
+      "cell": "classic-dawn/medium/midgame",
+      "battleground": "classic-dawn",
+      "era": "classic",
+      "arena": "dawn",
+      "preset": "medium",
+      "phase": "midgame",
+      "phaseNote": "24 pieces, effects firing",
+      "fen": "r2q1rk1/pp2ppbp/2np1np1/2p5/2P1P3/2NP1N2/PP2BPPP/R1BQ1RK1 w - - 0 9",
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 11764,
+      "prewarm": {
+        "ran": true,
+        "ms": 3649.599999964237,
+        "programsBefore": 36,
+        "programsAfter": 75,
+        "compiled": 39
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "medium",
+      "arenaActual": "dawn",
+      "eraActual": "classic",
+      "postEnabled": true,
+      "perf": {
+        "frames": 1230,
+        "p50": 9.700000047683716,
+        "p95": 13.200000047683716,
+        "p99": 15.399999976158142,
+        "max": 19.399999976158142,
+        "mean": 9.975609756097562,
+        "fps50": 103.09278299836629,
+        "fps95": 75.75757548390888,
+        "fps99": 64.93506503559563,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          16.899999976158142,
+          16.899999976158142,
+          17.5,
+          17.700000047683716,
+          19.399999976158142
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 1946,
+        "meshes": 865,
+        "skinned": 31,
+        "pieces": 31,
+        "captured": 0,
+        "geometries": 139,
+        "textures": 104,
+        "programs": 71,
+        "calls": 1,
+        "triangles": 1
+      },
+      "censusBefore": {
+        "objects": 1946,
+        "meshes": 865,
+        "skinned": 31,
+        "pieces": 31,
+        "captured": 0,
+        "geometries": 139,
+        "textures": 104,
+        "programs": 71,
+        "calls": 1,
+        "triangles": 1
+      },
+      "lights": {
+        "total": 15,
+        "visible": 15,
+        "lit": 10
+      },
+      "lightsBefore": {
+        "total": 15,
+        "visible": 15,
+        "lit": 10
+      },
+      "programs": {
+        "atStart": 70,
+        "beforeWindow": 71,
+        "after": 71,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 30562
+    },
+    {
+      "cell": "classic-dawn/medium/endgame",
+      "battleground": "classic-dawn",
+      "era": "classic",
+      "arena": "dawn",
+      "preset": "medium",
+      "phase": "endgame",
+      "phaseNote": "6 pieces",
+      "fen": "8/5pk1/6p1/8/8/6P1/5PK1/3R4 w - - 0 40",
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 11560,
+      "prewarm": {
+        "ran": true,
+        "ms": 3689.800000011921,
+        "programsBefore": 36,
+        "programsAfter": 75,
+        "compiled": 39
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "medium",
+      "arenaActual": "dawn",
+      "eraActual": "classic",
+      "postEnabled": true,
+      "perf": {
+        "frames": 2000,
+        "p50": 4.100000023841858,
+        "p95": 6.800000011920929,
+        "p99": 8.199999988079071,
+        "max": 13.399999976158142,
+        "mean": 4.44225,
+        "fps50": 243.9024376060763,
+        "fps95": 147.0588232716062,
+        "fps99": 121.95121968948438,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          9.300000011920929,
+          9.399999976158142,
+          9.399999976158142,
+          9.600000023841858,
+          13.399999976158142
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 882,
+        "meshes": 612,
+        "skinned": 7,
+        "pieces": 7,
+        "captured": 0,
+        "geometries": 146,
+        "textures": 73,
+        "programs": 71,
+        "calls": 1,
+        "triangles": 1
+      },
+      "censusBefore": {
+        "objects": 882,
+        "meshes": 612,
+        "skinned": 7,
+        "pieces": 7,
+        "captured": 0,
+        "geometries": 139,
+        "textures": 73,
+        "programs": 71,
+        "calls": 1,
+        "triangles": 1
+      },
+      "lights": {
+        "total": 15,
+        "visible": 15,
+        "lit": 10
+      },
+      "lightsBefore": {
+        "total": 15,
+        "visible": 15,
+        "lit": 10
+      },
+      "programs": {
+        "atStart": 70,
+        "beforeWindow": 71,
+        "after": 71,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 30220
+    },
+    {
+      "cell": "classic-dawn/high/opening",
+      "battleground": "classic-dawn",
+      "era": "classic",
+      "arena": "dawn",
+      "preset": "high",
+      "phase": "opening",
+      "phaseNote": "all 32 pieces standing",
+      "fen": null,
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 11722,
+      "prewarm": {
+        "ran": true,
+        "ms": 3710.099999964237,
+        "programsBefore": 36,
+        "programsAfter": 75,
+        "compiled": 39
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "high",
+      "arenaActual": "dawn",
+      "eraActual": "classic",
+      "postEnabled": true,
+      "perf": {
+        "frames": 756,
+        "p50": 15.5,
+        "p95": 20.600000023841858,
+        "p99": 24.600000023841858,
+        "max": 26.899999976158142,
+        "mean": 16.268253968269736,
+        "fps50": 64.51612903225806,
+        "fps95": 48.543689264205256,
+        "fps99": 40.650406464667434,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          25,
+          25.30000001192093,
+          25.80000001192093,
+          26.30000001192093,
+          26.899999976158142
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 1989,
+        "meshes": 875,
+        "skinned": 32,
+        "pieces": 32,
+        "captured": 0,
+        "geometries": 139,
+        "textures": 106,
+        "programs": 75,
+        "calls": 1,
+        "triangles": 1
+      },
+      "censusBefore": {
+        "objects": 1989,
+        "meshes": 875,
+        "skinned": 32,
+        "pieces": 32,
+        "captured": 0,
+        "geometries": 139,
+        "textures": 106,
+        "programs": 75,
+        "calls": 1,
+        "triangles": 1
+      },
+      "lights": {
+        "total": 15,
+        "visible": 15,
+        "lit": 11
+      },
+      "lightsBefore": {
+        "total": 15,
+        "visible": 15,
+        "lit": 11
+      },
+      "programs": {
+        "atStart": 70,
+        "beforeWindow": 75,
+        "after": 75,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 30611
+    },
+    {
+      "cell": "classic-dawn/high/midgame",
+      "battleground": "classic-dawn",
+      "era": "classic",
+      "arena": "dawn",
+      "preset": "high",
+      "phase": "midgame",
+      "phaseNote": "24 pieces, effects firing",
+      "fen": "r2q1rk1/pp2ppbp/2np1np1/2p5/2P1P3/2NP1N2/PP2BPPP/R1BQ1RK1 w - - 0 9",
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 11534,
+      "prewarm": {
+        "ran": true,
+        "ms": 3603.599999964237,
+        "programsBefore": 36,
+        "programsAfter": 75,
+        "compiled": 39
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "high",
+      "arenaActual": "dawn",
+      "eraActual": "classic",
+      "postEnabled": true,
+      "perf": {
+        "frames": 776,
+        "p50": 15.100000023841858,
+        "p95": 20.399999976158142,
+        "p99": 24.399999976158142,
+        "max": 29,
+        "mean": 15.858376288690518,
+        "fps50": 66.22516545834894,
+        "fps95": 49.01960790042738,
+        "fps99": 40.98360659742317,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          25.69999998807907,
+          25.900000035762787,
+          26.80000001192093,
+          27,
+          29
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 1946,
+        "meshes": 865,
+        "skinned": 31,
+        "pieces": 31,
+        "captured": 0,
+        "geometries": 139,
+        "textures": 105,
+        "programs": 75,
+        "calls": 1,
+        "triangles": 1
+      },
+      "censusBefore": {
+        "objects": 1946,
+        "meshes": 865,
+        "skinned": 31,
+        "pieces": 31,
+        "captured": 0,
+        "geometries": 139,
+        "textures": 105,
+        "programs": 75,
+        "calls": 1,
+        "triangles": 1
+      },
+      "lights": {
+        "total": 15,
+        "visible": 15,
+        "lit": 11
+      },
+      "lightsBefore": {
+        "total": 15,
+        "visible": 15,
+        "lit": 11
+      },
+      "programs": {
+        "atStart": 70,
+        "beforeWindow": 75,
+        "after": 75,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 30419
+    },
+    {
+      "cell": "classic-dawn/high/endgame",
+      "battleground": "classic-dawn",
+      "era": "classic",
+      "arena": "dawn",
+      "preset": "high",
+      "phase": "endgame",
+      "phaseNote": "6 pieces",
+      "fen": "8/5pk1/6p1/8/8/6P1/5PK1/3R4 w - - 0 40",
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 11592,
+      "prewarm": {
+        "ran": true,
+        "ms": 3772,
+        "programsBefore": 36,
+        "programsAfter": 75,
+        "compiled": 39
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "high",
+      "arenaActual": "dawn",
+      "eraActual": "classic",
+      "postEnabled": true,
+      "perf": {
+        "frames": 1856,
+        "p50": 6.300000011920929,
+        "p95": 9.199999988079071,
+        "p99": 10.5,
+        "max": 14.800000011920929,
+        "mean": 6.556034482758621,
+        "fps50": 158.7301584298078,
+        "fps95": 108.69565231475578,
+        "fps99": 95.23809523809524,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          12.399999976158142,
+          12.900000035762787,
+          13,
+          13.300000011920929,
+          14.800000011920929
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 882,
+        "meshes": 612,
+        "skinned": 7,
+        "pieces": 7,
+        "captured": 0,
+        "geometries": 142,
+        "textures": 74,
+        "programs": 75,
+        "calls": 1,
+        "triangles": 1
+      },
+      "censusBefore": {
+        "objects": 882,
+        "meshes": 612,
+        "skinned": 7,
+        "pieces": 7,
+        "captured": 0,
+        "geometries": 139,
+        "textures": 74,
+        "programs": 75,
+        "calls": 1,
+        "triangles": 1
+      },
+      "lights": {
+        "total": 15,
+        "visible": 15,
+        "lit": 11
+      },
+      "lightsBefore": {
+        "total": 15,
+        "visible": 15,
+        "lit": 11
+      },
+      "programs": {
+        "atStart": 70,
+        "beforeWindow": 75,
+        "after": 75,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 30297
+    },
+    {
+      "cell": "classic-dawn/ultra/opening",
+      "battleground": "classic-dawn",
+      "era": "classic",
+      "arena": "dawn",
+      "preset": "ultra",
+      "phase": "opening",
+      "phaseNote": "all 32 pieces standing",
+      "fen": null,
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 11765,
+      "prewarm": {
+        "ran": true,
+        "ms": 3670.899999976158,
+        "programsBefore": 41,
+        "programsAfter": 80,
+        "compiled": 39
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "ultra",
+      "arenaActual": "dawn",
+      "eraActual": "classic",
+      "postEnabled": true,
+      "perf": {
+        "frames": 551,
+        "p50": 21.600000023841858,
+        "p95": 27.400000035762787,
+        "p99": 31.399999976158142,
+        "max": 33.30000001192093,
+        "mean": 22.25735027225394,
+        "fps50": 46.296296245194924,
+        "fps95": 36.49635031732806,
+        "fps99": 31.847133782143146,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          31.899999976158142,
+          32.299999952316284,
+          32.30000001192093,
+          32.30000001192093,
+          33.30000001192093
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 1989,
+        "meshes": 875,
+        "skinned": 32,
+        "pieces": 32,
+        "captured": 0,
+        "geometries": 139,
+        "textures": 111,
+        "programs": 81,
+        "calls": 1,
+        "triangles": 1
+      },
+      "censusBefore": {
+        "objects": 1989,
+        "meshes": 875,
+        "skinned": 32,
+        "pieces": 32,
+        "captured": 0,
+        "geometries": 139,
+        "textures": 111,
+        "programs": 81,
+        "calls": 1,
+        "triangles": 1
+      },
+      "lights": {
+        "total": 15,
+        "visible": 15,
+        "lit": 12
+      },
+      "lightsBefore": {
+        "total": 15,
+        "visible": 15,
+        "lit": 12
+      },
+      "programs": {
+        "atStart": 76,
+        "beforeWindow": 81,
+        "after": 81,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 30699
+    },
+    {
+      "cell": "classic-dawn/ultra/midgame",
+      "battleground": "classic-dawn",
+      "era": "classic",
+      "arena": "dawn",
+      "preset": "ultra",
+      "phase": "midgame",
+      "phaseNote": "24 pieces, effects firing",
+      "fen": "r2q1rk1/pp2ppbp/2np1np1/2p5/2P1P3/2NP1N2/PP2BPPP/R1BQ1RK1 w - - 0 9",
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 11784,
+      "prewarm": {
+        "ran": true,
+        "ms": 3696.699999988079,
+        "programsBefore": 41,
+        "programsAfter": 80,
+        "compiled": 39
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "ultra",
+      "arenaActual": "dawn",
+      "eraActual": "classic",
+      "postEnabled": true,
+      "perf": {
+        "frames": 555,
+        "p50": 21.30000001192093,
+        "p95": 29.19999998807907,
+        "p99": 34,
+        "max": 42.5,
+        "mean": 22.160180180244616,
+        "fps50": 46.94835678123624,
+        "fps95": 34.246575356446954,
+        "fps99": 29.41176470588235,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          34.700000047683716,
+          35,
+          35.19999998807907,
+          35.5,
+          42.5
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 1946,
+        "meshes": 865,
+        "skinned": 31,
+        "pieces": 31,
+        "captured": 0,
+        "geometries": 139,
+        "textures": 110,
+        "programs": 81,
+        "calls": 1,
+        "triangles": 1
+      },
+      "censusBefore": {
+        "objects": 1946,
+        "meshes": 865,
+        "skinned": 31,
+        "pieces": 31,
+        "captured": 0,
+        "geometries": 139,
+        "textures": 110,
+        "programs": 81,
+        "calls": 1,
+        "triangles": 1
+      },
+      "lights": {
+        "total": 15,
+        "visible": 15,
+        "lit": 12
+      },
+      "lightsBefore": {
+        "total": 15,
+        "visible": 15,
+        "lit": 12
+      },
+      "programs": {
+        "atStart": 76,
+        "beforeWindow": 81,
+        "after": 81,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 30761
+    },
+    {
+      "cell": "classic-dawn/ultra/endgame",
+      "battleground": "classic-dawn",
+      "era": "classic",
+      "arena": "dawn",
+      "preset": "ultra",
+      "phase": "endgame",
+      "phaseNote": "6 pieces",
+      "fen": "8/5pk1/6p1/8/8/6P1/5PK1/3R4 w - - 0 40",
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 11564,
+      "prewarm": {
+        "ran": true,
+        "ms": 3685.899999976158,
+        "programsBefore": 41,
+        "programsAfter": 80,
+        "compiled": 39
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "ultra",
+      "arenaActual": "dawn",
+      "eraActual": "classic",
+      "postEnabled": true,
+      "perf": {
+        "frames": 1434,
+        "p50": 8.300000011920929,
+        "p95": 11.5,
+        "p99": 13.800000011920929,
+        "max": 18,
+        "mean": 8.513040446295731,
+        "fps50": 120.48192753780042,
+        "fps95": 86.95652173913044,
+        "fps99": 72.46376805334526,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          15,
+          16,
+          16.5,
+          17.80000001192093,
+          18
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 882,
+        "meshes": 612,
+        "skinned": 7,
+        "pieces": 7,
+        "captured": 0,
+        "geometries": 140,
+        "textures": 79,
+        "programs": 81,
+        "calls": 1,
+        "triangles": 1
+      },
+      "censusBefore": {
+        "objects": 882,
+        "meshes": 612,
+        "skinned": 7,
+        "pieces": 7,
+        "captured": 0,
+        "geometries": 139,
+        "textures": 79,
+        "programs": 81,
+        "calls": 1,
+        "triangles": 1
+      },
+      "lights": {
+        "total": 15,
+        "visible": 15,
+        "lit": 12
+      },
+      "lightsBefore": {
+        "total": 15,
+        "visible": 15,
+        "lit": 12
+      },
+      "programs": {
+        "atStart": 76,
+        "beforeWindow": 81,
+        "after": 81,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 30321
+    },
+    {
+      "cell": "rome-frost/low/opening",
+      "battleground": "rome-frost",
+      "era": "rome",
+      "arena": "frost",
+      "preset": "low",
+      "phase": "opening",
+      "phaseNote": "all 32 pieces standing",
+      "fen": null,
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 11455,
+      "prewarm": {
+        "ran": true,
+        "ms": 4889.800000011921,
+        "programsBefore": 13,
+        "programsAfter": 51,
+        "compiled": 38
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "low",
+      "arenaActual": "frost",
+      "eraActual": "rome",
+      "postEnabled": false,
+      "perf": {
+        "frames": 1923,
+        "p50": 6.099999964237213,
+        "p95": 9,
+        "p99": 11,
+        "max": 14.300000011920929,
+        "mean": 6.330057202281893,
+        "fps50": 163.93442719061508,
+        "fps95": 111.11111111111111,
+        "fps99": 90.9090909090909,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          12.800000011920929,
+          13.099999964237213,
+          13.399999976158142,
+          13.600000023841858,
+          14.300000011920929
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 1976,
+        "meshes": 875,
+        "skinned": 32,
+        "pieces": 32,
+        "captured": 0,
+        "geometries": 123,
+        "textures": 80,
+        "programs": 45,
+        "calls": 457,
+        "triangles": 1124630
+      },
+      "censusBefore": {
+        "objects": 1976,
+        "meshes": 875,
+        "skinned": 32,
+        "pieces": 32,
+        "captured": 0,
+        "geometries": 121,
+        "textures": 80,
+        "programs": 45,
+        "calls": 455,
+        "triangles": 1124452
+      },
+      "lights": {
+        "total": 12,
+        "visible": 12,
+        "lit": 8
+      },
+      "lightsBefore": {
+        "total": 12,
+        "visible": 12,
+        "lit": 8
+      },
+      "programs": {
+        "atStart": 45,
+        "beforeWindow": 45,
+        "after": 45,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 30122
+    },
+    {
+      "cell": "rome-frost/low/midgame",
+      "battleground": "rome-frost",
+      "era": "rome",
+      "arena": "frost",
+      "preset": "low",
+      "phase": "midgame",
+      "phaseNote": "24 pieces, effects firing",
+      "fen": "r2q1rk1/pp2ppbp/2np1np1/2p5/2P1P3/2NP1N2/PP2BPPP/R1BQ1RK1 w - - 0 9",
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 11187,
+      "prewarm": {
+        "ran": true,
+        "ms": 4678.300000011921,
+        "programsBefore": 13,
+        "programsAfter": 51,
+        "compiled": 38
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "low",
+      "arenaActual": "frost",
+      "eraActual": "rome",
+      "postEnabled": false,
+      "perf": {
+        "frames": 1867,
+        "p50": 6.300000011920929,
+        "p95": 9.399999976158142,
+        "p99": 11.400000035762787,
+        "max": 14.399999976158142,
+        "mean": 6.541028387800665,
+        "fps50": 158.7301584298078,
+        "fps95": 106.38297899323062,
+        "fps99": 87.719297970431,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          12.800000011920929,
+          13,
+          13.899999976158142,
+          14.099999964237213,
+          14.399999976158142
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 1935,
+        "meshes": 865,
+        "skinned": 31,
+        "pieces": 31,
+        "captured": 0,
+        "geometries": 123,
+        "textures": 79,
+        "programs": 45,
+        "calls": 447,
+        "triangles": 1091951
+      },
+      "censusBefore": {
+        "objects": 1935,
+        "meshes": 865,
+        "skinned": 31,
+        "pieces": 31,
+        "captured": 0,
+        "geometries": 121,
+        "textures": 79,
+        "programs": 45,
+        "calls": 445,
+        "triangles": 1091773
+      },
+      "lights": {
+        "total": 12,
+        "visible": 12,
+        "lit": 8
+      },
+      "lightsBefore": {
+        "total": 12,
+        "visible": 12,
+        "lit": 8
+      },
+      "programs": {
+        "atStart": 45,
+        "beforeWindow": 45,
+        "after": 45,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 29930
+    },
+    {
+      "cell": "rome-frost/low/endgame",
+      "battleground": "rome-frost",
+      "era": "rome",
+      "arena": "frost",
+      "preset": "low",
+      "phase": "endgame",
+      "phaseNote": "6 pieces",
+      "fen": "8/5pk1/6p1/8/8/6P1/5PK1/3R4 w - - 0 40",
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 10640,
+      "prewarm": {
+        "ran": true,
+        "ms": 4691.900000035763,
+        "programsBefore": 13,
+        "programsAfter": 51,
+        "compiled": 38
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "low",
+      "arenaActual": "frost",
+      "eraActual": "rome",
+      "postEnabled": false,
+      "perf": {
+        "frames": 2000,
+        "p50": 2.5,
+        "p95": 4.699999988079071,
+        "p99": 5.800000011920929,
+        "max": 7.800000011920929,
+        "mean": 2.8320499999821185,
+        "fps50": 400,
+        "fps95": 212.76595798646125,
+        "fps99": 172.41379274908059,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          6.5,
+          6.5,
+          6.5,
+          7,
+          7.800000011920929
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 877,
+        "meshes": 612,
+        "skinned": 7,
+        "pieces": 7,
+        "captured": 0,
+        "geometries": 126,
+        "textures": 48,
+        "programs": 45,
+        "calls": 193,
+        "triangles": 311177
+      },
+      "censusBefore": {
+        "objects": 877,
+        "meshes": 612,
+        "skinned": 7,
+        "pieces": 7,
+        "captured": 0,
+        "geometries": 121,
+        "textures": 48,
+        "programs": 45,
+        "calls": 187,
+        "triangles": 310961
+      },
+      "lights": {
+        "total": 12,
+        "visible": 12,
+        "lit": 8
+      },
+      "lightsBefore": {
+        "total": 12,
+        "visible": 12,
+        "lit": 8
+      },
+      "programs": {
+        "atStart": 45,
+        "beforeWindow": 45,
+        "after": 45,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 29224
+    },
+    {
+      "cell": "rome-frost/medium/opening",
+      "battleground": "rome-frost",
+      "era": "rome",
+      "arena": "frost",
+      "preset": "medium",
+      "phase": "opening",
+      "phaseNote": "all 32 pieces standing",
+      "fen": null,
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 11445,
+      "prewarm": {
+        "ran": true,
+        "ms": 3896.7999999523163,
+        "programsBefore": 36,
+        "programsAfter": 75,
+        "compiled": 39
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "medium",
+      "arenaActual": "frost",
+      "eraActual": "rome",
+      "postEnabled": true,
+      "perf": {
+        "frames": 1176,
+        "p50": 10.100000023841858,
+        "p95": 13.800000011920929,
+        "p99": 16,
+        "max": 22,
+        "mean": 10.40867346940803,
+        "fps50": 99.00990075637822,
+        "fps95": 72.46376805334526,
+        "fps99": 62.5,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          19.30000001192093,
+          19.399999976158142,
+          20,
+          20.700000047683716,
+          22
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 1981,
+        "meshes": 875,
+        "skinned": 32,
+        "pieces": 32,
+        "captured": 0,
+        "geometries": 138,
+        "textures": 105,
+        "programs": 71,
+        "calls": 1,
+        "triangles": 1
+      },
+      "censusBefore": {
+        "objects": 1981,
+        "meshes": 875,
+        "skinned": 32,
+        "pieces": 32,
+        "captured": 0,
+        "geometries": 138,
+        "textures": 105,
+        "programs": 71,
+        "calls": 1,
+        "triangles": 1
+      },
+      "lights": {
+        "total": 15,
+        "visible": 15,
+        "lit": 10
+      },
+      "lightsBefore": {
+        "total": 15,
+        "visible": 15,
+        "lit": 10
+      },
+      "programs": {
+        "atStart": 70,
+        "beforeWindow": 71,
+        "after": 71,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 30228
+    },
+    {
+      "cell": "rome-frost/medium/midgame",
+      "battleground": "rome-frost",
+      "era": "rome",
+      "arena": "frost",
+      "preset": "medium",
+      "phase": "midgame",
+      "phaseNote": "24 pieces, effects firing",
+      "fen": "r2q1rk1/pp2ppbp/2np1np1/2p5/2P1P3/2NP1N2/PP2BPPP/R1BQ1RK1 w - - 0 9",
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 11616,
+      "prewarm": {
+        "ran": true,
+        "ms": 3972.300000011921,
+        "programsBefore": 36,
+        "programsAfter": 75,
+        "compiled": 39
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "medium",
+      "arenaActual": "frost",
+      "eraActual": "rome",
+      "postEnabled": true,
+      "perf": {
+        "frames": 1223,
+        "p50": 9.699999988079071,
+        "p95": 13.199999988079071,
+        "p99": 15.400000035762787,
+        "max": 18.400000035762787,
+        "mean": 9.972035977115226,
+        "fps50": 103.09278363185173,
+        "fps95": 75.75757582599248,
+        "fps99": 64.9350647842689,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          16,
+          16.100000023841858,
+          17.399999976158142,
+          17.599999964237213,
+          18.400000035762787
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 1940,
+        "meshes": 865,
+        "skinned": 31,
+        "pieces": 31,
+        "captured": 0,
+        "geometries": 138,
+        "textures": 104,
+        "programs": 71,
+        "calls": 1,
+        "triangles": 1
+      },
+      "censusBefore": {
+        "objects": 1940,
+        "meshes": 865,
+        "skinned": 31,
+        "pieces": 31,
+        "captured": 0,
+        "geometries": 138,
+        "textures": 104,
+        "programs": 71,
+        "calls": 1,
+        "triangles": 1
+      },
+      "lights": {
+        "total": 15,
+        "visible": 15,
+        "lit": 10
+      },
+      "lightsBefore": {
+        "total": 15,
+        "visible": 15,
+        "lit": 10
+      },
+      "programs": {
+        "atStart": 70,
+        "beforeWindow": 71,
+        "after": 71,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 30393
+    },
+    {
+      "cell": "rome-frost/medium/endgame",
+      "battleground": "rome-frost",
+      "era": "rome",
+      "arena": "frost",
+      "preset": "medium",
+      "phase": "endgame",
+      "phaseNote": "6 pieces",
+      "fen": "8/5pk1/6p1/8/8/6P1/5PK1/3R4 w - - 0 40",
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 11006,
+      "prewarm": {
+        "ran": true,
+        "ms": 3953.300000011921,
+        "programsBefore": 36,
+        "programsAfter": 75,
+        "compiled": 39
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "medium",
+      "arenaActual": "frost",
+      "eraActual": "rome",
+      "postEnabled": true,
+      "perf": {
+        "frames": 2000,
+        "p50": 4.100000023841858,
+        "p95": 6.799999952316284,
+        "p99": 8,
+        "max": 9.699999988079071,
+        "mean": 4.50725,
+        "fps50": 243.9024376060763,
+        "fps95": 147.058824560634,
+        "fps99": 125,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          9,
+          9.099999964237213,
+          9.199999988079071,
+          9.199999988079071,
+          9.699999988079071
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 882,
+        "meshes": 612,
+        "skinned": 7,
+        "pieces": 7,
+        "captured": 0,
+        "geometries": 144,
+        "textures": 73,
+        "programs": 71,
+        "calls": 1,
+        "triangles": 1
+      },
+      "censusBefore": {
+        "objects": 882,
+        "meshes": 612,
+        "skinned": 7,
+        "pieces": 7,
+        "captured": 0,
+        "geometries": 138,
+        "textures": 73,
+        "programs": 71,
+        "calls": 1,
+        "triangles": 1
+      },
+      "lights": {
+        "total": 15,
+        "visible": 15,
+        "lit": 10
+      },
+      "lightsBefore": {
+        "total": 15,
+        "visible": 15,
+        "lit": 10
+      },
+      "programs": {
+        "atStart": 70,
+        "beforeWindow": 71,
+        "after": 71,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 29661
+    },
+    {
+      "cell": "rome-frost/high/opening",
+      "battleground": "rome-frost",
+      "era": "rome",
+      "arena": "frost",
+      "preset": "high",
+      "phase": "opening",
+      "phaseNote": "all 32 pieces standing",
+      "fen": null,
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 11610,
+      "prewarm": {
+        "ran": true,
+        "ms": 3858.599999964237,
+        "programsBefore": 36,
+        "programsAfter": 75,
+        "compiled": 39
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "high",
+      "arenaActual": "frost",
+      "eraActual": "rome",
+      "postEnabled": true,
+      "perf": {
+        "frames": 745,
+        "p50": 15.600000023841858,
+        "p95": 21.099999964237213,
+        "p99": 24.600000023841858,
+        "max": 27.099999964237213,
+        "mean": 16.484429530249347,
+        "fps50": 64.1025640045946,
+        "fps95": 47.39336500923786,
+        "fps99": 40.650406464667434,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          25.30000001192093,
+          25.400000035762787,
+          25.80000001192093,
+          26.30000001192093,
+          27.099999964237213
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 1981,
+        "meshes": 875,
+        "skinned": 32,
+        "pieces": 32,
+        "captured": 0,
+        "geometries": 138,
+        "textures": 106,
+        "programs": 75,
+        "calls": 1,
+        "triangles": 1
+      },
+      "censusBefore": {
+        "objects": 1981,
+        "meshes": 875,
+        "skinned": 32,
+        "pieces": 32,
+        "captured": 0,
+        "geometries": 138,
+        "textures": 106,
+        "programs": 75,
+        "calls": 1,
+        "triangles": 1
+      },
+      "lights": {
+        "total": 15,
+        "visible": 15,
+        "lit": 11
+      },
+      "lightsBefore": {
+        "total": 15,
+        "visible": 15,
+        "lit": 11
+      },
+      "programs": {
+        "atStart": 70,
+        "beforeWindow": 75,
+        "after": 75,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 30465
+    },
+    {
+      "cell": "rome-frost/high/midgame",
+      "battleground": "rome-frost",
+      "era": "rome",
+      "arena": "frost",
+      "preset": "high",
+      "phase": "midgame",
+      "phaseNote": "24 pieces, effects firing",
+      "fen": "r2q1rk1/pp2ppbp/2np1np1/2p5/2P1P3/2NP1N2/PP2BPPP/R1BQ1RK1 w - - 0 9",
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 11491,
+      "prewarm": {
+        "ran": true,
+        "ms": 3897.199999988079,
+        "programsBefore": 36,
+        "programsAfter": 75,
+        "compiled": 39
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "high",
+      "arenaActual": "frost",
+      "eraActual": "rome",
+      "postEnabled": true,
+      "perf": {
+        "frames": 752,
+        "p50": 15.699999988079071,
+        "p95": 20.099999964237213,
+        "p99": 25.80000001192093,
+        "max": 30.399999976158142,
+        "mean": 16.356117021292448,
+        "fps50": 63.69426756428629,
+        "fps95": 49.751243869614086,
+        "fps99": 38.759689904571644,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          26.299999952316284,
+          26.600000023841858,
+          28.100000023841858,
+          28.5,
+          30.399999976158142
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 1940,
+        "meshes": 865,
+        "skinned": 31,
+        "pieces": 31,
+        "captured": 0,
+        "geometries": 138,
+        "textures": 105,
+        "programs": 75,
+        "calls": 1,
+        "triangles": 1
+      },
+      "censusBefore": {
+        "objects": 1940,
+        "meshes": 865,
+        "skinned": 31,
+        "pieces": 31,
+        "captured": 0,
+        "geometries": 138,
+        "textures": 105,
+        "programs": 75,
+        "calls": 1,
+        "triangles": 1
+      },
+      "lights": {
+        "total": 15,
+        "visible": 15,
+        "lit": 11
+      },
+      "lightsBefore": {
+        "total": 15,
+        "visible": 15,
+        "lit": 11
+      },
+      "programs": {
+        "atStart": 70,
+        "beforeWindow": 75,
+        "after": 75,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 30396
+    },
+    {
+      "cell": "rome-frost/high/endgame",
+      "battleground": "rome-frost",
+      "era": "rome",
+      "arena": "frost",
+      "preset": "high",
+      "phase": "endgame",
+      "phaseNote": "6 pieces",
+      "fen": "8/5pk1/6p1/8/8/6P1/5PK1/3R4 w - - 0 40",
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 10793,
+      "prewarm": {
+        "ran": true,
+        "ms": 3780.399999976158,
+        "programsBefore": 36,
+        "programsAfter": 75,
+        "compiled": 39
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "high",
+      "arenaActual": "frost",
+      "eraActual": "rome",
+      "postEnabled": true,
+      "perf": {
+        "frames": 1815,
+        "p50": 6.5,
+        "p95": 9.699999988079071,
+        "p99": 11.699999988079071,
+        "max": 16.80000001192093,
+        "mean": 6.716088154296244,
+        "fps50": 153.84615384615384,
+        "fps95": 103.09278363185173,
+        "fps99": 85.47008555716947,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          12.600000023841858,
+          12.900000035762787,
+          13,
+          14.800000011920929,
+          16.80000001192093
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 882,
+        "meshes": 612,
+        "skinned": 7,
+        "pieces": 7,
+        "captured": 0,
+        "geometries": 141,
+        "textures": 74,
+        "programs": 75,
+        "calls": 1,
+        "triangles": 1
+      },
+      "censusBefore": {
+        "objects": 882,
+        "meshes": 612,
+        "skinned": 7,
+        "pieces": 7,
+        "captured": 0,
+        "geometries": 138,
+        "textures": 74,
+        "programs": 75,
+        "calls": 1,
+        "triangles": 1
+      },
+      "lights": {
+        "total": 15,
+        "visible": 15,
+        "lit": 11
+      },
+      "lightsBefore": {
+        "total": 15,
+        "visible": 15,
+        "lit": 11
+      },
+      "programs": {
+        "atStart": 70,
+        "beforeWindow": 75,
+        "after": 75,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 29475
+    },
+    {
+      "cell": "rome-frost/ultra/opening",
+      "battleground": "rome-frost",
+      "era": "rome",
+      "arena": "frost",
+      "preset": "ultra",
+      "phase": "opening",
+      "phaseNote": "all 32 pieces standing",
+      "fen": null,
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 12067,
+      "prewarm": {
+        "ran": true,
+        "ms": 3946.699999988079,
+        "programsBefore": 41,
+        "programsAfter": 80,
+        "compiled": 39
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "ultra",
+      "arenaActual": "frost",
+      "eraActual": "rome",
+      "postEnabled": true,
+      "perf": {
+        "frames": 544,
+        "p50": 21.80000001192093,
+        "p95": 29.099999964237213,
+        "p99": 34.69999998807907,
+        "max": 41.80000001192093,
+        "mean": 22.64099264703691,
+        "fps50": 45.8715596079435,
+        "fps95": 34.364261210617244,
+        "fps99": 28.818443813934945,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          34.80000001192093,
+          37.30000001192093,
+          37.59999996423721,
+          38,
+          41.80000001192093
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 1981,
+        "meshes": 875,
+        "skinned": 32,
+        "pieces": 32,
+        "captured": 0,
+        "geometries": 138,
+        "textures": 111,
+        "programs": 81,
+        "calls": 1,
+        "triangles": 1
+      },
+      "censusBefore": {
+        "objects": 1981,
+        "meshes": 875,
+        "skinned": 32,
+        "pieces": 32,
+        "captured": 0,
+        "geometries": 138,
+        "textures": 111,
+        "programs": 81,
+        "calls": 1,
+        "triangles": 1
+      },
+      "lights": {
+        "total": 15,
+        "visible": 15,
+        "lit": 12
+      },
+      "lightsBefore": {
+        "total": 15,
+        "visible": 15,
+        "lit": 12
+      },
+      "programs": {
+        "atStart": 76,
+        "beforeWindow": 81,
+        "after": 81,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 31036
+    },
+    {
+      "cell": "rome-frost/ultra/midgame",
+      "battleground": "rome-frost",
+      "era": "rome",
+      "arena": "frost",
+      "preset": "ultra",
+      "phase": "midgame",
+      "phaseNote": "24 pieces, effects firing",
+      "fen": "r2q1rk1/pp2ppbp/2np1np1/2p5/2P1P3/2NP1N2/PP2BPPP/R1BQ1RK1 w - - 0 9",
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 11711,
+      "prewarm": {
+        "ran": true,
+        "ms": 4015.100000023842,
+        "programsBefore": 41,
+        "programsAfter": 80,
+        "compiled": 39
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "ultra",
+      "arenaActual": "frost",
+      "eraActual": "rome",
+      "postEnabled": true,
+      "perf": {
+        "frames": 566,
+        "p50": 21.100000023841858,
+        "p95": 27.100000023841858,
+        "p99": 34.69999998807907,
+        "max": 40.60000002384186,
+        "mean": 21.869611307399435,
+        "fps50": 47.39336487535802,
+        "fps95": 36.90036897122607,
+        "fps99": 28.818443813934945,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          34.80000001192093,
+          35.09999996423721,
+          35.89999997615814,
+          38.10000002384186,
+          40.60000002384186
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 1940,
+        "meshes": 865,
+        "skinned": 31,
+        "pieces": 31,
+        "captured": 0,
+        "geometries": 138,
+        "textures": 110,
+        "programs": 81,
+        "calls": 1,
+        "triangles": 1
+      },
+      "censusBefore": {
+        "objects": 1940,
+        "meshes": 865,
+        "skinned": 31,
+        "pieces": 31,
+        "captured": 0,
+        "geometries": 138,
+        "textures": 110,
+        "programs": 81,
+        "calls": 1,
+        "triangles": 1
+      },
+      "lights": {
+        "total": 15,
+        "visible": 15,
+        "lit": 12
+      },
+      "lightsBefore": {
+        "total": 15,
+        "visible": 15,
+        "lit": 12
+      },
+      "programs": {
+        "atStart": 76,
+        "beforeWindow": 81,
+        "after": 81,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 30765
+    },
+    {
+      "cell": "rome-frost/ultra/endgame",
+      "battleground": "rome-frost",
+      "era": "rome",
+      "arena": "frost",
+      "preset": "ultra",
+      "phase": "endgame",
+      "phaseNote": "6 pieces",
+      "fen": "8/5pk1/6p1/8/8/6P1/5PK1/3R4 w - - 0 40",
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 11034,
+      "prewarm": {
+        "ran": true,
+        "ms": 3852.7000000476837,
+        "programsBefore": 41,
+        "programsAfter": 80,
+        "compiled": 39
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "ultra",
+      "arenaActual": "frost",
+      "eraActual": "rome",
+      "postEnabled": true,
+      "perf": {
+        "frames": 1401,
+        "p50": 8.5,
+        "p95": 11.800000011920929,
+        "p99": 13.399999976158142,
+        "max": 15.699999988079071,
+        "mean": 8.725124910760998,
+        "fps50": 117.6470588235294,
+        "fps95": 84.74576262625015,
+        "fps99": 74.62686580442113,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          15,
+          15.199999988079071,
+          15.300000011920929,
+          15.300000011920929,
+          15.699999988079071
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 882,
+        "meshes": 612,
+        "skinned": 7,
+        "pieces": 7,
+        "captured": 0,
+        "geometries": 139,
+        "textures": 79,
+        "programs": 81,
+        "calls": 1,
+        "triangles": 1
+      },
+      "censusBefore": {
+        "objects": 882,
+        "meshes": 612,
+        "skinned": 7,
+        "pieces": 7,
+        "captured": 0,
+        "geometries": 138,
+        "textures": 79,
+        "programs": 81,
+        "calls": 1,
+        "triangles": 1
+      },
+      "lights": {
+        "total": 15,
+        "visible": 15,
+        "lit": 12
+      },
+      "lightsBefore": {
+        "total": 15,
+        "visible": 15,
+        "lit": 12
+      },
+      "programs": {
+        "atStart": 76,
+        "beforeWindow": 81,
+        "after": 81,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 29833
+    },
+    {
+      "cell": "rome-dusk/low/opening",
+      "battleground": "rome-dusk",
+      "era": "rome",
+      "arena": "dusk",
+      "preset": "low",
+      "phase": "opening",
+      "phaseNote": "all 32 pieces standing",
+      "fen": null,
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 11491,
+      "prewarm": {
+        "ran": true,
+        "ms": 4985.100000023842,
+        "programsBefore": 13,
+        "programsAfter": 51,
+        "compiled": 38
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "low",
+      "arenaActual": "dusk",
+      "eraActual": "rome",
+      "postEnabled": false,
+      "perf": {
+        "frames": 1871,
+        "p50": 6.300000011920929,
+        "p95": 9.300000011920929,
+        "p99": 10.899999976158142,
+        "max": 13.899999976158142,
+        "mean": 6.499412079089342,
+        "fps50": 158.7301584298078,
+        "fps95": 107.52688158259997,
+        "fps99": 91.7431194667272,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          12.900000035762787,
+          13.199999988079071,
+          13.699999988079071,
+          13.800000011920929,
+          13.899999976158142
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 1976,
+        "meshes": 875,
+        "skinned": 32,
+        "pieces": 32,
+        "captured": 0,
+        "geometries": 123,
+        "textures": 80,
+        "programs": 45,
+        "calls": 457,
+        "triangles": 1124630
+      },
+      "censusBefore": {
+        "objects": 1976,
+        "meshes": 875,
+        "skinned": 32,
+        "pieces": 32,
+        "captured": 0,
+        "geometries": 121,
+        "textures": 80,
+        "programs": 45,
+        "calls": 455,
+        "triangles": 1124452
+      },
+      "lights": {
+        "total": 12,
+        "visible": 12,
+        "lit": 8
+      },
+      "lightsBefore": {
+        "total": 12,
+        "visible": 12,
+        "lit": 8
+      },
+      "programs": {
+        "atStart": 45,
+        "beforeWindow": 45,
+        "after": 45,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 30160
+    },
+    {
+      "cell": "rome-dusk/low/midgame",
+      "battleground": "rome-dusk",
+      "era": "rome",
+      "arena": "dusk",
+      "preset": "low",
+      "phase": "midgame",
+      "phaseNote": "24 pieces, effects firing",
+      "fen": "r2q1rk1/pp2ppbp/2np1np1/2p5/2P1P3/2NP1N2/PP2BPPP/R1BQ1RK1 w - - 0 9",
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 11259,
+      "prewarm": {
+        "ran": true,
+        "ms": 4748.899999976158,
+        "programsBefore": 13,
+        "programsAfter": 51,
+        "compiled": 38
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "low",
+      "arenaActual": "dusk",
+      "eraActual": "rome",
+      "postEnabled": false,
+      "perf": {
+        "frames": 1879,
+        "p50": 6.300000011920929,
+        "p95": 9.200000047683716,
+        "p99": 11,
+        "max": 13.100000023841858,
+        "mean": 6.490792974980351,
+        "fps50": 158.7301584298078,
+        "fps95": 108.69565161054211,
+        "fps99": 90.9090909090909,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          12.300000011920929,
+          12.699999988079071,
+          12.800000011920929,
+          12.899999976158142,
+          13.100000023841858
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 1935,
+        "meshes": 865,
+        "skinned": 31,
+        "pieces": 31,
+        "captured": 0,
+        "geometries": 123,
+        "textures": 79,
+        "programs": 45,
+        "calls": 447,
+        "triangles": 1091951
+      },
+      "censusBefore": {
+        "objects": 1935,
+        "meshes": 865,
+        "skinned": 31,
+        "pieces": 31,
+        "captured": 0,
+        "geometries": 121,
+        "textures": 79,
+        "programs": 45,
+        "calls": 445,
+        "triangles": 1091773
+      },
+      "lights": {
+        "total": 12,
+        "visible": 12,
+        "lit": 8
+      },
+      "lightsBefore": {
+        "total": 12,
+        "visible": 12,
+        "lit": 8
+      },
+      "programs": {
+        "atStart": 45,
+        "beforeWindow": 45,
+        "after": 45,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 29969
+    },
+    {
+      "cell": "rome-dusk/low/endgame",
+      "battleground": "rome-dusk",
+      "era": "rome",
+      "arena": "dusk",
+      "preset": "low",
+      "phase": "endgame",
+      "phaseNote": "6 pieces",
+      "fen": "8/5pk1/6p1/8/8/6P1/5PK1/3R4 w - - 0 40",
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 10763,
+      "prewarm": {
+        "ran": true,
+        "ms": 4817.300000011921,
+        "programsBefore": 13,
+        "programsAfter": 51,
+        "compiled": 38
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "low",
+      "arenaActual": "dusk",
+      "eraActual": "rome",
+      "postEnabled": false,
+      "perf": {
+        "frames": 2000,
+        "p50": 2.400000035762787,
+        "p95": 4.799999952316284,
+        "p99": 5.599999964237213,
+        "max": 7.900000035762787,
+        "mean": 2.7899500000178814,
+        "fps50": 416.6666604578496,
+        "fps95": 208.33333540293907,
+        "fps99": 178.57142971182355,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          6.5,
+          6.599999964237213,
+          6.800000011920929,
+          7.100000023841858,
+          7.900000035762787
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 877,
+        "meshes": 612,
+        "skinned": 7,
+        "pieces": 7,
+        "captured": 0,
+        "geometries": 126,
+        "textures": 48,
+        "programs": 45,
+        "calls": 195,
+        "triangles": 311245
+      },
+      "censusBefore": {
+        "objects": 877,
+        "meshes": 612,
+        "skinned": 7,
+        "pieces": 7,
+        "captured": 0,
+        "geometries": 121,
+        "textures": 48,
+        "programs": 45,
+        "calls": 188,
+        "triangles": 310981
+      },
+      "lights": {
+        "total": 12,
+        "visible": 12,
+        "lit": 8
+      },
+      "lightsBefore": {
+        "total": 12,
+        "visible": 12,
+        "lit": 8
+      },
+      "programs": {
+        "atStart": 45,
+        "beforeWindow": 45,
+        "after": 45,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 29347
+    },
+    {
+      "cell": "rome-dusk/medium/opening",
+      "battleground": "rome-dusk",
+      "era": "rome",
+      "arena": "dusk",
+      "preset": "medium",
+      "phase": "opening",
+      "phaseNote": "all 32 pieces standing",
+      "fen": null,
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 11488,
+      "prewarm": {
+        "ran": true,
+        "ms": 3896.699999988079,
+        "programsBefore": 36,
+        "programsAfter": 75,
+        "compiled": 39
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "medium",
+      "arenaActual": "dusk",
+      "eraActual": "rome",
+      "postEnabled": true,
+      "perf": {
+        "frames": 1143,
+        "p50": 10.400000035762787,
+        "p95": 14,
+        "p99": 15.700000047683716,
+        "max": 18.19999998807907,
+        "mean": 10.680489938768085,
+        "fps50": 96.15384582319909,
+        "fps95": 71.42857142857143,
+        "fps99": 63.694267322472655,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          17.5,
+          17.5,
+          17.799999952316284,
+          18.099999964237213,
+          18.19999998807907
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 1981,
+        "meshes": 875,
+        "skinned": 32,
+        "pieces": 32,
+        "captured": 0,
+        "geometries": 139,
+        "textures": 105,
+        "programs": 71,
+        "calls": 1,
+        "triangles": 1
+      },
+      "censusBefore": {
+        "objects": 1981,
+        "meshes": 875,
+        "skinned": 32,
+        "pieces": 32,
+        "captured": 0,
+        "geometries": 139,
+        "textures": 105,
+        "programs": 71,
+        "calls": 1,
+        "triangles": 1
+      },
+      "lights": {
+        "total": 15,
+        "visible": 15,
+        "lit": 10
+      },
+      "lightsBefore": {
+        "total": 15,
+        "visible": 15,
+        "lit": 10
+      },
+      "programs": {
+        "atStart": 70,
+        "beforeWindow": 71,
+        "after": 71,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 30226
+    },
+    {
+      "cell": "rome-dusk/medium/midgame",
+      "battleground": "rome-dusk",
+      "era": "rome",
+      "arena": "dusk",
+      "preset": "medium",
+      "phase": "midgame",
+      "phaseNote": "24 pieces, effects firing",
+      "fen": "r2q1rk1/pp2ppbp/2np1np1/2p5/2P1P3/2NP1N2/PP2BPPP/R1BQ1RK1 w - - 0 9",
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 11869,
+      "prewarm": {
+        "ran": true,
+        "ms": 4010.699999988079,
+        "programsBefore": 36,
+        "programsAfter": 75,
+        "compiled": 39
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "medium",
+      "arenaActual": "dusk",
+      "eraActual": "rome",
+      "postEnabled": true,
+      "perf": {
+        "frames": 1205,
+        "p50": 9.900000035762787,
+        "p95": 13.199999988079071,
+        "p99": 15.100000023841858,
+        "max": 19.100000023841858,
+        "mean": 10.149958506263639,
+        "fps50": 101.01010064521185,
+        "fps95": 75.75757582599248,
+        "fps99": 66.22516545834894,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          17.600000023841858,
+          17.80000001192093,
+          17.899999976158142,
+          18.299999952316284,
+          19.100000023841858
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 1940,
+        "meshes": 865,
+        "skinned": 31,
+        "pieces": 31,
+        "captured": 0,
+        "geometries": 139,
+        "textures": 104,
+        "programs": 71,
+        "calls": 1,
+        "triangles": 1
+      },
+      "censusBefore": {
+        "objects": 1940,
+        "meshes": 865,
+        "skinned": 31,
+        "pieces": 31,
+        "captured": 0,
+        "geometries": 139,
+        "textures": 104,
+        "programs": 71,
+        "calls": 1,
+        "triangles": 1
+      },
+      "lights": {
+        "total": 15,
+        "visible": 15,
+        "lit": 10
+      },
+      "lightsBefore": {
+        "total": 15,
+        "visible": 15,
+        "lit": 10
+      },
+      "programs": {
+        "atStart": 70,
+        "beforeWindow": 71,
+        "after": 71,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 30634
+    },
+    {
+      "cell": "rome-dusk/medium/endgame",
+      "battleground": "rome-dusk",
+      "era": "rome",
+      "arena": "dusk",
+      "preset": "medium",
+      "phase": "endgame",
+      "phaseNote": "6 pieces",
+      "fen": "8/5pk1/6p1/8/8/6P1/5PK1/3R4 w - - 0 40",
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 10897,
+      "prewarm": {
+        "ran": true,
+        "ms": 3813.800000011921,
+        "programsBefore": 36,
+        "programsAfter": 75,
+        "compiled": 39
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "medium",
+      "arenaActual": "dusk",
+      "eraActual": "rome",
+      "postEnabled": true,
+      "perf": {
+        "frames": 2000,
+        "p50": 4.100000023841858,
+        "p95": 6.700000047683716,
+        "p99": 7.699999988079071,
+        "max": 9.600000023841858,
+        "mean": 4.407650000005961,
+        "fps50": 243.9024376060763,
+        "fps95": 149.2537302810489,
+        "fps99": 129.87013007119126,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          8.699999988079071,
+          8.800000011920929,
+          8.800000011920929,
+          9.5,
+          9.600000023841858
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 882,
+        "meshes": 612,
+        "skinned": 7,
+        "pieces": 7,
+        "captured": 0,
+        "geometries": 146,
+        "textures": 73,
+        "programs": 71,
+        "calls": 1,
+        "triangles": 1
+      },
+      "censusBefore": {
+        "objects": 882,
+        "meshes": 612,
+        "skinned": 7,
+        "pieces": 7,
+        "captured": 0,
+        "geometries": 139,
+        "textures": 73,
+        "programs": 71,
+        "calls": 1,
+        "triangles": 1
+      },
+      "lights": {
+        "total": 15,
+        "visible": 15,
+        "lit": 10
+      },
+      "lightsBefore": {
+        "total": 15,
+        "visible": 15,
+        "lit": 10
+      },
+      "programs": {
+        "atStart": 70,
+        "beforeWindow": 71,
+        "after": 71,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 29505
+    },
+    {
+      "cell": "rome-dusk/high/opening",
+      "battleground": "rome-dusk",
+      "era": "rome",
+      "arena": "dusk",
+      "preset": "high",
+      "phase": "opening",
+      "phaseNote": "all 32 pieces standing",
+      "fen": null,
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 11423,
+      "prewarm": {
+        "ran": true,
+        "ms": 3887.900000035763,
+        "programsBefore": 36,
+        "programsAfter": 75,
+        "compiled": 39
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "high",
+      "arenaActual": "dusk",
+      "eraActual": "rome",
+      "postEnabled": true,
+      "perf": {
+        "frames": 746,
+        "p50": 15.699999988079071,
+        "p95": 21,
+        "p99": 25,
+        "max": 29.600000023841858,
+        "mean": 16.47466487930863,
+        "fps50": 63.69426756428629,
+        "fps95": 47.61904761904762,
+        "fps99": 40,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          26.19999998807907,
+          26.30000001192093,
+          26.599999964237213,
+          29,
+          29.600000023841858
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 1981,
+        "meshes": 875,
+        "skinned": 32,
+        "pieces": 32,
+        "captured": 0,
+        "geometries": 139,
+        "textures": 106,
+        "programs": 75,
+        "calls": 1,
+        "triangles": 1
+      },
+      "censusBefore": {
+        "objects": 1981,
+        "meshes": 875,
+        "skinned": 32,
+        "pieces": 32,
+        "captured": 0,
+        "geometries": 139,
+        "textures": 106,
+        "programs": 75,
+        "calls": 1,
+        "triangles": 1
+      },
+      "lights": {
+        "total": 15,
+        "visible": 15,
+        "lit": 11
+      },
+      "lightsBefore": {
+        "total": 15,
+        "visible": 15,
+        "lit": 11
+      },
+      "programs": {
+        "atStart": 70,
+        "beforeWindow": 75,
+        "after": 75,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 30284
+    },
+    {
+      "cell": "rome-dusk/high/midgame",
+      "battleground": "rome-dusk",
+      "era": "rome",
+      "arena": "dusk",
+      "preset": "high",
+      "phase": "midgame",
+      "phaseNote": "24 pieces, effects firing",
+      "fen": "r2q1rk1/pp2ppbp/2np1np1/2p5/2P1P3/2NP1N2/PP2BPPP/R1BQ1RK1 w - - 0 9",
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 11437,
+      "prewarm": {
+        "ran": true,
+        "ms": 3880.199999988079,
+        "programsBefore": 36,
+        "programsAfter": 75,
+        "compiled": 39
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "high",
+      "arenaActual": "dusk",
+      "eraActual": "rome",
+      "postEnabled": true,
+      "perf": {
+        "frames": 766,
+        "p50": 15.200000047683716,
+        "p95": 20.30000001192093,
+        "p99": 24.80000001192093,
+        "max": 33.10000002384186,
+        "mean": 16.039033942605435,
+        "fps50": 65.78947347782325,
+        "fps95": 49.26108371491439,
+        "fps99": 40.322580625778926,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          25.30000001192093,
+          27.899999976158142,
+          27.899999976158142,
+          31.69999998807907,
+          33.10000002384186
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 1940,
+        "meshes": 865,
+        "skinned": 31,
+        "pieces": 31,
+        "captured": 0,
+        "geometries": 139,
+        "textures": 105,
+        "programs": 75,
+        "calls": 1,
+        "triangles": 1
+      },
+      "censusBefore": {
+        "objects": 1940,
+        "meshes": 865,
+        "skinned": 31,
+        "pieces": 31,
+        "captured": 0,
+        "geometries": 139,
+        "textures": 105,
+        "programs": 75,
+        "calls": 1,
+        "triangles": 1
+      },
+      "lights": {
+        "total": 15,
+        "visible": 15,
+        "lit": 11
+      },
+      "lightsBefore": {
+        "total": 15,
+        "visible": 15,
+        "lit": 11
+      },
+      "programs": {
+        "atStart": 70,
+        "beforeWindow": 75,
+        "after": 75,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 30322
+    },
+    {
+      "cell": "rome-dusk/high/endgame",
+      "battleground": "rome-dusk",
+      "era": "rome",
+      "arena": "dusk",
+      "preset": "high",
+      "phase": "endgame",
+      "phaseNote": "6 pieces",
+      "fen": "8/5pk1/6p1/8/8/6P1/5PK1/3R4 w - - 0 40",
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 11042,
+      "prewarm": {
+        "ran": true,
+        "ms": 3909.5,
+        "programsBefore": 36,
+        "programsAfter": 75,
+        "compiled": 39
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "high",
+      "arenaActual": "dusk",
+      "eraActual": "rome",
+      "postEnabled": true,
+      "perf": {
+        "frames": 1841,
+        "p50": 6.399999976158142,
+        "p95": 9.300000011920929,
+        "p99": 11.099999964237213,
+        "max": 13.5,
+        "mean": 6.634003259091841,
+        "fps50": 156.2500005820766,
+        "fps95": 107.52688158259997,
+        "fps99": 90.0900903803489,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          12,
+          12.199999988079071,
+          12.5,
+          12.899999976158142,
+          13.5
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 882,
+        "meshes": 612,
+        "skinned": 7,
+        "pieces": 7,
+        "captured": 0,
+        "geometries": 142,
+        "textures": 74,
+        "programs": 75,
+        "calls": 1,
+        "triangles": 1
+      },
+      "censusBefore": {
+        "objects": 882,
+        "meshes": 612,
+        "skinned": 7,
+        "pieces": 7,
+        "captured": 0,
+        "geometries": 139,
+        "textures": 74,
+        "programs": 75,
+        "calls": 1,
+        "triangles": 1
+      },
+      "lights": {
+        "total": 15,
+        "visible": 15,
+        "lit": 11
+      },
+      "lightsBefore": {
+        "total": 15,
+        "visible": 15,
+        "lit": 11
+      },
+      "programs": {
+        "atStart": 70,
+        "beforeWindow": 75,
+        "after": 75,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 29745
+    },
+    {
+      "cell": "rome-dusk/ultra/opening",
+      "battleground": "rome-dusk",
+      "era": "rome",
+      "arena": "dusk",
+      "preset": "ultra",
+      "phase": "opening",
+      "phaseNote": "all 32 pieces standing",
+      "fen": null,
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 11582,
+      "prewarm": {
+        "ran": true,
+        "ms": 3789,
+        "programsBefore": 41,
+        "programsAfter": 80,
+        "compiled": 39
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "ultra",
+      "arenaActual": "dusk",
+      "eraActual": "rome",
+      "postEnabled": true,
+      "perf": {
+        "frames": 549,
+        "p50": 21.69999998807907,
+        "p95": 28.5,
+        "p99": 31.700000047683716,
+        "max": 34.799999952316284,
+        "mean": 22.450455373427907,
+        "fps50": 46.0829493340715,
+        "fps95": 35.08771929824562,
+        "fps99": 31.54574127746946,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          31.80000001192093,
+          31.899999976158142,
+          31.899999976158142,
+          33.40000003576279,
+          34.799999952316284
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 1981,
+        "meshes": 875,
+        "skinned": 32,
+        "pieces": 32,
+        "captured": 0,
+        "geometries": 139,
+        "textures": 111,
+        "programs": 81,
+        "calls": 1,
+        "triangles": 1
+      },
+      "censusBefore": {
+        "objects": 1981,
+        "meshes": 875,
+        "skinned": 32,
+        "pieces": 32,
+        "captured": 0,
+        "geometries": 139,
+        "textures": 111,
+        "programs": 81,
+        "calls": 1,
+        "triangles": 1
+      },
+      "lights": {
+        "total": 15,
+        "visible": 15,
+        "lit": 12
+      },
+      "lightsBefore": {
+        "total": 15,
+        "visible": 15,
+        "lit": 12
+      },
+      "programs": {
+        "atStart": 76,
+        "beforeWindow": 81,
+        "after": 81,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 30588
+    },
+    {
+      "cell": "rome-dusk/ultra/midgame",
+      "battleground": "rome-dusk",
+      "era": "rome",
+      "arena": "dusk",
+      "preset": "ultra",
+      "phase": "midgame",
+      "phaseNote": "24 pieces, effects firing",
+      "fen": "r2q1rk1/pp2ppbp/2np1np1/2p5/2P1P3/2NP1N2/PP2BPPP/R1BQ1RK1 w - - 0 9",
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 11653,
+      "prewarm": {
+        "ran": true,
+        "ms": 3906.199999988079,
+        "programsBefore": 41,
+        "programsAfter": 80,
+        "compiled": 39
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "ultra",
+      "arenaActual": "dusk",
+      "eraActual": "rome",
+      "postEnabled": true,
+      "perf": {
+        "frames": 562,
+        "p50": 21.19999998807907,
+        "p95": 27.599999964237213,
+        "p99": 34.59999996423721,
+        "max": 35.80000001192093,
+        "mean": 21.931494661921707,
+        "fps50": 47.169811347278674,
+        "fps95": 36.23188410491859,
+        "fps99": 28.901734133919266,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          35,
+          35.19999998807907,
+          35.200000047683716,
+          35.39999997615814,
+          35.80000001192093
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 1940,
+        "meshes": 865,
+        "skinned": 31,
+        "pieces": 31,
+        "captured": 0,
+        "geometries": 139,
+        "textures": 110,
+        "programs": 81,
+        "calls": 1,
+        "triangles": 1
+      },
+      "censusBefore": {
+        "objects": 1940,
+        "meshes": 865,
+        "skinned": 31,
+        "pieces": 31,
+        "captured": 0,
+        "geometries": 139,
+        "textures": 110,
+        "programs": 81,
+        "calls": 1,
+        "triangles": 1
+      },
+      "lights": {
+        "total": 15,
+        "visible": 15,
+        "lit": 12
+      },
+      "lightsBefore": {
+        "total": 15,
+        "visible": 15,
+        "lit": 12
+      },
+      "programs": {
+        "atStart": 76,
+        "beforeWindow": 81,
+        "after": 81,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 30667
+    },
+    {
+      "cell": "rome-dusk/ultra/endgame",
+      "battleground": "rome-dusk",
+      "era": "rome",
+      "arena": "dusk",
+      "preset": "ultra",
+      "phase": "endgame",
+      "phaseNote": "6 pieces",
+      "fen": "8/5pk1/6p1/8/8/6P1/5PK1/3R4 w - - 0 40",
+      "ok": true,
+      "error": null,
+      "consoleErrors": [],
+      "loadMs": 11074,
+      "prewarm": {
+        "ran": true,
+        "ms": 3872.699999988079,
+        "programsBefore": 41,
+        "programsAfter": 80,
+        "compiled": 39
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3090 (0x00002204) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "dpr": 1,
+      "presetActual": "ultra",
+      "arenaActual": "dusk",
+      "eraActual": "rome",
+      "postEnabled": true,
+      "perf": {
+        "frames": 1423,
+        "p50": 8.399999976158142,
+        "p95": 11.699999988079071,
+        "p99": 13.600000023841858,
+        "max": 16.69999998807907,
+        "mean": 8.601335207300126,
+        "fps50": 119.04761938551385,
+        "fps95": 85.47008555716947,
+        "fps99": 73.5294116358031,
+        "hitches50": 0,
+        "hitches100": 0,
+        "worst": [
+          15.300000011920929,
+          15.699999988079071,
+          15.800000011920929,
+          16.600000023841858,
+          16.69999998807907
+        ],
+        "frameErrors": 0
+      },
+      "census": {
+        "objects": 882,
+        "meshes": 612,
+        "skinned": 7,
+        "pieces": 7,
+        "captured": 0,
+        "geometries": 140,
+        "textures": 79,
+        "programs": 81,
+        "calls": 1,
+        "triangles": 1
+      },
+      "censusBefore": {
+        "objects": 882,
+        "meshes": 612,
+        "skinned": 7,
+        "pieces": 7,
+        "captured": 0,
+        "geometries": 139,
+        "textures": 79,
+        "programs": 81,
+        "calls": 1,
+        "triangles": 1
+      },
+      "lights": {
+        "total": 15,
+        "visible": 15,
+        "lit": 12
+      },
+      "lightsBefore": {
+        "total": 15,
+        "visible": 15,
+        "lit": 12
+      },
+      "programs": {
+        "atStart": 76,
+        "beforeWindow": 81,
+        "after": 81,
+        "lateCompiles": 0
+      },
+      "combat": {
+        "contactsResolved": 0,
+        "combatPhase": "done",
+        "beatTimeouts": 0,
+        "ply": 0,
+        "frameErrors": 0,
+        "animationTimeouts": 0
+      },
+      "wallMs": 29843
+    }
+  ]
+}

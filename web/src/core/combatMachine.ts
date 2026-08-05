@@ -161,7 +161,16 @@ export function specForCapture(event: MoveEvent, ply: number): CombatSpec | null
     victim: { kind: event.capture.kind, color: event.capture.color, square: event.capture.square },
     ranged,
     windows,
-    budget: total * 2 + 1,
+    // Watchdog ceiling for the VISUAL performance of this beat, not the sum of
+    // its phase windows. The windows-proportional term keeps heavier ranks
+    // longer; the constant covers the authored visual tail the phase model does
+    // not represent (turn-to-face, spell gather, projectile flight, slay,
+    // banish and the closing glide). Ranged beats pay a much larger tail, so
+    // they carry a larger constant. Measured on the dist build at quality=high:
+    // melee 5047ms and ranged 8391ms, both of which completed normally.
+    // Sized with headroom above those figures and kept below the controller's
+    // 12s turn-loop ceiling so this remains the first line of defence.
+    budget: total * 2 + (ranged ? 6.6 : 4),
   };
 }
 

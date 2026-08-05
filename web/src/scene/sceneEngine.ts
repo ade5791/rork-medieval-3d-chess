@@ -6,11 +6,11 @@ import type { Faction, GameSnapshot, MoveEvent, PieceKind, SquareId } from "../c
 import { audio, type FootstepTimbre } from "../audio/audioManager";
 import type { ArenaTheme } from "./arena";
 import { ARENA_LOOKS, DEFAULT_ARENA } from "./arena";
-import { DEFAULT_ERA, ERAS, rosterCoverage, type EraId } from "./eras";
+import { DEFAULT_ERA, ERAS, rosterCoverage, type EraId, assetBase } from "./eras";
 import { Battlefield } from "./battlefield";
 import { JungleOverlay } from "./jungle";
 import { BOARD_TOP, BoardView, type HighlightKind, TILE, squareToWorld, worldToSquare } from "./board";
-import { CastleHall, buildEnvironmentMap } from "./environment";
+import { CastleHall, buildEnvironmentMap, disposeEnvironment } from "./environment";
 import { EffectsSystem, ShakeSystem } from "./effects";
 import { FACTION_ACCENT, PieceFactory, PieceView, type ClipName, type TemplateKey } from "./pieces";
 import { PostFX } from "./postfx";
@@ -65,6 +65,20 @@ const TACTICAL_SHOT: CameraShot = {
 };
 const TACTICAL_FOV = 28;
 const DEFAULT_FOV = 46;
+
+/**
+ * The aspect every CAMERA_SHOT above was composed against. Narrower viewports
+ * (portrait phones) are corrected back to this framing; wider ones are left
+ * exactly as authored.
+ */
+const REF_ASPECT = 16 / 9;
+
+/**
+ * Widest vertical lens allowed while recovering a narrow viewport. Past roughly
+ * 60 degrees the hall distorts and the figures at the frame edge shear, so any
+ * coverage still missing at this point is recovered by dollying back instead.
+ */
+const MAX_NARROW_FOV = 60;
 
 const PROMOTION_CHOICES: PieceKind[] = ["q", "r", "b", "n"];
 
@@ -355,6 +369,14 @@ export class SceneEngine {
    * strike / death clips would sit frozen on their first frame.
    */
   private motion = new Set<PieceView>();
+  /**
+   * The lens the current shot was AUTHORED with, before any aspect correction.
+   * Correction is always derived from this, never from camera.fov, so a resize
+   * mid-flight cannot compound the widening.
+   */
+  private baseFov = DEFAULT_FOV;
+  /** Dolly multiplier currently applied to recover a narrow viewport. */
+  private frameScaleApplied = 1;
   private promotionGroup: THREE.Group | null = null;
   private promotionViews: PieceView[] = [];
   private promotionResolve: ((kind: PieceKind) => void) | null = null;
@@ -376,6 +398,8 @@ export class SceneEngine {
   /** Deterministic review-state flags parsed from the query string. */
   private review = readReviewState();
   private probeFrameTimes: number[] = [];
+  /** Engine-clock time of the last automatic quality step-down. */
+  private lastQualityStepAt = -1e9;
   /** S4: when on, renderer.info accumulates across every pass of a frame. */
   private drawProbe = false;
   /** S4: shader prewarm bookkeeping, reported by the probe. */
@@ -407,6 +431,12 @@ export class SceneEngine {
   private phase: CombatPhase = "done";
   /** Beats cut short by the watchdog. Non-zero is a defect signal for QA. */
   private beatTimeouts = 0;
+  /** True wall time of the last capture beat's visual performance, in ms. */
+  private lastBeatMs = 0;
+  /** Longest capture beat observed this session, in ms. */
+  private maxBeatMs = 0;
+  /** Authored budget the last beat was measured against, in ms. */
+  private lastBeatBudgetMs = 0;
   /** Half-move counter, used to build the stable per-move id. */
   private ply = 0;
   /** Seeded stream for strike dressing - keeps staged captures reproducible. */
@@ -845,7 +875,7 @@ export class SceneEngine {
       provenance: () => {
         const sources = this.factory.provenance();
         const era = this.era;
-        const prefix = `/models/${era}/`;
+        const prefix = `${assetBase()}models/${era}/`;
         const coverage = rosterCoverage(era);
         const foreign = Object.entries(sources)
           .filter(([, url]) => era !== "classic" && !url.startsWith(prefix))
@@ -937,6 +967,26 @@ export class SceneEngine {
         points: this.renderer.info.render.points,
       }),
       /** Raw graph, for draw-call attribution by group. */
+      /**
+       * Read-only camera state for the S6 control gate. The landing page may
+       * only claim a control that was observed to move the camera, so the
+       * gate needs the live distance/azimuth rather than a source grep.
+       */
+      cameraState: () => {
+        const p = this.camera.position;
+        const t = this.controls.target;
+        return {
+          distance: Number(p.distanceTo(t).toFixed(4)),
+          azimuth: Number(Math.atan2(p.x - t.x, p.z - t.z).toFixed(4)),
+          tactical: this.tactical,
+          enableZoom: this.controls.enableZoom,
+          enableRotate: this.controls.enableRotate,
+          enablePan: this.controls.enablePan,
+          minDistance: this.controls.minDistance,
+          maxDistance: this.controls.maxDistance,
+          enabled: this.controls.enabled,
+        };
+      },
       scene: () => this.scene,
       /** Shadow configuration - the dominant draw-call multiplier. */
       shadow: () => ({
@@ -978,6 +1028,83 @@ export class SceneEngine {
       /** Compile every program permutation now, behind the loading screen. */
       prewarm: () => this.prewarmShaders(),
       prewarmStats: () => ({ ...this.prewarmReport }),
+      /**
+       * S5 QA: authoritative screen position of a board square, projected by
+       * the LIVE camera. The harness must never reimplement this - board TILE
+       * spacing and camera state both change at runtime, so a harness-side
+       * copy silently drifts and taps land on the wrong square.
+       */
+      squareScreen: (square: SquareId) => {
+        const world = squareToWorld(square, BOARD_TOP);
+        this.camera.updateMatrixWorld();
+        const ndc = world.clone().project(this.camera);
+        const rect = this.canvas.getBoundingClientRect();
+        return {
+          x: rect.left + ((ndc.x + 1) / 2) * rect.width,
+          y: rect.top + ((1 - ndc.y) / 2) * rect.height,
+          onScreen: ndc.x >= -1 && ndc.x <= 1 && ndc.y >= -1 && ndc.y <= 1 && ndc.z < 1,
+        };
+      },
+      /**
+       * S5 QA: resolve what the ENGINE picks at a client point, using the very
+       * same raycaster the pointer handlers use. The harness must never guess -
+       * life-size figures occlude the squares behind them, so a projected tile
+       * centre frequently resolves to a different piece's square.
+       */
+      pickAt: (x: number, y: number) => {
+        const rect = this.canvas.getBoundingClientRect();
+        this.pointer.set(
+          ((x - rect.left) / rect.width) * 2 - 1,
+          -((y - rect.top) / rect.height) * 2 + 1,
+        );
+        this.raycaster.setFromCamera(this.pointer, this.camera);
+        const { square, piece } = this.pickTarget();
+        return { square, hasPiece: Boolean(piece) };
+      },
+      /**
+       * S5 QA: a client point that PROVABLY resolves to the requested square.
+       * Spirals out from the projected centre and returns the first point the
+       * engine's own picker agrees on, so a synthesized tap lands where the
+       * test intends. Returns ok:false when the square is genuinely unclickable
+       * (fully occluded or off screen) - which is itself a reportable finding.
+       */
+      pickPointFor: (square: SquareId) => {
+        const world = squareToWorld(square, BOARD_TOP);
+        this.camera.updateMatrixWorld();
+        const ndc = world.clone().project(this.camera);
+        const rect = this.canvas.getBoundingClientRect();
+        const cx = rect.left + ((ndc.x + 1) / 2) * rect.width;
+        const cy = rect.top + ((1 - ndc.y) / 2) * rect.height;
+        const onScreen = ndc.x >= -1 && ndc.x <= 1 && ndc.y >= -1 && ndc.y <= 1 && ndc.z < 1;
+        const test = (x: number, y: number) => {
+          if (x < rect.left + 1 || x > rect.right - 1 || y < rect.top + 1 || y > rect.bottom - 1) return false;
+          this.pointer.set(
+            ((x - rect.left) / rect.width) * 2 - 1,
+            -((y - rect.top) / rect.height) * 2 + 1,
+          );
+          this.raycaster.setFromCamera(this.pointer, this.camera);
+          return this.pickTarget().square === square;
+        };
+        if (onScreen && test(cx, cy)) return { x: cx, y: cy, ok: true, offset: 0 };
+        // Search downward first: a figure standing on the square occludes the
+        // tile ABOVE its base on screen, so the near edge is the reliable side.
+        for (let r = 4; r <= 64; r += 4) {
+          for (let a = 0; a < 16; a += 1) {
+            const t = (a / 16) * Math.PI * 2;
+            const x = cx + Math.sin(t) * r;
+            const y = cy + Math.cos(t) * r * 0.6;
+            if (test(x, y)) return { x, y, ok: true, offset: r };
+          }
+        }
+        return { x: cx, y: cy, ok: false, offset: -1 };
+      },
+      /** S5 QA: the live engine instance, for harness-side call tracing. */
+      __engine: this,
+      /** S5 QA: the currently selected square and its legal destinations. */
+      selection: () => ({
+        selected: this.selected,
+        targets: Array.from(this.legalTargets.keys()),
+      }),
       /** Combat diagnostics for the S3 gate. */
       combat: () => ({
         // Distinct captures that have resolved damage. Must equal the number
@@ -988,6 +1115,12 @@ export class SceneEngine {
         combatPhase: this.phase,
         // Beats cut short by the scene watchdog. Must be 0 on a clean run.
         beatTimeouts: this.beatTimeouts,
+        // True wall time of the beat's visual performance vs the budget it was
+        // measured against - the pair that tells QA whether a timeout means a
+        // hung beat or merely an under-sized budget.
+        lastBeatMs: Math.round(this.lastBeatMs),
+        maxBeatMs: Math.round(this.maxBeatMs),
+        lastBeatBudgetMs: Math.round(this.lastBeatBudgetMs),
         ply: this.ply,
         frameErrors: this.frameErrors,
         animationTimeouts: this.controller.getAnimationTimeouts(),
@@ -1009,7 +1142,16 @@ export class SceneEngine {
     this.callbacks.onReady();
     // The rigs and their stances are in; the strikes, deaths and strides come
     // down behind the game so the first move never waits on seventy GLBs.
-    void this.factory.warmClips();
+    //
+    // Those late clips carry their own materials, so their programs would
+    // otherwise compile the first time a strike is drawn - a stall in the
+    // middle of a move. Warm once more when the stream lands. prewarmShaders()
+    // is simulation-transparent (it snapshots and restores the clock, frame
+    // times and bound render target), so this is safe with a game in progress.
+    void this.factory.warmClips().then(() => {
+      if (this.disposed) return;
+      this.prewarmShaders();
+    });
   }
 
   /**
@@ -1171,8 +1313,15 @@ export class SceneEngine {
     // A pinned preset never steps down: recompiling lit materials mid-capture
     // would invalidate the pixel diff.
     if (this.review.pinQuality) return;
-    if (this.autoAdjusted || this.elapsed < 8 || this.fpsSamples.length < 100) return;
-    if (average >= 40) return;
+    if (this.elapsed < 8 || this.fpsSamples.length < 100) return;
+    // Defend the 60fps target, not a 40fps floor. The old 40fps gate let the
+    // auto-detected ultra preset park at 43-47fps forever: fast enough to skip
+    // the step-down, far short of the frame budget. 58fps leaves headroom for
+    // sampling jitter without oscillating around exactly 60.
+    if (average >= 58) return;
+    // Rate-limit rather than fire once: one step is often not enough to reach
+    // budget, but stepping every frame would thrash the program cache.
+    if (this.elapsed - this.lastQualityStepAt < 6) return;
     const order: QualityPreset[] = ["low", "medium", "high", "ultra"];
     const index = order.indexOf(this.preset);
     if (index <= 0) {
@@ -1180,6 +1329,10 @@ export class SceneEngine {
       return;
     }
     this.autoAdjusted = true;
+    this.lastQualityStepAt = this.elapsed;
+    // Frame history describes the preset we are leaving, so discard it or the
+    // next window immediately re-triggers on stale samples.
+    this.fpsSamples = [];
     const next = order[index - 1];
     this.setQuality(next);
     this.callbacks.onQualityAdjusted(next);
@@ -1188,6 +1341,11 @@ export class SceneEngine {
   // ------------------------------------------------------------------- pieces
 
   private rebuildPieces(): void {
+    // Selection is GAME state and must survive a RENDER-state rebuild. An
+    // automatic quality step-down rebuilds every sculpt mid-turn; dropping
+    // the selection there makes a player's in-progress move silently vanish
+    // and turns their destination tap into a brand new selection.
+    const keepSelected = this.selected;
     for (const piece of this.pieces.values()) piece.dispose();
     for (const piece of this.captured) piece.dispose();
     this.pieces.clear();
@@ -1208,6 +1366,22 @@ export class SceneEngine {
       view.container.position.copy(squareToWorld(entry.square));
       this.scene.add(view.container);
       this.pieces.set(entry.square, view);
+    }
+
+    // Re-apply the player's selection to the freshly built sculpt, guarded by
+    // the same rules the pointer path uses so a rebuild coinciding with a
+    // capture or a turn change simply leaves the board unselected.
+    if (keepSelected) {
+      const snapshot = this.controller.getSnapshot();
+      const piece = this.pieces.get(keepSelected);
+      if (
+        piece &&
+        snapshot.status === "playing" &&
+        piece.color === snapshot.turn &&
+        this.controller.isHumanTurn()
+      ) {
+        this.select(keepSelected);
+      }
     }
   }
 
@@ -1306,11 +1480,21 @@ export class SceneEngine {
           // the beat's own budget, and the turn loop keeps its own ceiling as a
           // second line of defence.
           const budget = spec ? spec.budget * 1000 : 6000;
+          this.lastBeatBudgetMs = budget;
+          const beatStartedAt = performance.now();
+          const performance$ = RANGED_KINDS.includes(piece.kind)
+            ? // The casters kill at range; everyone else walks into the blow.
+              this.playSpellCinematic(piece, victim, from, to, strikeSquare)
+            : this.playCaptureCinematic(piece, victim, from, to, strikeSquare);
+          // Measured regardless of the watchdog: the work continues after a
+          // timeout, so this is the only honest figure for how long the beat
+          // actually needs.
+          void performance$.catch(() => undefined).finally(() => {
+            this.lastBeatMs = performance.now() - beatStartedAt;
+            this.maxBeatMs = Math.max(this.maxBeatMs, this.lastBeatMs);
+          });
           const finished = await withWatchdog(
-            RANGED_KINDS.includes(piece.kind)
-              ? // The casters kill at range; everyone else walks into the blow.
-                this.playSpellCinematic(piece, victim, from, to, strikeSquare)
-              : this.playCaptureCinematic(piece, victim, from, to, strikeSquare),
+            performance$,
             budget,
             () => {
               this.beatTimeouts += 1;
@@ -1320,7 +1504,7 @@ export class SceneEngine {
           if (!finished) {
             // Put the stage back the way a completed beat would leave it, then
             // finish the kill plainly so the board stays consistent.
-            this.camera.fov = DEFAULT_FOV;
+            this.camera.fov = this.effectiveFov(DEFAULT_FOV);
             this.camera.updateProjectionMatrix();
             piece.setStrikeTilt(0);
             if (!victim.isSlain) await this.crumble(victim, from);
@@ -1329,7 +1513,7 @@ export class SceneEngine {
           // A broken effect must never strand a figure in the middle of a fight:
           // finish the kill the plain way so the board stays consistent.
           console.warn("[scene] battle beat failed", error);
-          this.camera.fov = DEFAULT_FOV;
+          this.camera.fov = this.effectiveFov(DEFAULT_FOV);
           this.camera.updateProjectionMatrix();
           piece.setStrikeTilt(0);
           if (!victim.isSlain) await this.crumble(victim, from);
@@ -2648,16 +2832,82 @@ export class SceneEngine {
 
   // ------------------------------------------------------------------- camera
 
+  /**
+   * The vertical lens to actually use for an authored fov at the live aspect.
+   * Landscape returns the authored value untouched.
+   */
+  private effectiveFov(baseFov: number): number {
+    const aspect = this.camera.aspect;
+    if (!Number.isFinite(aspect) || aspect >= REF_ASPECT) return baseFov;
+    const halfV = THREE.MathUtils.degToRad(baseFov) / 2;
+    const wanted = 2 * Math.atan((Math.tan(halfV) * REF_ASPECT) / Math.max(aspect, 0.2));
+    return Math.min(Math.max(baseFov, THREE.MathUtils.radToDeg(wanted)), MAX_NARROW_FOV);
+  }
+
+  /**
+   * How much further back the camera must sit for the board to occupy the same
+   * share of the frame it does at REF_ASPECT, once the lens has been widened as
+   * far as MAX_NARROW_FOV allows. Returns 1 whenever nothing is missing.
+   */
+  private frameScale(): number {
+    const aspect = Math.max(this.camera.aspect, 0.2);
+    if (!Number.isFinite(aspect) || aspect >= REF_ASPECT) return 1;
+    const halfVEff = THREE.MathUtils.degToRad(this.camera.fov) / 2;
+    const effHalf = Math.min(halfVEff, Math.atan(Math.tan(halfVEff) * aspect));
+    const halfVRef = THREE.MathUtils.degToRad(this.baseFov) / 2;
+    const refHalf = Math.min(halfVRef, Math.atan(Math.tan(halfVRef) * REF_ASPECT));
+    const scale = Math.tan(refHalf) / Math.tan(effHalf);
+    return Number.isFinite(scale) ? Math.max(1, Math.min(scale, 3)) : 1;
+  }
+
+  /**
+   * Re-applies the lens and dolly correction for the live aspect. Safe to call
+   * on every resize: the camera is moved along its CURRENT view direction, so a
+   * player-set orbit survives an orientation change untouched.
+   */
+  private applyFraming(): void {
+    this.camera.fov = this.effectiveFov(this.baseFov);
+    this.camera.updateProjectionMatrix();
+    const next = this.frameScale();
+    const previous = this.frameScaleApplied || 1;
+    if (Math.abs(next - previous) > 1e-4) {
+      const offset = this.camera.position.clone().sub(this.controls.target);
+      if (offset.lengthSq() > 1e-6) {
+        offset.multiplyScalar(next / previous);
+        this.camera.position.copy(this.controls.target).add(offset);
+      }
+    }
+    this.frameScaleApplied = next;
+    // The orbit clamps are authored for the reference framing, so they have to
+    // travel with the dolly or the correction is immediately undone by damping.
+    if (this.tactical) {
+      this.controls.minDistance = 11 * next;
+      this.controls.maxDistance = 34 * next;
+    } else {
+      this.controls.minDistance = 4.5 * next;
+      this.controls.maxDistance = 17 * next;
+    }
+  }
+
+  /** An authored shot, pushed back far enough to frame on the live aspect. */
+  private framedShot(shot: CameraShot): CameraShot {
+    const scale = this.frameScale();
+    if (scale <= 1.0001) return shot;
+    const position = shot.position.clone().sub(shot.target).multiplyScalar(scale).add(shot.target);
+    return { position, target: shot.target };
+  }
+
   async moveCameraTo(shot: CameraShot, duration = 1.1): Promise<void> {
     const fromPosition = this.camera.position.clone();
     const fromTarget = this.controls.target.clone();
+    const framed = this.framedShot(shot);
     this.controls.enabled = false;
     await this.tweens.to({
       duration,
       easing: Ease.inOutCubic,
       onUpdate: (t) => {
-        this.camera.position.lerpVectors(fromPosition, shot.position, t);
-        this.controls.target.lerpVectors(fromTarget, shot.target, t);
+        this.camera.position.lerpVectors(fromPosition, framed.position, t);
+        this.controls.target.lerpVectors(fromTarget, framed.target, t);
       },
     });
     this.controls.enabled = this.interactive;
@@ -2729,19 +2979,23 @@ export class SceneEngine {
     const fromPosition = this.camera.position.clone();
     const fromTarget = this.controls.target.clone();
     const fromFov = this.camera.fov;
+    this.baseFov = fov;
+    const targetFov = this.effectiveFov(fov);
+    const framed = this.framedShot(shot);
     this.controls.enabled = false;
     await this.tweens.to({
       duration: 0.95,
       easing: Ease.inOutCubic,
       onUpdate: (t) => {
-        this.camera.position.lerpVectors(fromPosition, shot.position, t);
-        this.controls.target.lerpVectors(fromTarget, shot.target, t);
-        this.camera.fov = fromFov + (fov - fromFov) * t;
+        this.camera.position.lerpVectors(fromPosition, framed.position, t);
+        this.controls.target.lerpVectors(fromTarget, framed.target, t);
+        this.camera.fov = fromFov + (targetFov - fromFov) * t;
         this.camera.updateProjectionMatrix();
       },
     });
-    this.camera.fov = fov;
+    this.camera.fov = targetFov;
     this.camera.updateProjectionMatrix();
+    this.applyFraming();
     this.controls.enabled = this.interactive;
   }
 
@@ -2862,8 +3116,9 @@ export class SceneEngine {
       this.controls.enabled = false;
     }
 
-    this.camera.position.copy(CAMERA_SHOTS.white.position);
-    this.controls.target.copy(CAMERA_SHOTS.white.target);
+    const opening = this.framedShot(CAMERA_SHOTS.white);
+    this.camera.position.copy(opening.position);
+    this.controls.target.copy(opening.target);
     this.postfx.setCinematic(false);
     this.introPlaying = false;
     this.interactive = true;
@@ -3310,7 +3565,7 @@ export class SceneEngine {
     const previous = this.scene.environment;
     this.scene.environment = buildEnvironmentMap(this.renderer, look);
     this.scene.environmentIntensity = look.environment.intensity;
-    previous?.dispose();
+    disposeEnvironment(previous);
   }
 
   /** The map currently staged. */
@@ -3412,6 +3667,9 @@ export class SceneEngine {
     const height = parent?.clientHeight ?? window.innerHeight;
     this.camera.aspect = width / Math.max(1, height);
     this.camera.updateProjectionMatrix();
+    // Portrait viewports lose horizontal coverage against the authored shots;
+    // recover it here so every file stays reachable after a rotation.
+    this.applyFraming();
     this.renderer.setSize(width, height, false);
     this.postfx.setSize(width, height);
   };
@@ -3466,28 +3724,79 @@ export class SceneEngine {
     const snapFrames = this.probeFrameTimes.slice();
     const prevTarget = this.renderer.getRenderTarget();
 
+    // Materials on hidden objects are skipped by compile(), so their program
+    // is built the first time the object is revealed - a multi-hundred-ms
+    // stall mid-play. Force everything visible for the compile, then restore.
+    // Lights are NEVER touched: changing the visible light count rewrites the
+    // program key of every lit material in the scene.
+    const hidden: THREE.Object3D[] = [];
+    this.scene.traverse((node) => {
+      if ((node as THREE.Light).isLight) return;
+      if (node.visible === false) {
+        hidden.push(node);
+        node.visible = true;
+      }
+    });
+
     try {
       // Forward lit pass for everything currently in the graph.
       this.renderer.compile(this.scene, this.camera);
 
-      // Shadow/depth variants are a different program key and compile()
-      // does not reach them, so render one throwaway frame into a scratch
-      // target that carries the same colour space and tone mapping.
+      // Shadow/depth variants are a different program key and compile() does
+      // not reach them, so render throwaway frames into scratch targets.
+      //
+      // Two colour spaces, deliberately. three.js folds outputColorSpace into
+      // the program cache key and reads it off the BOUND target, so warming
+      // only one variant means the other compiles mid-play. The game renders
+      // into the linear HDR post target normally, and straight to the canvas
+      // (sRGB) when post is force-disabled for the no-post gate - so both are
+      // real, reachable paths and both get warmed here.
       const size = this.renderer.getSize(new THREE.Vector2());
       const w = Math.max(2, Math.floor(size.x / 4));
       const h = Math.max(2, Math.floor(size.y / 4));
-      const scratch = new THREE.WebGLRenderTarget(w, h, {
-        type: THREE.HalfFloatType,
-        colorSpace: THREE.SRGBColorSpace,
+
+      // Shadow depth programs are only built for maps the renderer refreshes
+      // on that frame. Force every shadow map to refresh across the warm so
+      // the DEPTH_PACKING / PERSPECTIVE_CAMERA permutations are compiled here
+      // rather than the first time a light's shadow updates during play.
+      const shadowLights: THREE.Light[] = [];
+      this.scene.traverse((node) => {
+        const light = node as THREE.Light;
+        if (light.isLight && light.shadow) shadowLights.push(light);
       });
-      this.renderer.setRenderTarget(scratch);
-      this.renderer.render(this.scene, this.camera);
-      this.renderer.setRenderTarget(prevTarget);
-      scratch.dispose();
+      const autoUpdateWas = this.renderer.shadowMap.autoUpdate;
+      this.renderer.shadowMap.autoUpdate = true;
+
+      for (const colorSpace of [THREE.LinearSRGBColorSpace, THREE.SRGBColorSpace]) {
+        const scratch = new THREE.WebGLRenderTarget(w, h, {
+          type: THREE.HalfFloatType,
+          colorSpace,
+        });
+        this.renderer.setRenderTarget(scratch);
+        // Two passes: the first builds the programs, the second catches any
+        // permutation that only appears once a shadow map has been allocated.
+        for (let pass = 0; pass < 2; pass++) {
+          for (const light of shadowLights) {
+            if (light.shadow) light.shadow.needsUpdate = true;
+          }
+          this.renderer.render(this.scene, this.camera);
+        }
+        this.renderer.setRenderTarget(prevTarget);
+        scratch.dispose();
+      }
+
+      this.renderer.shadowMap.autoUpdate = autoUpdateWas;
+      for (const light of shadowLights) {
+        if (light.shadow) light.shadow.needsUpdate = true;
+      }
     } catch (error) {
       console.warn("[scene] prewarm skipped", error);
       this.renderer.setRenderTarget(prevTarget);
     }
+
+    // Restore visibility exactly as it was - prewarm must be invisible to
+    // both the simulation and the next rendered frame.
+    for (const node of hidden) node.visible = false;
 
     // Restore simulation state so nothing downstream drifted.
     this.elapsed = snapElapsed;
@@ -3536,6 +3845,9 @@ export class SceneEngine {
     this.battlefield.dispose();
     this.jungle.dispose();
     this.factory.dispose();
+    // The env map was never freed on teardown, only on arena swap.
+    disposeEnvironment(this.scene.environment);
+    this.scene.environment = null;
     this.postfx.dispose();
     this.controls.dispose();
     this.renderer.dispose();

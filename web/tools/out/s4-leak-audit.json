@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-05T08:45:47.121Z",
+  "generatedAt": "2026-08-05T09:54:17.129Z",
   "cycles": 6,
   "routedCleanly": 6,
   "idleMs": 20000,
   "baseline": {
-    "geometries": 145,
-    "textures": 108,
+    "geometries": 155,
+    "textures": 115,
     "programs": 85,
     "canvases": 1,
     "domNodes": 108
@@ -18,15 +18,15 @@
       "back": true,
       "onMenu": true,
       "atGame": {
-        "geometries": 148,
-        "textures": 145,
+        "geometries": 156,
+        "textures": 117,
         "programs": 80,
         "canvases": 1,
-        "domNodes": 155
+        "domNodes": 154
       },
       "atMenu": {
-        "geometries": 148,
-        "textures": 145,
+        "geometries": 155,
+        "textures": 117,
         "programs": 80,
         "canvases": 1,
         "domNodes": 108
@@ -39,15 +39,15 @@
       "back": true,
       "onMenu": true,
       "atGame": {
-        "geometries": 148,
-        "textures": 177,
+        "geometries": 155,
+        "textures": 117,
         "programs": 80,
         "canvases": 1,
         "domNodes": 155
       },
       "atMenu": {
-        "geometries": 148,
-        "textures": 177,
+        "geometries": 155,
+        "textures": 117,
         "programs": 80,
         "canvases": 1,
         "domNodes": 108
@@ -60,15 +60,15 @@
       "back": true,
       "onMenu": true,
       "atGame": {
-        "geometries": 149,
-        "textures": 209,
+        "geometries": 155,
+        "textures": 117,
         "programs": 80,
         "canvases": 1,
-        "domNodes": 154
+        "domNodes": 155
       },
       "atMenu": {
-        "geometries": 148,
-        "textures": 209,
+        "geometries": 155,
+        "textures": 117,
         "programs": 80,
         "canvases": 1,
         "domNodes": 108
@@ -81,15 +81,15 @@
       "back": true,
       "onMenu": true,
       "atGame": {
-        "geometries": 148,
-        "textures": 241,
+        "geometries": 155,
+        "textures": 117,
         "programs": 80,
         "canvases": 1,
         "domNodes": 155
       },
       "atMenu": {
-        "geometries": 148,
-        "textures": 241,
+        "geometries": 155,
+        "textures": 117,
         "programs": 80,
         "canvases": 1,
         "domNodes": 108
@@ -102,15 +102,15 @@
       "back": true,
       "onMenu": true,
       "atGame": {
-        "geometries": 148,
-        "textures": 273,
+        "geometries": 155,
+        "textures": 117,
         "programs": 80,
         "canvases": 1,
         "domNodes": 155
       },
       "atMenu": {
-        "geometries": 148,
-        "textures": 273,
+        "geometries": 155,
+        "textures": 117,
         "programs": 80,
         "canvases": 1,
         "domNodes": 108
@@ -123,15 +123,15 @@
       "back": true,
       "onMenu": true,
       "atGame": {
-        "geometries": 148,
-        "textures": 305,
+        "geometries": 155,
+        "textures": 117,
         "programs": 80,
         "canvases": 1,
         "domNodes": 155
       },
       "atMenu": {
-        "geometries": 148,
-        "textures": 305,
+        "geometries": 155,
+        "textures": 117,
         "programs": 80,
         "canvases": 1,
         "domNodes": 108
@@ -139,15 +139,15 @@
     }
   ],
   "afterIdle": {
-    "geometries": 148,
-    "textures": 305,
+    "geometries": 155,
+    "textures": 117,
     "programs": 80,
     "canvases": 1,
     "domNodes": 108
   },
   "delta": {
-    "geometries": 3,
-    "textures": 197,
+    "geometries": 0,
+    "textures": 2,
     "programs": -5,
     "canvases": 0,
     "domNodes": 0

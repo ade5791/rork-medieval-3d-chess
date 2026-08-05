@@ -67,10 +67,19 @@ const CLIP_NAMES = ["idle", "attack", "death", "walk"] as const;
  * `/models/<era>/<kind>-<clip>.glb`, which is exactly what
  * `tools/build-era-roster.mjs` writes after it has gated the bytes.
  */
+/**
+ * Public asset root. `/` in dev and on a domain-root deploy, `/<repo>/` when
+ * the site is published to a GitHub Pages project subpath. Always ends in a
+ * slash, so callers concatenate directly.
+ */
+export function assetBase(): string {
+  const base = import.meta.env?.BASE_URL ?? "/";
+  return base.endsWith("/") ? base : base + "/";
+}
 function roster(era: string, kinds: PieceKind[]): EraRoster {
   const out: EraRoster = {};
   for (const kind of kinds) {
-    const base = `/models/${era}/${kind}`;
+    const base = `${assetBase()}models/${era}/${kind}`;
     const set = { rigged: `${base}-rigged.glb` } as PieceAnimationSet;
     for (const clip of CLIP_NAMES) set[clip] = `${base}-${clip}.glb`;
     out[kind] = set;

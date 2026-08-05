@@ -1,0 +1,793 @@
+{
+  "generatedAt": "2026-08-05T20:45:24.817Z",
+  "base": "https://ade5791.github.io/kings-gambit-medieval-chess",
+  "note": "PHYSICAL HANDSETS WERE NOT TESTED. Touch surfaces are synthesized input in emulated viewports.",
+  "totals": {
+    "checks": 130,
+    "passed": 130,
+    "failed": 0
+  },
+  "defects": [],
+  "results": [
+    {
+      "surface": "desktop",
+      "name": "J1 launch: engine boots and probe is live",
+      "pass": true,
+      "detail": "5814ms"
+    },
+    {
+      "surface": "desktop",
+      "name": "J1 launch: WebGL context acquired (no unsupported screen)",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "surface": "desktop",
+      "name": "J1 launch: main menu reachable",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "surface": "desktop",
+      "name": "J2 menu: control census",
+      "pass": true,
+      "detail": "15 controls measured"
+    },
+    {
+      "surface": "desktop",
+      "name": "J2 menu: no overlapping action zones",
+      "pass": true,
+      "detail": "0 overlaps"
+    },
+    {
+      "surface": "desktop",
+      "name": "J4 mode: AI difficulty \"easy\" selectable with visible feedback",
+      "pass": true,
+      "detail": "data-active=true"
+    },
+    {
+      "surface": "desktop",
+      "name": "J4 mode: AI difficulty \"medium\" selectable with visible feedback",
+      "pass": true,
+      "detail": "data-active=true"
+    },
+    {
+      "surface": "desktop",
+      "name": "J4 mode: AI difficulty \"hard\" selectable with visible feedback",
+      "pass": true,
+      "detail": "data-active=true"
+    },
+    {
+      "surface": "desktop",
+      "name": "J4 mode: banner selection gives visible feedback",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "surface": "desktop",
+      "name": "J4 mode: clock option selectable",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "surface": "desktop",
+      "name": "J4 mode: hotseat tab selectable",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "surface": "desktop",
+      "name": "J3 audio: first gesture dispatched without error",
+      "pass": true,
+      "detail": "before=unknown after=unknown"
+    },
+    {
+      "surface": "desktop",
+      "name": "J5 new game: match starts in hotseat with the standard opening position",
+      "pass": true,
+      "detail": "mode=hotseat fen=rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
+    },
+    {
+      "surface": "desktop",
+      "name": "J6 HUD: control census",
+      "pass": true,
+      "detail": "9 controls measured"
+    },
+    {
+      "surface": "desktop",
+      "name": "J6 HUD: no overlapping action zones",
+      "pass": true,
+      "detail": "0 overlaps"
+    },
+    {
+      "surface": "desktop",
+      "name": "J7 move: tap-select then tap-destination plays e4",
+      "pass": true,
+      "detail": "move registered"
+    },
+    {
+      "surface": "desktop",
+      "name": "J7 move: on-screen state matches chess.js (FEN spot-check)",
+      "pass": true,
+      "detail": "turn=b last=e2e4 fen=rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR"
+    },
+    {
+      "surface": "desktop",
+      "name": "J7 move: screen-visible feedback after the move",
+      "pass": true,
+      "detail": "badge=1"
+    },
+    {
+      "surface": "desktop",
+      "name": "J9 undo: takes back a ply and the board state follows",
+      "pass": true,
+      "detail": "1 -> 0 plies; fen=rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
+    },
+    {
+      "surface": "desktop",
+      "name": "J10 settings: panel opens with visible content",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "surface": "desktop",
+      "name": "J10 settings: Escape closes the panel",
+      "pass": true,
+      "detail": "closed"
+    },
+    {
+      "surface": "desktop",
+      "name": "J12 background return: loop resumes without an oversized frame",
+      "pass": true,
+      "detail": "frames=90 p50=17.0ms max=18.2ms"
+    },
+    {
+      "surface": "desktop",
+      "name": "J13 checkmate: back-rank mate resolves to a finished game",
+      "pass": true,
+      "detail": "status=over result={\"winner\":\"w\",\"reason\":\"checkmate\"} plies=1 check=true"
+    },
+    {
+      "surface": "desktop",
+      "name": "J13 stalemate: dead position is detected as a draw by stalemate",
+      "pass": true,
+      "detail": "status=over result={\"winner\":null,\"reason\":\"stalemate\"} plies=0 check=false"
+    },
+    {
+      "surface": "desktop",
+      "name": "J13 check: the king in check is reported and flagged",
+      "pass": true,
+      "detail": "status=over result={\"winner\":\"b\",\"reason\":\"checkmate\"} plies=0 check=true"
+    },
+    {
+      "surface": "desktop",
+      "name": "J13 promotion: promotion scenario reaches the promotion path",
+      "pass": true,
+      "detail": "status=playing result=null plies=1 check=true"
+    },
+    {
+      "surface": "desktop",
+      "name": "J13 en passant: capture square differs from destination and resolves",
+      "pass": true,
+      "detail": "status=playing result=null plies=1 check=false"
+    },
+    {
+      "surface": "desktop",
+      "name": "J13 castling: king and rook move in one event",
+      "pass": true,
+      "detail": "status=playing result=null plies=1 check=false"
+    },
+    {
+      "surface": "desktop",
+      "name": "J14 completion: game-over modal appears when the game ends",
+      "pass": true,
+      "detail": "status=over result={\"winner\":\"w\",\"reason\":\"checkmate\"}"
+    },
+    {
+      "surface": "desktop",
+      "name": "J14 rematch: restarts a fresh game from the opening position",
+      "pass": true,
+      "detail": "status=playing plies=0 fen=rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
+    },
+    {
+      "surface": "desktop",
+      "name": "J15 console: zero console errors across the surface journey",
+      "pass": true,
+      "detail": "console=0 pageerror=0"
+    },
+    {
+      "surface": "touch-portrait",
+      "name": "J1 launch: engine boots and probe is live",
+      "pass": true,
+      "detail": "682ms"
+    },
+    {
+      "surface": "touch-portrait",
+      "name": "J1 launch: WebGL context acquired (no unsupported screen)",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "surface": "touch-portrait",
+      "name": "J1 launch: main menu reachable",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "surface": "touch-portrait",
+      "name": "J2 menu: all touch targets >= 44px",
+      "pass": true,
+      "detail": "15 targets ok"
+    },
+    {
+      "surface": "touch-portrait",
+      "name": "J2 menu: no overlapping action zones",
+      "pass": true,
+      "detail": "0 overlaps"
+    },
+    {
+      "surface": "touch-portrait",
+      "name": "J4 mode: AI difficulty \"easy\" selectable with visible feedback",
+      "pass": true,
+      "detail": "data-active=true"
+    },
+    {
+      "surface": "touch-portrait",
+      "name": "J4 mode: AI difficulty \"medium\" selectable with visible feedback",
+      "pass": true,
+      "detail": "data-active=true"
+    },
+    {
+      "surface": "touch-portrait",
+      "name": "J4 mode: AI difficulty \"hard\" selectable with visible feedback",
+      "pass": true,
+      "detail": "data-active=true"
+    },
+    {
+      "surface": "touch-portrait",
+      "name": "J4 mode: banner selection gives visible feedback",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "surface": "touch-portrait",
+      "name": "J4 mode: clock option selectable",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "surface": "touch-portrait",
+      "name": "J4 mode: hotseat tab selectable",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "surface": "touch-portrait",
+      "name": "J3 audio: first gesture dispatched without error",
+      "pass": true,
+      "detail": "before=unknown after=unknown"
+    },
+    {
+      "surface": "touch-portrait",
+      "name": "J5 new game: match starts in hotseat with the standard opening position",
+      "pass": true,
+      "detail": "mode=hotseat fen=rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
+    },
+    {
+      "surface": "touch-portrait",
+      "name": "J6 HUD: all touch targets >= 44px",
+      "pass": true,
+      "detail": "9 ok"
+    },
+    {
+      "surface": "touch-portrait",
+      "name": "J6 HUD: no overlapping action zones",
+      "pass": true,
+      "detail": "0 overlaps"
+    },
+    {
+      "surface": "touch-portrait",
+      "name": "J7 move: tap-select then tap-destination plays e4",
+      "pass": true,
+      "detail": "move registered"
+    },
+    {
+      "surface": "touch-portrait",
+      "name": "J7 move: on-screen state matches chess.js (FEN spot-check)",
+      "pass": true,
+      "detail": "turn=b last=e2e4 fen=rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR"
+    },
+    {
+      "surface": "touch-portrait",
+      "name": "J7 move: screen-visible feedback after the move",
+      "pass": true,
+      "detail": "badge=1"
+    },
+    {
+      "surface": "touch-portrait",
+      "name": "J9 undo: takes back a ply and the board state follows",
+      "pass": true,
+      "detail": "1 -> 0 plies; fen=rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
+    },
+    {
+      "surface": "touch-portrait",
+      "name": "J10 settings: panel opens with visible content",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "surface": "touch-portrait",
+      "name": "J10 settings: touch targets >= 44px",
+      "pass": true,
+      "detail": "15 ok"
+    },
+    {
+      "surface": "touch-portrait",
+      "name": "J10 settings: Escape closes the panel",
+      "pass": true,
+      "detail": "closed"
+    },
+    {
+      "surface": "touch-portrait",
+      "name": "J11 orientation: rotating never resets game state",
+      "pass": true,
+      "detail": "fen rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR -> rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR, plies 0 -> 0"
+    },
+    {
+      "surface": "touch-portrait",
+      "name": "J11 orientation: canvas resizes to the new viewport",
+      "pass": true,
+      "detail": "{\"cw\":852,\"ch\":393,\"vw\":852,\"vh\":393}"
+    },
+    {
+      "surface": "touch-portrait",
+      "name": "J12 background return: loop resumes without an oversized frame",
+      "pass": true,
+      "detail": "frames=91 p50=16.9ms max=18.1ms"
+    },
+    {
+      "surface": "touch-portrait",
+      "name": "J13 checkmate: back-rank mate resolves to a finished game",
+      "pass": true,
+      "detail": "status=over result={\"winner\":\"w\",\"reason\":\"checkmate\"} plies=1 check=true"
+    },
+    {
+      "surface": "touch-portrait",
+      "name": "J13 stalemate: dead position is detected as a draw by stalemate",
+      "pass": true,
+      "detail": "status=over result={\"winner\":null,\"reason\":\"stalemate\"} plies=0 check=false"
+    },
+    {
+      "surface": "touch-portrait",
+      "name": "J13 check: the king in check is reported and flagged",
+      "pass": true,
+      "detail": "status=over result={\"winner\":\"b\",\"reason\":\"checkmate\"} plies=0 check=true"
+    },
+    {
+      "surface": "touch-portrait",
+      "name": "J13 promotion: promotion scenario reaches the promotion path",
+      "pass": true,
+      "detail": "status=playing result=null plies=1 check=true"
+    },
+    {
+      "surface": "touch-portrait",
+      "name": "J13 en passant: capture square differs from destination and resolves",
+      "pass": true,
+      "detail": "status=playing result=null plies=1 check=false"
+    },
+    {
+      "surface": "touch-portrait",
+      "name": "J13 castling: king and rook move in one event",
+      "pass": true,
+      "detail": "status=playing result=null plies=1 check=false"
+    },
+    {
+      "surface": "touch-portrait",
+      "name": "J14 completion: game-over modal appears when the game ends",
+      "pass": true,
+      "detail": "status=over result={\"winner\":\"w\",\"reason\":\"checkmate\"}"
+    },
+    {
+      "surface": "touch-portrait",
+      "name": "J14 rematch: restarts a fresh game from the opening position",
+      "pass": true,
+      "detail": "status=playing plies=0 fen=rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
+    },
+    {
+      "surface": "touch-portrait",
+      "name": "J15 console: zero console errors across the surface journey",
+      "pass": true,
+      "detail": "console=0 pageerror=0"
+    },
+    {
+      "surface": "touch-landscape",
+      "name": "J1 launch: engine boots and probe is live",
+      "pass": true,
+      "detail": "727ms"
+    },
+    {
+      "surface": "touch-landscape",
+      "name": "J1 launch: WebGL context acquired (no unsupported screen)",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "surface": "touch-landscape",
+      "name": "J1 launch: main menu reachable",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "surface": "touch-landscape",
+      "name": "J2 menu: all touch targets >= 44px",
+      "pass": true,
+      "detail": "6 targets ok"
+    },
+    {
+      "surface": "touch-landscape",
+      "name": "J2 menu: no overlapping action zones",
+      "pass": true,
+      "detail": "0 overlaps"
+    },
+    {
+      "surface": "touch-landscape",
+      "name": "J4 mode: AI difficulty \"easy\" selectable with visible feedback",
+      "pass": true,
+      "detail": "data-active=true"
+    },
+    {
+      "surface": "touch-landscape",
+      "name": "J4 mode: AI difficulty \"medium\" selectable with visible feedback",
+      "pass": true,
+      "detail": "data-active=true"
+    },
+    {
+      "surface": "touch-landscape",
+      "name": "J4 mode: AI difficulty \"hard\" selectable with visible feedback",
+      "pass": true,
+      "detail": "data-active=true"
+    },
+    {
+      "surface": "touch-landscape",
+      "name": "J4 mode: banner selection gives visible feedback",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "surface": "touch-landscape",
+      "name": "J4 mode: clock option selectable",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "surface": "touch-landscape",
+      "name": "J4 mode: hotseat tab selectable",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "surface": "touch-landscape",
+      "name": "J3 audio: first gesture dispatched without error",
+      "pass": true,
+      "detail": "before=unknown after=unknown"
+    },
+    {
+      "surface": "touch-landscape",
+      "name": "J5 new game: match starts in hotseat with the standard opening position",
+      "pass": true,
+      "detail": "mode=hotseat fen=rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
+    },
+    {
+      "surface": "touch-landscape",
+      "name": "J6 HUD: all touch targets >= 44px",
+      "pass": true,
+      "detail": "9 ok"
+    },
+    {
+      "surface": "touch-landscape",
+      "name": "J6 HUD: no overlapping action zones",
+      "pass": true,
+      "detail": "0 overlaps"
+    },
+    {
+      "surface": "touch-landscape",
+      "name": "J7 move: tap-select then tap-destination plays e4",
+      "pass": true,
+      "detail": "move registered"
+    },
+    {
+      "surface": "touch-landscape",
+      "name": "J7 move: on-screen state matches chess.js (FEN spot-check)",
+      "pass": true,
+      "detail": "turn=b last=e2e4 fen=rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR"
+    },
+    {
+      "surface": "touch-landscape",
+      "name": "J7 move: screen-visible feedback after the move",
+      "pass": true,
+      "detail": "badge=1"
+    },
+    {
+      "surface": "touch-landscape",
+      "name": "J9 undo: takes back a ply and the board state follows",
+      "pass": true,
+      "detail": "1 -> 0 plies; fen=rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
+    },
+    {
+      "surface": "touch-landscape",
+      "name": "J10 settings: panel opens with visible content",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "surface": "touch-landscape",
+      "name": "J10 settings: touch targets >= 44px",
+      "pass": true,
+      "detail": "6 ok"
+    },
+    {
+      "surface": "touch-landscape",
+      "name": "J10 settings: Escape closes the panel",
+      "pass": true,
+      "detail": "closed"
+    },
+    {
+      "surface": "touch-landscape",
+      "name": "J11 orientation: rotating never resets game state",
+      "pass": true,
+      "detail": "fen rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR -> rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR, plies 0 -> 0"
+    },
+    {
+      "surface": "touch-landscape",
+      "name": "J11 orientation: canvas resizes to the new viewport",
+      "pass": true,
+      "detail": "{\"cw\":393,\"ch\":852,\"vw\":393,\"vh\":852}"
+    },
+    {
+      "surface": "touch-landscape",
+      "name": "J12 background return: loop resumes without an oversized frame",
+      "pass": true,
+      "detail": "frames=90 p50=16.7ms max=18.2ms"
+    },
+    {
+      "surface": "touch-landscape",
+      "name": "J13 checkmate: back-rank mate resolves to a finished game",
+      "pass": true,
+      "detail": "status=over result={\"winner\":\"w\",\"reason\":\"checkmate\"} plies=1 check=true"
+    },
+    {
+      "surface": "touch-landscape",
+      "name": "J13 stalemate: dead position is detected as a draw by stalemate",
+      "pass": true,
+      "detail": "status=over result={\"winner\":null,\"reason\":\"stalemate\"} plies=0 check=false"
+    },
+    {
+      "surface": "touch-landscape",
+      "name": "J13 check: the king in check is reported and flagged",
+      "pass": true,
+      "detail": "status=over result={\"winner\":\"b\",\"reason\":\"checkmate\"} plies=0 check=true"
+    },
+    {
+      "surface": "touch-landscape",
+      "name": "J13 promotion: promotion scenario reaches the promotion path",
+      "pass": true,
+      "detail": "status=playing result=null plies=1 check=true"
+    },
+    {
+      "surface": "touch-landscape",
+      "name": "J13 en passant: capture square differs from destination and resolves",
+      "pass": true,
+      "detail": "status=playing result=null plies=1 check=false"
+    },
+    {
+      "surface": "touch-landscape",
+      "name": "J13 castling: king and rook move in one event",
+      "pass": true,
+      "detail": "status=playing result=null plies=1 check=false"
+    },
+    {
+      "surface": "touch-landscape",
+      "name": "J14 completion: game-over modal appears when the game ends",
+      "pass": true,
+      "detail": "status=over result={\"winner\":\"w\",\"reason\":\"checkmate\"}"
+    },
+    {
+      "surface": "touch-landscape",
+      "name": "J14 rematch: restarts a fresh game from the opening position",
+      "pass": true,
+      "detail": "status=playing plies=0 fen=rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
+    },
+    {
+      "surface": "touch-landscape",
+      "name": "J15 console: zero console errors across the surface journey",
+      "pass": true,
+      "detail": "console=0 pageerror=0"
+    },
+    {
+      "surface": "reduced-motion",
+      "name": "J1 launch: engine boots and probe is live",
+      "pass": true,
+      "detail": "732ms"
+    },
+    {
+      "surface": "reduced-motion",
+      "name": "J1 launch: WebGL context acquired (no unsupported screen)",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "surface": "reduced-motion",
+      "name": "J1 launch: main menu reachable",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "surface": "reduced-motion",
+      "name": "J2 menu: control census",
+      "pass": true,
+      "detail": "15 controls measured"
+    },
+    {
+      "surface": "reduced-motion",
+      "name": "J2 menu: no overlapping action zones",
+      "pass": true,
+      "detail": "0 overlaps"
+    },
+    {
+      "surface": "reduced-motion",
+      "name": "J4 mode: AI difficulty \"easy\" selectable with visible feedback",
+      "pass": true,
+      "detail": "data-active=true"
+    },
+    {
+      "surface": "reduced-motion",
+      "name": "J4 mode: AI difficulty \"medium\" selectable with visible feedback",
+      "pass": true,
+      "detail": "data-active=true"
+    },
+    {
+      "surface": "reduced-motion",
+      "name": "J4 mode: AI difficulty \"hard\" selectable with visible feedback",
+      "pass": true,
+      "detail": "data-active=true"
+    },
+    {
+      "surface": "reduced-motion",
+      "name": "J4 mode: banner selection gives visible feedback",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "surface": "reduced-motion",
+      "name": "J4 mode: clock option selectable",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "surface": "reduced-motion",
+      "name": "J4 mode: hotseat tab selectable",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "surface": "reduced-motion",
+      "name": "J3 audio: first gesture dispatched without error",
+      "pass": true,
+      "detail": "before=unknown after=unknown"
+    },
+    {
+      "surface": "reduced-motion",
+      "name": "J5 new game: match starts in hotseat with the standard opening position",
+      "pass": true,
+      "detail": "mode=hotseat fen=rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
+    },
+    {
+      "surface": "reduced-motion",
+      "name": "J6 HUD: control census",
+      "pass": true,
+      "detail": "9 controls measured"
+    },
+    {
+      "surface": "reduced-motion",
+      "name": "J6 HUD: no overlapping action zones",
+      "pass": true,
+      "detail": "0 overlaps"
+    },
+    {
+      "surface": "reduced-motion",
+      "name": "J7 move: tap-select then tap-destination plays e4",
+      "pass": true,
+      "detail": "move registered"
+    },
+    {
+      "surface": "reduced-motion",
+      "name": "J7 move: on-screen state matches chess.js (FEN spot-check)",
+      "pass": true,
+      "detail": "turn=b last=e2e4 fen=rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR"
+    },
+    {
+      "surface": "reduced-motion",
+      "name": "J7 move: screen-visible feedback after the move",
+      "pass": true,
+      "detail": "badge=1"
+    },
+    {
+      "surface": "reduced-motion",
+      "name": "J9 undo: takes back a ply and the board state follows",
+      "pass": true,
+      "detail": "1 -> 0 plies; fen=rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
+    },
+    {
+      "surface": "reduced-motion",
+      "name": "J10 settings: panel opens with visible content",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "surface": "reduced-motion",
+      "name": "J10 settings: Escape closes the panel",
+      "pass": true,
+      "detail": "closed"
+    },
+    {
+      "surface": "reduced-motion",
+      "name": "J12 background return: loop resumes without an oversized frame",
+      "pass": true,
+      "detail": "frames=91 p50=16.9ms max=18.2ms"
+    },
+    {
+      "surface": "reduced-motion",
+      "name": "J13 checkmate: back-rank mate resolves to a finished game",
+      "pass": true,
+      "detail": "status=over result={\"winner\":\"w\",\"reason\":\"checkmate\"} plies=1 check=true"
+    },
+    {
+      "surface": "reduced-motion",
+      "name": "J13 stalemate: dead position is detected as a draw by stalemate",
+      "pass": true,
+      "detail": "status=over result={\"winner\":null,\"reason\":\"stalemate\"} plies=0 check=false"
+    },
+    {
+      "surface": "reduced-motion",
+      "name": "J13 check: the king in check is reported and flagged",
+      "pass": true,
+      "detail": "status=over result={\"winner\":\"b\",\"reason\":\"checkmate\"} plies=0 check=true"
+    },
+    {
+      "surface": "reduced-motion",
+      "name": "J13 promotion: promotion scenario reaches the promotion path",
+      "pass": true,
+      "detail": "status=playing result=null plies=1 check=true"
+    },
+    {
+      "surface": "reduced-motion",
+      "name": "J13 en passant: capture square differs from destination and resolves",
+      "pass": true,
+      "detail": "status=playing result=null plies=1 check=false"
+    },
+    {
+      "surface": "reduced-motion",
+      "name": "J13 castling: king and rook move in one event",
+      "pass": true,
+      "detail": "status=playing result=null plies=1 check=false"
+    },
+    {
+      "surface": "reduced-motion",
+      "name": "J14 completion: game-over modal appears when the game ends",
+      "pass": true,
+      "detail": "status=over result={\"winner\":\"w\",\"reason\":\"checkmate\"}"
+    },
+    {
+      "surface": "reduced-motion",
+      "name": "J14 rematch: restarts a fresh game from the opening position",
+      "pass": true,
+      "detail": "status=playing plies=0 fen=rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
+    },
+    {
+      "surface": "reduced-motion",
+      "name": "J15 console: zero console errors across the surface journey",
+      "pass": true,
+      "detail": "console=0 pageerror=0"
+    }
+  ]
+}
