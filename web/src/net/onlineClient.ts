@@ -98,6 +98,20 @@ export function resolveRelayUrl(): string {
   return `${proto}//${window.location.host}/ws`;
 }
 
+/**
+ * True when this deployment can plausibly reach a relay: an explicit
+ * VITE_MULTIPLAYER_URL, or a host that can proxy /ws on its own origin (the
+ * dev server, or a single-origin deploy with the relay behind it). Known
+ * static hosts serve files only - a socket to them can never succeed, so
+ * attempting one would leave the lobby spinning forever.
+ */
+export function relayAvailable(): boolean {
+  const configured = import.meta.env?.VITE_MULTIPLAYER_URL as string | undefined;
+  if (configured && configured.length > 0) return true;
+  if (typeof window === "undefined") return true;
+  return !window.location.hostname.endsWith(".github.io");
+}
+
 export class OnlineClient extends Emitter<OnlineEvents> {
   private socket: WebSocket | null = null;
   private url: string;
@@ -110,6 +124,8 @@ export class OnlineClient extends Emitter<OnlineEvents> {
   private pendingIntent: ClientMessage | null = null;
   private disposed = false;
   private lastPingAt = 0;
+  /** True once any socket reached OPEN - separates outages from no-relay. */
+  private everConnected = false;
 
   constructor(url: string = resolveRelayUrl()) {
     super();
@@ -131,11 +147,31 @@ export class OnlineClient extends Emitter<OnlineEvents> {
   }
 
   host(name: string, seat: SeatPreference, clockMinutes: number | null): void {
+    if (!this.guardRelay()) return;
     this.pendingIntent = { t: "create", v: PROTOCOL_VERSION, name, seat, clockMinutes };
     this.open();
   }
 
+  /**
+   * Refuses an online intent when no relay can exist on this deployment,
+   * emitting an honest failure instead of letting the socket spin. Returns
+   * true when the attempt may proceed.
+   */
+  private guardRelay(): boolean {
+    if (relayAvailable()) return true;
+    this.setStatus("error", null);
+    this.emit("failed", {
+      code: "no-relay",
+      message:
+        "Online duels need a relay server, and this static deployment does not include one. " +
+        "Play Computer or 2 Players here - or clone the repo and run it locally for online play.",
+      fatal: true,
+    });
+    return false;
+  }
+
   join(name: string, code: string): void {
+    if (!this.guardRelay()) return;
     this.pendingIntent = { t: "join", v: PROTOCOL_VERSION, name, code };
     this.open();
   }
@@ -196,6 +232,7 @@ export class OnlineClient extends Emitter<OnlineEvents> {
 
     socket.onopen = () => {
       this.attempt = 0;
+      this.everConnected = true;
       this.setStatus("connected", null);
       this.flushIntent();
       this.startPing();
@@ -218,7 +255,16 @@ export class OnlineClient extends Emitter<OnlineEvents> {
       if (this.disposed) return;
       // A stored seat means the game is still live somewhere - keep trying.
       if (this.seat) this.scheduleRetry();
-      else this.setStatus("closed", null);
+      else if (!this.everConnected) {
+        // Never reached the relay at all: report it once, honestly, instead of
+        // leaving the lobby stuck on a spinner.
+        this.setStatus("error", null);
+        this.emit("failed", {
+          code: "unreachable",
+          message: "Could not reach the relay. It may be down - try again in a moment.",
+          fatal: false,
+        });
+      } else this.setStatus("closed", null);
     };
   }
 

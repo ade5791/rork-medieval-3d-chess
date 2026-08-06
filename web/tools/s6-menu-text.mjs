@@ -1,0 +1,12 @@
+import { chromium } from 'playwright';
+const BASE = process.env.S6_URL || 'https://ade5791.github.io/kings-gambit-medieval-chess/';
+const browser = await chromium.launch();
+const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
+await page.goto(BASE, { waitUntil: 'load', timeout: 60000 });
+await page.waitForTimeout(9000);
+const text = await page.evaluate(() => document.body.innerText);
+const buttons = await page.evaluate(() => Array.from(document.querySelectorAll('button,a,[role=button]')).map(b => (b.innerText || b.getAttribute('aria-label') || '').trim()).filter(Boolean));
+await page.screenshot({ path: 'tools/out/s6-menu.png', fullPage: false });
+console.log('TEXT:\n' + text.slice(0, 1200));
+console.log('BUTTONS:', JSON.stringify(buttons));
+await browser.close();

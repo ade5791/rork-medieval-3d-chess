@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Copy, Check, Globe, Loader2, LogIn, Swords, X } from "lucide-react";
 
 import type { Faction } from "../core/types";
-import { OnlineClient, type ConnectionStatus } from "../net/onlineClient";
+import { OnlineClient, relayAvailable, type ConnectionStatus } from "../net/onlineClient";
 import { isValidRoomCode, normaliseRoomCode, type SeatPreference } from "../net/protocol";
 import { Crest } from "./Heraldry";
 
@@ -68,6 +68,8 @@ export function OnlineLobby({ onSeated, onClose }: OnlineLobbyProps) {
   const [busy, setBusy] = useState(false);
 
   const client = useMemo(() => new OnlineClient(), []);
+  /** Static deployments (GitHub Pages) ship no relay - warn before a click. */
+  const noRelay = useMemo(() => !relayAvailable(), []);
   const seatedRef = useRef(false);
   const copyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -178,6 +180,13 @@ export function OnlineLobby({ onSeated, onClose }: OnlineLobbyProps) {
             <X size={14} />
           </button>
         </div>
+        {noRelay ? (
+          <p className="mb-3 shrink-0 rounded border border-[#8a6d3b]/40 bg-[#3a2d18]/40 px-3 py-2 text-xs leading-relaxed text-[#d9c489]">
+            This hosted build has no relay server, so online duels cannot connect here.
+            Computer and 2 Players work fully. For online play, run the game locally with
+            its relay (see the repository README).
+          </p>
+        ) : null}
 
         {hosted ? (
           <div className="mc-fade space-y-5">
