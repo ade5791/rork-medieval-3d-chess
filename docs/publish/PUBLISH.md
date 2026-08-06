@@ -85,3 +85,33 @@ shipped behaviour: online play is declared unavailable on this static deploy.
   https://ade5791.github.io/kings-gambit-medieval-chess/ after the Pages build.
 - LOCAL: source repo carries the fix, harnesses, and this document; committed
   as the S6 follow-up commit in `rork-medieval-3d-chess`.
+
+## Follow-up: "unable to open on this browser, need graphic acceleration"
+
+Reported 2026-08-06. Diagnosis: this is the app's OWN capability gate
+(`web/src/ui/GameShell.tsx` ~line 101), which fires only when the browser
+cannot create ANY WebGL context (`getContext("webgl2") ?? getContext("webgl")`
+returns null). It is not a server error and not a defect in the deploy.
+
+Verified NOT reproducible on the desktop machine (RTX 3090):
+
+- Headless Chromium (ANGLE D3D11): WebGL 2.0 context created, renderer
+  "ANGLE (NVIDIA GeForce RTX 3090 Direct3D11)", unsupported gate NOT shown,
+  menu reached, 0 console errors, 0 failed requests.
+  Artifact: `web/tools/out/s6-live-webgl-check.png`,
+  harness: `web/tools/s6-live-webgl-check.mjs`.
+- User's real local Chrome: intro renders, menu reached with all four
+  civilisations and game modes visible (screenshots captured in-session).
+- Live byte identity re-confirmed same run: index.html (1,400 B),
+  landing.html (9,553 B), assets/index-DiAjvlf.js (1,427,082 B),
+  assets/index-9KC3YKMT.css (78,378 B) all byte-size and hash-consistent
+  with publish repo HEAD `cb4913f`.
+
+Cause on the reporting browser is environmental - one of: hardware
+acceleration disabled in the browser settings, a remote/preview/embedded
+surface with WebGL blocked, or GPU-blocklisted drivers. Remedies to give a
+user hitting the gate: enable "Use graphics acceleration when available"
+(chrome://settings/system) and relaunch; check chrome://gpu shows WebGL
+"Hardware accelerated"; or open the URL in Edge/Chrome/Firefox on a desktop
+or tablet. No code change shipped: the gate's message already states the
+correct remedy and only fires when no 3D context is possible.
