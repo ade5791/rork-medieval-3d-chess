@@ -81,6 +81,8 @@ export function GameShell() {
   const [tactical, setTactical] = useState(false);
   const [unsupported, setUnsupported] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
+  /** Set when the player hand-picks a graphics preset. See handlePickQuality. */
+  const [qualityPinned, setQualityPinned] = useState(false);
   /** Showcase recording: strips every panel so the capture is board-only. */
   const [cinema, setCinema] = useState(false);
   /** Pending staged review move - cleared on unmount so it cannot leak. */
@@ -205,12 +207,39 @@ export function GameShell() {
     const engine = engineRef.current;
     if (!engine) return;
     engine.setQuality(settings.quality);
+    engine.setUserQualityPin(qualityPinned);
     engine.setArena(settings.arena);
     engine.setCaptureCinematics(settings.captureCinematics);
     engine.setRotateBoard(settings.rotateBoard);
     engine.setRankBadges(settings.rankBadges);
     audio.setMuted(settings.muted);
-  }, [settings]);
+  }, [settings, qualityPinned]);
+
+  // ------------------------------------------------ manual graphics choice
+  /**
+   * Any click on a Graphics chip is an explicit choice, so it pins the preset
+   * and disarms the adaptive step-down. The step-down path itself updates
+   * settings via setSettings directly and therefore never pins - first-load
+   * auto-detection keeps its guard, a hand-picked preset does not.
+   */
+  const handlePickQuality = useCallback((preset: QualityPreset) => {
+    setQualityPinned(true);
+    setSettings((current) =>
+      current.quality === preset ? current : { ...current, quality: preset },
+    );
+    setNotice(`Graphics locked to ${preset} - automatic step-down is off.`);
+    setTimeout(() => setNotice(null), 5000);
+  }, []);
+
+  /** Back to the boot-time guess with the adaptive guard re-armed. */
+  const resetQualityAuto = useCallback(() => {
+    setQualityPinned(false);
+    setSettings((current) =>
+      current.quality === detected ? current : { ...current, quality: detected },
+    );
+    setNotice("Graphics back on auto - steps down if the frame rate drops.");
+    setTimeout(() => setNotice(null), 5000);
+  }, [detected]);
 
   // ------------------------------------------------------------- attract mode
   const stopAttract = useCallback(() => {
@@ -598,7 +627,10 @@ export function GameShell() {
             settings={settings}
             autoDetected={detected}
             fps={fps}
+            qualityPinned={qualityPinned}
             onChange={setSettings}
+            onPickQuality={handlePickQuality}
+            onResetQualityAuto={resetQualityAuto}
             onClose={() => setShowSettings(false)}
           />
         ) : null}

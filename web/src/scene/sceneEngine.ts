@@ -472,6 +472,13 @@ export class SceneEngine {
 
   private fpsSamples: number[] = [];
   private autoAdjusted = false;
+  /**
+   * True once the player explicitly picked a preset in the Settings menu. The
+   * adaptive guard exists to correct the boot-time GUESS (detectQualityPreset),
+   * not to overrule the player: while pinned the automatic step-down never
+   * fires, whatever the frame rate.
+   */
+  private userQualityPin = false;
   private lastFpsReport = 0;
 
   constructor(
@@ -841,6 +848,13 @@ export class SceneEngine {
       },
       setArena: (theme: ArenaTheme) => this.setArena(theme),
       setQuality: (preset: QualityPreset) => this.setQuality(preset),
+      /** Quality guard state, so QA can assert the user pin actually holds. */
+      qualityGuard: () => ({
+        preset: this.preset,
+        userPin: this.userQualityPin,
+        reviewPin: this.review.pinQuality,
+        autoAdjusted: this.autoAdjusted,
+      }),
       setCamera: (preset: CameraPreset) => this.setCameraPreset(preset),
       /** Game state, so the combat gate can assert the turn loop released. */
       controller: this.controller,
@@ -1313,6 +1327,8 @@ export class SceneEngine {
     // A pinned preset never steps down: recompiling lit materials mid-capture
     // would invalidate the pixel diff.
     if (this.review.pinQuality) return;
+    // An explicit Settings choice outranks the guard (see setUserQualityPin).
+    if (this.userQualityPin) return;
     if (this.elapsed < 8 || this.fpsSamples.length < 100) return;
     // Defend the 60fps target, not a 40fps floor. The old 40fps gate let the
     // auto-detected ultra preset park at 43-47fps forever: fast enough to skip
@@ -3571,6 +3587,14 @@ export class SceneEngine {
   /** The map currently staged. */
   getArena(): ArenaTheme {
     return this.arena;
+  }
+
+  /**
+   * Marks the active preset as an explicit player choice (or releases it).
+   * While pinned, sampleFps never steps the preset down: the player said so.
+   */
+  setUserQualityPin(pinned: boolean): void {
+    this.userQualityPin = pinned;
   }
 
   setQuality(preset: QualityPreset): void {

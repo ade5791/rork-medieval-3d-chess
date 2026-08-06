@@ -21,7 +21,13 @@ interface SettingsPanelProps {
   settings: GameSettings;
   autoDetected: QualityPreset;
   fps: number;
+  /** True when the player pinned a preset by hand (auto step-down disarmed). */
+  qualityPinned: boolean;
   onChange: (settings: GameSettings) => void;
+  /** Explicit Graphics chip click - pins the preset. */
+  onPickQuality: (preset: QualityPreset) => void;
+  /** Re-arm the adaptive guard and return to the detected preset. */
+  onResetQualityAuto: () => void;
   onClose: () => void;
 }
 
@@ -32,7 +38,16 @@ const PRESETS: { key: QualityPreset; label: string; note: string }[] = [
   { key: "ultra", label: "Ultra", note: "Ambient occlusion, 4K shadows, dense particles" },
 ];
 
-export function SettingsPanel({ settings, autoDetected, fps, onChange, onClose }: SettingsPanelProps) {
+export function SettingsPanel({
+  settings,
+  autoDetected,
+  fps,
+  qualityPinned,
+  onChange,
+  onPickQuality,
+  onResetQualityAuto,
+  onClose,
+}: SettingsPanelProps) {
   return (
     <div className="pointer-events-auto absolute inset-0 z-20 flex flex-col items-center justify-center overflow-hidden bg-black/60 px-5 py-6 backdrop-blur-sm">
       <div className="mc-slate mc-goldleaf mc-rise flex max-h-full w-full min-h-0 max-w-lg flex-col p-5 sm:p-6">
@@ -103,7 +118,7 @@ export function SettingsPanel({ settings, autoDetected, fps, onChange, onClose }
               type="button"
               className="mc-chip py-2.5"
               data-active={settings.quality === preset.key}
-              onClick={() => onChange({ ...settings, quality: preset.key })}
+              onClick={() => onPickQuality(preset.key)}
             >
               {preset.label}
             </button>
@@ -116,6 +131,23 @@ export function SettingsPanel({ settings, autoDetected, fps, onChange, onClose }
           Auto-detected on this device: <span className="text-[#c8ab74]">{autoDetected}</span>
           {fps > 0 ? ` · currently ${fps} FPS` : ""}
         </p>
+        {qualityPinned ? (
+          <p className="mt-1 text-[0.68rem] text-[#c8ab74]">
+            Locked to your choice - the game will not step it down.{" "}
+            <button
+              type="button"
+              className="underline decoration-dotted underline-offset-2"
+              onClick={onResetQualityAuto}
+            >
+              Reset to auto
+            </button>
+          </p>
+        ) : (
+          <p className="mt-1 text-[0.68rem] text-[#7d6f57]">
+            Below 58 FPS the game steps the preset down on its own. Picking a
+            preset yourself turns that off.
+          </p>
+        )}
 
         <div className="mc-rule my-5" />
 
