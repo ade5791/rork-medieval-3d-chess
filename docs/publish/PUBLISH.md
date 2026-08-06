@@ -103,7 +103,7 @@ Verified NOT reproducible on the desktop machine (RTX 3090):
 - User's real local Chrome: intro renders, menu reached with all four
   civilisations and game modes visible (screenshots captured in-session).
 - Live byte identity re-confirmed same run: index.html (1,400 B),
-  landing.html (9,553 B), assets/index-DiAjvlf.js (1,427,082 B),
+  landing.html (9,553 B), assets/index-DiAjxvlf.js (1,427,082 B),
   assets/index-9KC3YKMT.css (78,378 B) all byte-size and hash-consistent
   with publish repo HEAD `cb4913f`.
 
