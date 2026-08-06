@@ -1,0 +1,81 @@
+{
+  "base": "https://ade5791.github.io/kings-gambit-medieval-chess/",
+  "passed": 8,
+  "total": 8,
+  "checks": [
+    {
+      "name": "boot: guard unpinned",
+      "pass": true,
+      "detail": {
+        "preset": "ultra",
+        "userPin": false,
+        "reviewPin": false,
+        "autoAdjusted": false
+      }
+    },
+    {
+      "name": "pick ultra: preset applied",
+      "pass": true,
+      "detail": {
+        "preset": "ultra",
+        "userPin": true,
+        "reviewPin": false,
+        "autoAdjusted": false
+      }
+    },
+    {
+      "name": "pick ultra: user pin set",
+      "pass": true,
+      "detail": {
+        "preset": "ultra",
+        "userPin": true,
+        "reviewPin": false,
+        "autoAdjusted": false
+      }
+    },
+    {
+      "name": "panel shows lock note + reset control",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "20fps while pinned: preset held at ultra",
+      "pass": true,
+      "detail": {
+        "preset": "ultra",
+        "userPin": true,
+        "reviewPin": false,
+        "autoAdjusted": false
+      }
+    },
+    {
+      "name": "reset to auto: pin released",
+      "pass": true,
+      "detail": {
+        "preset": "ultra",
+        "userPin": false,
+        "reviewPin": false,
+        "autoAdjusted": false
+      }
+    },
+    {
+      "name": "20fps in auto mode: guard stepped down (control)",
+      "pass": true,
+      "detail": {
+        "before": "ultra",
+        "after": {
+          "preset": "high",
+          "userPin": false,
+          "reviewPin": false,
+          "autoAdjusted": true
+        }
+      }
+    },
+    {
+      "name": "zero console errors",
+      "pass": true,
+      "detail": []
+    }
+  ],
+  "errors": []
+}

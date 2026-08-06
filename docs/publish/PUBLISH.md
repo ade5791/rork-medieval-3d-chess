@@ -168,3 +168,45 @@ reproduces the gate. So a Firefox sighting of this panel is either (a) the
 era-switch defect fixed by this deploy, or (b) that browser profile having
 acceleration/WebGL disabled - which the new gate copy now walks the player
 through fixing.
+
+## Follow-up deploy 1bdaa74: Settings choice pins the graphics preset
+
+Reported 2026-08-06: picking Ultra in Settings at ~20fps cascaded back down to
+low via the auto quality guard. Fix (source commit `ac0b08e`): a manual
+Graphics selection in Settings sets a user pin that sampleFps respects - a
+hand-picked preset is never stepped down. First-load auto-detection keeps the
+guard; ?quality= URL pinning unchanged. The panel states the active regime
+("Locked to your choice" + Reset to auto, or the auto step-down note).
+
+### Deployed state (verified against the LIVE URL)
+
+- Deployed commit: `1bdaa74` (publish repo main)
+- Rollback target: `2aa13b8` (previous live deploy)
+- Bundle: `assets/index-DXy6V8um.js` (1,428,777 bytes pre-gzip)
+- Live bundle sha256 `15e8054a196fd4459cb0cec0d151477da1e165ddf96f5814432ad529824b181a`
+  matches the gated dist byte-for-byte.
+- Rollout note: the Pages build for `1bdaa74` stalled in `building` for ~2h
+  (created 21:23Z, duration 0); a re-requested build via
+  POST /pages/builds completed in 31.5s and the CDN cut over. If a future
+  deploy sits in `building` with duration 0 for >15 min, re-request the build.
+
+### Gates for this deploy
+
+| Gate | Target | Result |
+|---|---|---|
+| tsc --noEmit | source repo | clean |
+| vitest | source repo | 99/99 pass |
+| Behavioural pin gate (real UI) | staged bytes | 8/8 pass, 0 console errors |
+| S5 QA journey matrix (4 surfaces) | staged bytes | 130/130 pass, 0 defects |
+| Behavioural pin gate (real UI) | LIVE URL | 8/8 pass, 0 console errors |
+
+Live pin gate detail: clicked Ultra, forced 120 samples of 20fps past warm-up
+and rate limit - preset held at ultra; clicked Reset to auto, same forcing -
+preset stepped ultra to high (guard proven still live in auto mode).
+Artifact: `web/tools/out/quality-pin-verify-live.json`.
+
+### Repo note
+
+Source repo now lives at https://github.com/ade5791/rork-medieval-3d-chess
+(public, `main` HEAD `ac0b08e` at time of this deploy; old alexngdev99 remote
+kept read-only as `upstream`).
