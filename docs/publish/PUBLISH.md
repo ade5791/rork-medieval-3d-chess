@@ -6,10 +6,10 @@ Publish repo: https://github.com/ade5791/kings-gambit-medieval-chess (branch `ma
 
 ## Deployed state (verified against the LIVE URL)
 
-- Deployed commit: `cb4913f4404e5ac315a4b9d9bc2fa7e4fb6ffaf3` (merge; payload commit `9a9bfcb`)
-- Rollback target: `cc970e8` (previous live deploy; `git revert -m 1 cb4913f` or reset + force-push)
-- Dist tree hash: `c8a56f02b304df0a060206dc2fec876422cd551fcd4e86530ee0df81c48fa1f1`
-- Bundle: `assets/index-DiAjxvlf.js` (1,427,080 bytes pre-gzip)
+- Deployed commit: `2aa13b8` (publish repo main)
+- Rollback target: `cb4913f` (previous live deploy; `git revert 2aa13b8` or reset + force-push)
+- Dist tree hash: `aa9ca301a2befd9d247e27fbce264a654bb3d268522049a89f3358f6aaed37aa`
+- Bundle: `assets/index-CY7243Ka.js` (1,427,643 bytes pre-gzip)
 
 ## The reported "error 400" - diagnosis and fix
 
@@ -115,3 +115,56 @@ user hitting the gate: enable "Use graphics acceleration when available"
 "Hardware accelerated"; or open the URL in Edge/Chrome/Firefox on a desktop
 or tablet. No code change shipped: the gate's message already states the
 correct remedy and only fires when no 3D context is possible.
+
+## Follow-up deploy 2aa13b8: era switch tripped the WebGL-unsupported gate
+
+Reported 2026-08-06: "this error occurs when I try to choose a different era".
+
+Root cause, reproduced headless against the previous staged bytes
+(`web/tools/out/era-repro.log`): the boot effect in `GameShell.tsx` depends
+on the chosen era, so picking a new era disposes the running engine.
+`SceneEngine.dispose()` deliberately calls `renderer.forceContextLoss()` to
+hand the GPU context back (browsers cap live WebGL contexts). The rebooted
+engine was then constructed on the SAME `<canvas>` element - whose context
+had just been force-lost - so `WebGLRenderer` threw
+`Cannot read properties of null (reading 'precision')`, the catch path set
+`unsupported=true`, and the player saw the "needs graphic acceleration"
+panel on a perfectly capable GPU. The Firefox report earlier the same day is
+consistent with the same panel (see below for the browser-setting variant).
+
+Fix (source commit `14a2a06`): the canvas is keyed on the era
+(`<canvas key={eraAtBoot} ...>`), so React mounts a fresh canvas element
+before every engine reboot. `forceContextLoss()` stays - still required to
+avoid context exhaustion across repeated swaps. The unsupported-gate copy now
+also lists concrete remedies (Firefox Performance setting, `webgl.disabled`,
+Chrome graphics acceleration, RDP/VM note, driver update).
+
+### Gates for this deploy (dist tree `aa9ca301...`)
+
+| Gate | Target | Result |
+|---|---|---|
+| Era-switch repro (pre-fix) | staged bytes | gate SHOWN, null-precision error - defect confirmed |
+| Era-switch verify (post-fix) | staged bytes | gate NOT shown, 0 console errors |
+| Era soak rome/sengoku/egypt/classic | staged bytes | 4/4 clean, allOk=true |
+| vitest | source repo | 99/99 pass |
+| tsc --noEmit | source repo | clean |
+| S5 QA journey matrix (4 surfaces) | staged bytes | 130/130 pass, 0 defects |
+| Live byte identity | live URL | 100/100 files identical, 198,324,030 bytes |
+| Era soak | LIVE URL | 4/4 clean, allOk=true, 0 console errors |
+| S5 QA journey matrix | LIVE URL | 130/130 pass, 0 defects |
+| Headed perf/QA spot-check (RTX 3090) | LIVE URL | 24/25; sole fail is the pre-existing "4 late shader compiles" baseline item, unchanged by this fix |
+
+Artifacts: `web/tools/out/era-repro.log`, `era-fix-verify.log`,
+`era-multi.log`, `era-multi-live.log`, `s6b-s5qa-staged.json`,
+`s6b-s5qa-live.json`, `s6b-live-bytes.json`, `s6b-qa-livebaseline.log`.
+
+### The Firefox "graphic acceleration" report
+
+Real Firefox 153.0.1 on this machine creates WebGL2 on ANGLE D3D11
+(`web/tools/ff-real-probe/result.json`) and renders the live game (visual
+proof: `web/tools/out/ff-live-render-proof.png`). Playwright Firefox with
+acceleration forced off ALSO still gets WebGL; only `webgl.disabled=true`
+reproduces the gate. So a Firefox sighting of this panel is either (a) the
+era-switch defect fixed by this deploy, or (b) that browser profile having
+acceleration/WebGL disabled - which the new gate copy now walks the player
+through fixing.
