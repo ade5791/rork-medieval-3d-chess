@@ -472,7 +472,10 @@ export function GameShell() {
       style={{ "--mc-vignette": ARENA_LOOKS[settings.arena].screenVignette } as CSSProperties}
     >
       <div className="mc-canvas-wrap">
-        <canvas ref={canvasRef} />
+        {/* Keyed on the era: dispose() force-loses the old canvas's GL context,
+            so a rebooted engine must get a fresh canvas element or renderer
+            construction fails and falsely trips the unsupported gate. */}
+        <canvas key={eraAtBoot} ref={canvasRef} />
       </div>
       <div className="mc-vignette" />
 
@@ -485,9 +488,15 @@ export function GameShell() {
             <div className="mc-slate mc-goldleaf max-w-sm p-6">
               <h2 className="mc-display text-lg text-[#f2e2bd]">The hall needs WebGL</h2>
               <p className="mt-2 text-sm text-[#b7a88a]">
-                This browser or preview surface cannot open a 3D context. Open the game in a desktop or tablet browser
-                with hardware acceleration enabled.
+                This browser cannot open a 3D (WebGL) context, so the hall cannot be drawn.
               </p>
+              <ul className="mt-3 space-y-1 text-left text-xs text-[#b7a88a]">
+                <li>Firefox: Settings &gt; General &gt; Performance &gt; enable &quot;Use hardware acceleration&quot;, then restart the browser.</li>
+                <li>Firefox: in about:config, make sure webgl.disabled is false.</li>
+                <li>Chrome/Edge: Settings &gt; System &gt; enable &quot;Use graphics acceleration&quot;, then relaunch.</li>
+                <li>Remote-desktop and some VM sessions block 3D - try directly on the machine.</li>
+                <li>Update your graphics driver if the steps above do not help.</li>
+              </ul>
             </div>
           </div>
         ) : null}

@@ -1,0 +1,32 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>webgl probe</title></head>
+<body>
+<script>
+(function () {
+  function ctx(kind, opts) {
+    try { return document.createElement("canvas").getContext(kind, opts) || null; }
+    catch (e) { return null; }
+  }
+  var gl2 = ctx("webgl2");
+  var gl1 = ctx("webgl");
+  var gl1nc = ctx("webgl", { failIfMajorPerformanceCaveat: false });
+  var renderer = null, vendor = null;
+  var gl = gl2 || gl1;
+  if (gl) {
+    try {
+      var ext = gl.getExtension("WEBGL_debug_renderer_info");
+      renderer = ext ? gl.getParameter(ext.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER);
+      vendor = ext ? gl.getParameter(ext.UNMASKED_VENDOR_WEBGL) : gl.getParameter(gl.VENDOR);
+    } catch (e) { renderer = "err:" + e.message; }
+  }
+  var payload = {
+    ua: navigator.userAgent,
+    webgl2: !!gl2, webgl1: !!gl1, webgl1NoCaveat: !!gl1nc,
+    renderer: renderer, vendor: vendor
+  };
+  fetch("/report?d=" + encodeURIComponent(JSON.stringify(payload))).then(function () {
+    document.title = "sent";
+  });
+})();
+</script>
+</body></html>
